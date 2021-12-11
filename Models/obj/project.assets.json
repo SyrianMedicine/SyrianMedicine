@@ -1208,19 +1208,19 @@
     ]
   },
   "packageFolders": {
-    "/home/ahmadnour/.nuget/packages/": {}
+    "/home/saryatulimat/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/ahmadnour/SyrianMedicine/Models/Models.csproj",
+      "projectUniqueName": "/home/saryatulimat/SyrianMedicine/Models/Models.csproj",
       "projectName": "Models",
-      "projectPath": "/home/ahmadnour/SyrianMedicine/Models/Models.csproj",
-      "packagesPath": "/home/ahmadnour/.nuget/packages/",
-      "outputPath": "/home/ahmadnour/SyrianMedicine/Models/obj/",
+      "projectPath": "/home/saryatulimat/SyrianMedicine/Models/Models.csproj",
+      "packagesPath": "/home/saryatulimat/.nuget/packages/",
+      "outputPath": "/home/saryatulimat/SyrianMedicine/Models/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/ahmadnour/.nuget/NuGet/NuGet.Config"
+        "/home/saryatulimat/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
@@ -1232,8 +1232,8 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj": {
-              "projectPath": "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj"
+            "/home/saryatulimat/SyrianMedicine/DAL/DAL.csproj": {
+              "projectPath": "/home/saryatulimat/SyrianMedicine/DAL/DAL.csproj"
             }
           }
         }
@@ -1268,7 +1268,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.402/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.401/RuntimeIdentifierGraph.json"
       }
     }
   }
