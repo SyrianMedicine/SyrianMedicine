@@ -1094,19 +1094,19 @@
     ]
   },
   "packageFolders": {
-    "/home/saryatulimat/.nuget/packages/": {}
+    "/home/ahmadnour/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/saryatulimat/SyrianMedicine/DAL/DAL.csproj",
+      "projectUniqueName": "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj",
       "projectName": "DAL",
-      "projectPath": "/home/saryatulimat/SyrianMedicine/DAL/DAL.csproj",
-      "packagesPath": "/home/saryatulimat/.nuget/packages/",
-      "outputPath": "/home/saryatulimat/SyrianMedicine/DAL/obj/",
+      "projectPath": "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj",
+      "packagesPath": "/home/ahmadnour/.nuget/packages/",
+      "outputPath": "/home/ahmadnour/SyrianMedicine/DAL/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/saryatulimat/.nuget/NuGet/NuGet.Config"
+        "/home/ahmadnour/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
@@ -1158,7 +1158,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.401/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.402/RuntimeIdentifierGraph.json"
       }
     }
   }

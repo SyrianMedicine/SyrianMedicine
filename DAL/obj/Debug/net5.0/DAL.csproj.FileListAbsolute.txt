@@ -1,0 +1,12 @@
+/home/ahmadnour/SyrianMedicine/DAL/bin/Debug/net5.0/DAL.deps.json
+/home/ahmadnour/SyrianMedicine/DAL/bin/Debug/net5.0/DAL.dll
+/home/ahmadnour/SyrianMedicine/DAL/bin/Debug/net5.0/ref/DAL.dll
+/home/ahmadnour/SyrianMedicine/DAL/bin/Debug/net5.0/DAL.pdb
+/home/ahmadnour/SyrianMedicine/DAL/obj/Debug/net5.0/DAL.csproj.AssemblyReference.cache
+/home/ahmadnour/SyrianMedicine/DAL/obj/Debug/net5.0/DAL.GeneratedMSBuildEditorConfig.editorconfig
+/home/ahmadnour/SyrianMedicine/DAL/obj/Debug/net5.0/DAL.AssemblyInfoInputs.cache
+/home/ahmadnour/SyrianMedicine/DAL/obj/Debug/net5.0/DAL.AssemblyInfo.cs
+/home/ahmadnour/SyrianMedicine/DAL/obj/Debug/net5.0/DAL.csproj.CoreCompileInputs.cache
+/home/ahmadnour/SyrianMedicine/DAL/obj/Debug/net5.0/DAL.dll
+/home/ahmadnour/SyrianMedicine/DAL/obj/Debug/net5.0/ref/DAL.dll
+/home/ahmadnour/SyrianMedicine/DAL/obj/Debug/net5.0/DAL.pdb

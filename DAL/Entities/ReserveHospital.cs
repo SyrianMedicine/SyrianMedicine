@@ -4,6 +4,7 @@ namespace DAL.Entities
 {
     public class ReserveHospital
     {
+        public int Id { get; set; }
         public string HospitalId { get; set; }
         public string UserId { get; set; }
         public int BedId { get; set; }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace DAL.Entities
 {
     public class Bed
@@ -5,5 +7,6 @@ namespace DAL.Entities
         public int Id { get; set; }
         public int DepartmentId { get; set; }
         public virtual Department Department { get; set; }
+        public virtual List<ReserveHospital> ReserveHospital { get; set; }
     }
 }

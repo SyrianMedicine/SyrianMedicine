@@ -9,7 +9,7 @@ namespace DAL.Entities
     public class Post
     {
         public int Id { get; set; }
-        public String PostText { get; set; }
+        public string PostText { get; set; }
         public DateTime Date { get; set; }
         public bool IsEdited { get; set; }
         public int UserId { get; set; }

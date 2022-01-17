@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace DAL.Entities.Identity
@@ -7,11 +8,10 @@ namespace DAL.Entities.Identity
         public string AboutMe { get; set; }
         public string Specialization { get; set; }
         public bool WorkAtHome { get; set; }
-        public int StartHoursTimeWork { get; set; }
-        public int StartMinutesTimeWork { get; set; }
-        public int EndHoursTimeWork { get; set; }
-        public int EndMinutesTimeWork { get; set; }
+        public DateTime StartTimeWork { get; set; }
+        public DateTime EndTimeWork { get; set; }
         public virtual List<ReserveNurse> ReserveNurseForUsers { get; set; }
         public virtual List<DocumentsNurse> DocumentsNurse { get; set; }
+        public virtual Doctor Doctor { get; set; }
     }
 }

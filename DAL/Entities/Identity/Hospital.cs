@@ -9,6 +9,5 @@ namespace DAL.Entities.Identity
         public virtual Department Department { get; set; }
         public virtual List<ReserveHospital> ReserveHospitalForUsers { get; set; }
         public virtual List<DocumentsHospital> DocumentsHospital { get; set; }
-
     }
 }

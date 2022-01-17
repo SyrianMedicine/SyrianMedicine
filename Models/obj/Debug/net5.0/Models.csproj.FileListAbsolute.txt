@@ -1,0 +1,15 @@
+/home/ahmadnour/SyrianMedicine/Models/bin/Debug/net5.0/Models.deps.json
+/home/ahmadnour/SyrianMedicine/Models/bin/Debug/net5.0/Models.dll
+/home/ahmadnour/SyrianMedicine/Models/bin/Debug/net5.0/ref/Models.dll
+/home/ahmadnour/SyrianMedicine/Models/bin/Debug/net5.0/Models.pdb
+/home/ahmadnour/SyrianMedicine/Models/bin/Debug/net5.0/DAL.dll
+/home/ahmadnour/SyrianMedicine/Models/bin/Debug/net5.0/DAL.pdb
+/home/ahmadnour/SyrianMedicine/Models/obj/Debug/net5.0/Models.csproj.AssemblyReference.cache
+/home/ahmadnour/SyrianMedicine/Models/obj/Debug/net5.0/Models.GeneratedMSBuildEditorConfig.editorconfig
+/home/ahmadnour/SyrianMedicine/Models/obj/Debug/net5.0/Models.AssemblyInfoInputs.cache
+/home/ahmadnour/SyrianMedicine/Models/obj/Debug/net5.0/Models.AssemblyInfo.cs
+/home/ahmadnour/SyrianMedicine/Models/obj/Debug/net5.0/Models.csproj.CoreCompileInputs.cache
+/home/ahmadnour/SyrianMedicine/Models/obj/Debug/net5.0/Models.csproj.CopyComplete
+/home/ahmadnour/SyrianMedicine/Models/obj/Debug/net5.0/Models.dll
+/home/ahmadnour/SyrianMedicine/Models/obj/Debug/net5.0/ref/Models.dll
+/home/ahmadnour/SyrianMedicine/Models/obj/Debug/net5.0/Models.pdb

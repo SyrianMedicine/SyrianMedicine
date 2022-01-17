@@ -9,7 +9,7 @@ namespace DAL.Entities
     public class SubComment
     {
         public int Id { get; set; }
-        public String CommentText { get; set; }
+        public string CommentText { get; set; }
         public DateTime Date { get; set; }
         public bool IsEdited { get; set; }
         public int UserId { get; set; }

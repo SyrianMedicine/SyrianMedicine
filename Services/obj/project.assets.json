@@ -1398,19 +1398,19 @@
     ]
   },
   "packageFolders": {
-    "/home/saryatulimat/.nuget/packages/": {}
+    "/home/ahmadnour/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/saryatulimat/SyrianMedicine/Services/Services.csproj",
+      "projectUniqueName": "/home/ahmadnour/SyrianMedicine/Services/Services.csproj",
       "projectName": "Services",
-      "projectPath": "/home/saryatulimat/SyrianMedicine/Services/Services.csproj",
-      "packagesPath": "/home/saryatulimat/.nuget/packages/",
-      "outputPath": "/home/saryatulimat/SyrianMedicine/Services/obj/",
+      "projectPath": "/home/ahmadnour/SyrianMedicine/Services/Services.csproj",
+      "packagesPath": "/home/ahmadnour/.nuget/packages/",
+      "outputPath": "/home/ahmadnour/SyrianMedicine/Services/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/saryatulimat/.nuget/NuGet/NuGet.Config"
+        "/home/ahmadnour/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
@@ -1422,11 +1422,11 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "/home/saryatulimat/SyrianMedicine/DAL/DAL.csproj": {
-              "projectPath": "/home/saryatulimat/SyrianMedicine/DAL/DAL.csproj"
+            "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj": {
+              "projectPath": "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj"
             },
-            "/home/saryatulimat/SyrianMedicine/Models/Models.csproj": {
-              "projectPath": "/home/saryatulimat/SyrianMedicine/Models/Models.csproj"
+            "/home/ahmadnour/SyrianMedicine/Models/Models.csproj": {
+              "projectPath": "/home/ahmadnour/SyrianMedicine/Models/Models.csproj"
             }
           }
         }
@@ -1461,7 +1461,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.401/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.402/RuntimeIdentifierGraph.json"
       }
     }
   }
