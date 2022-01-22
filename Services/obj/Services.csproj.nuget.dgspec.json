@@ -1,30 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "/home/ahmadnour/SyrianMedicine/Services/Services.csproj": {}
+    "/home/ahmadnour/Documents/SyrianMedicine/Services/Services.csproj": {}
   },
   "projects": {
-    "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj": {
+    "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj",
+        "projectUniqueName": "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj",
         "projectName": "DAL",
-        "projectPath": "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj",
+        "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj",
         "packagesPath": "/home/ahmadnour/.nuget/packages/",
-        "outputPath": "/home/ahmadnour/SyrianMedicine/DAL/obj/",
+        "outputPath": "/home/ahmadnour/Documents/SyrianMedicine/DAL/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/ahmadnour/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net5.0"
+          "net6.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net5.0": {
-            "targetAlias": "net5.0",
+          "net6.0": {
+            "targetAlias": "net6.0",
             "projectReferences": {}
           }
         },
@@ -35,20 +35,36 @@
         }
       },
       "frameworks": {
-        "net5.0": {
-          "targetAlias": "net5.0",
+        "net6.0": {
+          "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Identity": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[6.0.0, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[6.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.Extensions.Identity.Stores": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[6.15.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.15.0, )"
             }
           },
           "imports": [
@@ -66,34 +82,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.402/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.101/RuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/ahmadnour/SyrianMedicine/Models/Models.csproj": {
+    "/home/ahmadnour/Documents/SyrianMedicine/Models/Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ahmadnour/SyrianMedicine/Models/Models.csproj",
+        "projectUniqueName": "/home/ahmadnour/Documents/SyrianMedicine/Models/Models.csproj",
         "projectName": "Models",
-        "projectPath": "/home/ahmadnour/SyrianMedicine/Models/Models.csproj",
+        "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/Models/Models.csproj",
         "packagesPath": "/home/ahmadnour/.nuget/packages/",
-        "outputPath": "/home/ahmadnour/SyrianMedicine/Models/obj/",
+        "outputPath": "/home/ahmadnour/Documents/SyrianMedicine/Models/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/ahmadnour/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net5.0"
+          "net6.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net5.0": {
-            "targetAlias": "net5.0",
+          "net6.0": {
+            "targetAlias": "net6.0",
             "projectReferences": {
-              "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj": {
-                "projectPath": "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj"
+              "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj": {
+                "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj"
               }
             }
           }
@@ -105,12 +121,12 @@
         }
       },
       "frameworks": {
-        "net5.0": {
-          "targetAlias": "net5.0",
+        "net6.0": {
+          "targetAlias": "net6.0",
           "dependencies": {
             "FluentValidation.AspNetCore": {
               "target": "Package",
-              "version": "[10.3.5, )"
+              "version": "[10.3.6, )"
             }
           },
           "imports": [
@@ -128,37 +144,37 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.402/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.101/RuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/ahmadnour/SyrianMedicine/Services/Services.csproj": {
+    "/home/ahmadnour/Documents/SyrianMedicine/Services/Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ahmadnour/SyrianMedicine/Services/Services.csproj",
+        "projectUniqueName": "/home/ahmadnour/Documents/SyrianMedicine/Services/Services.csproj",
         "projectName": "Services",
-        "projectPath": "/home/ahmadnour/SyrianMedicine/Services/Services.csproj",
+        "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/Services/Services.csproj",
         "packagesPath": "/home/ahmadnour/.nuget/packages/",
-        "outputPath": "/home/ahmadnour/SyrianMedicine/Services/obj/",
+        "outputPath": "/home/ahmadnour/Documents/SyrianMedicine/Services/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/ahmadnour/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net5.0"
+          "net6.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net5.0": {
-            "targetAlias": "net5.0",
+          "net6.0": {
+            "targetAlias": "net6.0",
             "projectReferences": {
-              "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj": {
-                "projectPath": "/home/ahmadnour/SyrianMedicine/DAL/DAL.csproj"
+              "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj": {
+                "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj"
               },
-              "/home/ahmadnour/SyrianMedicine/Models/Models.csproj": {
-                "projectPath": "/home/ahmadnour/SyrianMedicine/Models/Models.csproj"
+              "/home/ahmadnour/Documents/SyrianMedicine/Models/Models.csproj": {
+                "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/Models/Models.csproj"
               }
             }
           }
@@ -170,12 +186,12 @@
         }
       },
       "frameworks": {
-        "net5.0": {
-          "targetAlias": "net5.0",
+        "net6.0": {
+          "targetAlias": "net6.0",
           "dependencies": {
             "AutoMapper": {
               "target": "Package",
-              "version": "[10.1.1, )"
+              "version": "[11.0.0, )"
             }
           },
           "imports": [
@@ -193,7 +209,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.402/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.101/RuntimeIdentifierGraph.json"
         }
       }
     }

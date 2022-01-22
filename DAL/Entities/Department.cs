@@ -8,7 +8,7 @@ namespace DAL.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public virtual List<Bed> Beds { get; set; }
-        public string HospitalId { get; set; }
+        public int HospitalId { get; set; }
         public virtual Hospital Hospital { get; set; }
     }
 }

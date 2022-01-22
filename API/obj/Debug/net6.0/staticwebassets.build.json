@@ -1,11 +1,37 @@
 {
   "Version": 1,
-  "Hash": "bUm1vPqwZHJejLhtNIB7WgmMI8ngxypkYrDApg4MvgQ=",
+  "Hash": "uRTp30APeSXGLT54y1kuhPnATltCEknwegeJqK3jZNQ=",
   "Source": "API",
   "BasePath": "_content/API",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "API/wwwroot",
+      "Source": "API",
+      "ContentRoot": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/",
+      "BasePath": "_content/API",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/Documents/doctor/DocumentForx@x.com_111-1115388_doctors-png-image-doctor-images-without-background-transparent.png",
+      "SourceId": "API",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/",
+      "BasePath": "_content/API",
+      "RelativePath": "Documents/doctor/DocumentForx@x.com_111-1115388_doctors-png-image-doctor-images-without-background-transparent.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/Documents/doctor/DocumentForx@x.com_111-1115388_doctors-png-image-doctor-images-without-background-transparent.png"
+    }
+  ]
 }

@@ -1,27 +1,20 @@
-using System;
-using System.Threading.Tasks;
+using DAL.DataContext;
 
 namespace Services
 {
-    public class UnitOfWork : IUnitOfWork, IDisposable
+    public class UnitOfWork : IUnitOfWork
     {
-        public Task<bool> Complete()
-        {
-            throw new NotImplementedException();
-        }
+        private readonly StoreContext _dbContext;
+        public IDoctorService DoctorServices { get; }
 
-        public virtual void Dispose(bool disposing)
+        public UnitOfWork(IDoctorService DoctorServices, StoreContext dbContext)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
+            this.DoctorServices = DoctorServices;
+            _dbContext = dbContext;
         }
     }
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
-        public Task<bool> Complete();
+        public IDoctorService DoctorServices { get; }
     }
 }

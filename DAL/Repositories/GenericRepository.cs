@@ -14,7 +14,7 @@ namespace DAL.Repositories
             this.dbContext = dbContext;
             dbSet = dbContext.Set<TEntity>();
         }
-        public async Task Delete(object id)
+        public async Task DeleteAsync(object id)
         {
             var entity = await dbSet.FindAsync(id);
             dbSet.Remove(entity);
@@ -23,22 +23,32 @@ namespace DAL.Repositories
         public IQueryable<TEntity> GetQuery()
             => dbSet.AsQueryable();
 
-        public async Task<TEntity> GetById(object id)
+        public async Task<TEntity> GetByIdAsync(object id)
             => await dbSet.FindAsync(id);
 
-        public async Task Insert(TEntity entity)
+        public async Task InsertAsync(TEntity entity)
             => await dbSet.AddAsync(entity);
 
-        public void Update(TEntity entity)
+        public void UpdateAsync(TEntity entity)
             => dbSet.Update(entity);
+
+        public async Task<bool> CompleteAsync()
+            => await dbContext.SaveChangesAsync() > 0;
+
+        public virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+                dbContext.Dispose();
+        }
     }
 
     public interface IGenericRepository<TEntity> where TEntity : class
     {
         public IQueryable<TEntity> GetQuery();
-        public Task<TEntity> GetById(object id);
-        public Task Insert(TEntity entity);
-        public Task Delete(object id);
-        public void Update(TEntity entity);
+        public Task<TEntity> GetByIdAsync(object id);
+        public Task InsertAsync(TEntity entity);
+        public Task DeleteAsync(object id);
+        public void UpdateAsync(TEntity entity);
+        public Task<bool> CompleteAsync();
     }
 }

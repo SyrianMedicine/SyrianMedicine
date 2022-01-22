@@ -9,6 +9,5 @@ namespace DAL.Entities
     {
         public int SubCommentID { get; set; }
         public virtual SubComment SubComment { get; set; }
-
     }
 }
