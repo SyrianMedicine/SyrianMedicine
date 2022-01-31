@@ -29,6 +29,54 @@ namespace Services
         public async Task<IReadOnlyList<DoctorsOutput>> GetAllDoctors()
             => _mapper.Map<IReadOnlyList<Doctor>, IReadOnlyList<DoctorsOutput>>(await GetQuery().Include(us => us.User).ToListAsync());
 
+        public async Task<DoctorsOutput> GetDoctor(int id)
+            => _mapper.Map<Doctor, DoctorsOutput>(await GetQuery().Where(e => e.Id == id).Include(e => e.User).FirstOrDefaultAsync());
+
+        public async Task<ResponseService<LoginOutput>> LoginDoctor(LoginInput input)
+        {
+            var response = new ResponseService<LoginOutput>();
+            try
+            {
+                var user = await _identityRepository.GetUserByEmailAsync(input.Email);
+                if (user == null)
+                {
+                    user = await _identityRepository.GetUserByNameAsync(input.UserName);
+                    if (user == null)
+                    {
+                        response.Message = "UserName or Email not exist!";
+                        return response;
+                    }
+                }
+                if (!await _identityRepository.CheckPassword(user, input.Password))
+                {
+                    response.Message = "Password not correct!";
+                    return response;
+                }
+                if (await _identityRepository.LoginUser(user, input.Password))
+                {
+                    response.Message = "Done";
+                    response.Data = new()
+                    {
+                        FullName = user.FirstName + user.LastName,
+                        UserName = user.UserName,
+                        Email = user.Email,
+                        Token = await _tokenService.CreateToken(user)
+                    };
+                }
+                else
+                {
+                    response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
+                    return response;
+                }
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                return response;
+            }
+            return response;
+        }
+
         public async Task<ResponseService<RegisterDoctorOutput>> RegisterDoctor(RegisterDoctor input)
         {
             var response = new ResponseService<RegisterDoctorOutput>();
@@ -38,7 +86,7 @@ namespace Services
                 if (await _identityRepository.GetUserByEmailAsync(input.Email) != null || await _identityRepository.GetUserByNameAsync(input.UserName) != null)
                 {
                     response.Message = "Username or Email is Exist!";
-                    response.Data = null;
+
                     return response;
                 }
                 var files = input.Files;
@@ -47,7 +95,6 @@ namespace Services
                 if (files.Length == 0)
                 {
                     response.Message = "Please send your document if you want register as a doctor!";
-                    response.Data = null;
                     return response;
                 }
 
@@ -81,7 +128,7 @@ namespace Services
                     if (!await CompleteAsync())
                     {
                         response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
-                        response.Data = null;
+
                         return response;
                     }
                     foreach (var file in files)
@@ -100,7 +147,6 @@ namespace Services
                         if (!await _documentDoctor.CompleteAsync())
                         {
                             response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
-                            response.Data = null;
                             return response;
                         }
                     }
@@ -118,21 +164,25 @@ namespace Services
                 else
                 {
                     response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
-                    response.Data = null;
                     return response;
                 }
             }
             catch
             {
                 response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
-                response.Data = null;
             }
             return response;
         }
+
+
+
+
     }
     public interface IDoctorService : IGenericRepository<Doctor>
     {
         public Task<IReadOnlyList<DoctorsOutput>> GetAllDoctors();
+        public Task<DoctorsOutput> GetDoctor(int id);
+        public Task<ResponseService<LoginOutput>> LoginDoctor(LoginInput input);
         public Task<ResponseService<RegisterDoctorOutput>> RegisterDoctor(RegisterDoctor input);
     }
 }

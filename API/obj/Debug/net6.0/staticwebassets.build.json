@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "uRTp30APeSXGLT54y1kuhPnATltCEknwegeJqK3jZNQ=",
+  "Hash": "ozSEIKWUPoKq9QzPPihQtx/DR6GysgRl4LpdaE+pllQ=",
   "Source": "API",
   "BasePath": "_content/API",
   "Mode": "Default",
@@ -16,6 +16,40 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/Documents/doctor/DocumentForaa_7-74994_free-png-doctor-png-images-transparent-doctor-images.png",
+      "SourceId": "API",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/",
+      "BasePath": "_content/API",
+      "RelativePath": "Documents/doctor/DocumentForaa_7-74994_free-png-doctor-png-images-transparent-doctor-images.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/Documents/doctor/DocumentForaa_7-74994_free-png-doctor-png-images-transparent-doctor-images.png"
+    },
+    {
+      "Identity": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/Documents/doctor/DocumentForahamd_7-74994_free-png-doctor-png-images-transparent-doctor-images.png",
+      "SourceId": "API",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/",
+      "BasePath": "_content/API",
+      "RelativePath": "Documents/doctor/DocumentForahamd_7-74994_free-png-doctor-png-images-transparent-doctor-images.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/Documents/doctor/DocumentForahamd_7-74994_free-png-doctor-png-images-transparent-doctor-images.png"
+    },
     {
       "Identity": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/Documents/doctor/DocumentForx@x.com_111-1115388_doctors-png-image-doctor-images-without-background-transparent.png",
       "SourceId": "API",

@@ -8,7 +8,6 @@ using Services.Common;
 
 namespace API.Controllers
 {
-    [AllowAnonymous]
     public class DoctorController : BaseController
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -17,12 +16,25 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
+
+        [Authorize]
         [HttpGet(nameof(Doctors))]
         public async Task<IReadOnlyList<DoctorsOutput>> Doctors()
             => await _unitOfWork.DoctorServices.GetAllDoctors();
+            
+        [Authorize]
+        [HttpGet(nameof(Doctor))]
+        public async Task<DoctorsOutput> Doctor(int id)
+            => await _unitOfWork.DoctorServices.GetDoctor(id);
 
+        [AllowAnonymous]
         [HttpPost(nameof(RegisterDoctor))]
         public async Task<ResponseService<RegisterDoctorOutput>> RegisterDoctor([FromForm] RegisterDoctor input)
             => await _unitOfWork.DoctorServices.RegisterDoctor(input);
+
+        [AllowAnonymous]
+        [HttpPost(nameof(LoginDoctor))]
+        public async Task<ResponseService<LoginOutput>> LoginDoctor(LoginInput input)
+            => await _unitOfWork.DoctorServices.LoginDoctor(input);
     }
 }
