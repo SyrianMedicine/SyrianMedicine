@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20220122180805_InitialCreate")]
+    [Migration("20220131172305_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -211,7 +211,8 @@ namespace DAL.Migrations
                     b.HasIndex("NurseID")
                         .IsUnique();
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Doctors");
                 });
@@ -233,7 +234,8 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Hospitals");
                 });
@@ -267,7 +269,8 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Nurses");
                 });
@@ -289,7 +292,8 @@ namespace DAL.Migrations
                     b.HasIndex("DoctorId")
                         .IsUnique();
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Secretaries");
                 });
@@ -898,8 +902,8 @@ namespace DAL.Migrations
                         .HasForeignKey("DAL.Entities.Identity.Doctor", "NurseID");
 
                     b.HasOne("DAL.Entities.Identity.User", "User")
-                        .WithMany("Doctors")
-                        .HasForeignKey("UserId");
+                        .WithOne("Doctor")
+                        .HasForeignKey("DAL.Entities.Identity.Doctor", "UserId");
 
                     b.Navigation("Nurse");
 
@@ -909,8 +913,8 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Identity.Hospital", b =>
                 {
                     b.HasOne("DAL.Entities.Identity.User", "User")
-                        .WithMany("Hospitals")
-                        .HasForeignKey("UserId");
+                        .WithOne("Hospital")
+                        .HasForeignKey("DAL.Entities.Identity.Hospital", "UserId");
 
                     b.Navigation("User");
                 });
@@ -918,8 +922,8 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Identity.Nurse", b =>
                 {
                     b.HasOne("DAL.Entities.Identity.User", "User")
-                        .WithMany("Nurses")
-                        .HasForeignKey("UserId");
+                        .WithOne("Nurse")
+                        .HasForeignKey("DAL.Entities.Identity.Nurse", "UserId");
 
                     b.Navigation("User");
                 });
@@ -933,8 +937,8 @@ namespace DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("DAL.Entities.Identity.User", "User")
-                        .WithMany("Secretaries")
-                        .HasForeignKey("UserId");
+                        .WithOne("Secretary")
+                        .HasForeignKey("DAL.Entities.Identity.Secretary", "UserId");
 
                     b.Navigation("Doctor");
 
@@ -1221,11 +1225,11 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Identity.User", b =>
                 {
-                    b.Navigation("Doctors");
+                    b.Navigation("Doctor");
 
-                    b.Navigation("Hospitals");
+                    b.Navigation("Hospital");
 
-                    b.Navigation("Nurses");
+                    b.Navigation("Nurse");
 
                     b.Navigation("ReserveHospital");
 
@@ -1233,7 +1237,7 @@ namespace DAL.Migrations
 
                     b.Navigation("ReserveWithNurse");
 
-                    b.Navigation("Secretaries");
+                    b.Navigation("Secretary");
                 });
 
             modelBuilder.Entity("DAL.Entities.Post", b =>

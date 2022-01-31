@@ -19,9 +19,9 @@ namespace DAL.Entities.Identity
         public virtual List<ReserveNurse> ReserveWithNurse { get; set; }
         public virtual List<ReserveHospital> ReserveHospital { get; set; }
 
-        public virtual List<Doctor> Doctors { get; set; }
-        public virtual List<Nurse> Nurses { get; set; }
-        public virtual List<Hospital> Hospitals { get; set; }
-        public virtual List<Secretary> Secretaries { get; set; }
+        public virtual Doctor Doctor { get; set; }
+        public virtual Nurse Nurse { get; set; }
+        public virtual Hospital Hospital { get; set; }
+        public virtual Secretary Secretary { get; set; }
     }
 }

@@ -737,7 +737,8 @@ namespace DAL.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Doctors_UserId",
                 table: "Doctors",
-                column: "UserId");
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_DocumentsDoctors_DoctorId",
@@ -767,7 +768,8 @@ namespace DAL.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Hospitals_UserId",
                 table: "Hospitals",
-                column: "UserId");
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Likes_CommentID",
@@ -792,7 +794,8 @@ namespace DAL.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Nurses_UserId",
                 table: "Nurses",
-                column: "UserId");
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserId1",
@@ -853,7 +856,8 @@ namespace DAL.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Secretaries_UserId",
                 table: "Secretaries",
-                column: "UserId");
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubComments_CommentId",
