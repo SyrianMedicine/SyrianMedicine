@@ -1,6 +1,6 @@
 namespace Models.Doctor.Inputs
 {
-    public class LoginInput
+    public class LoginDoctorInput
     {
         public string UserName { get; set; }
         public string Email { get; set; }

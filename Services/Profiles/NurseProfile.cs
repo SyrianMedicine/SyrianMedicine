@@ -1,15 +1,16 @@
 using AutoMapper;
 using DAL.Entities;
 using DAL.Entities.Identity;
-using Models.Doctor.Outputs;
+using Models.Nurse;
+using Models.Nurse.Outputs;
 
 namespace Services.Profiles
 {
-    public class DoctorProfile : Profile
+    public class NurseProfile : Profile
     {
-        public DoctorProfile()
+        public NurseProfile()
         {
-            CreateMap<Doctor, DoctorOutput>()
+            CreateMap<Nurse, NurseOutput>()
                 .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.User.FirstName + " " + src.User.LastName))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                 .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom(src => src.User.PictureUrl))
@@ -18,7 +19,7 @@ namespace Services.Profiles
                 .ForMember(dest => dest.HomeNumber, opt => opt.MapFrom(src => src.User.HomeNumber))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.User.Gender));
 
-            CreateMap<DocumentsDoctorModel, DocumentsDoctor>().ReverseMap();
+            CreateMap<DocumentsNurseModel, DocumentsNurse>().ReverseMap();
         }
     }
 }

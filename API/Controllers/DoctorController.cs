@@ -19,22 +19,22 @@ namespace API.Controllers
 
         [Authorize]
         [HttpGet(nameof(Doctors))]
-        public async Task<IReadOnlyList<DoctorsOutput>> Doctors()
+        public async Task<IReadOnlyList<DoctorOutput>> Doctors()
             => await _unitOfWork.DoctorServices.GetAllDoctors();
-            
+
         [Authorize]
         [HttpGet(nameof(Doctor))]
-        public async Task<DoctorsOutput> Doctor(int id)
+        public async Task<DoctorOutput> Doctor(int id)
             => await _unitOfWork.DoctorServices.GetDoctor(id);
 
         [AllowAnonymous]
         [HttpPost(nameof(RegisterDoctor))]
-        public async Task<ResponseService<RegisterDoctorOutput>> RegisterDoctor([FromForm] RegisterDoctor input)
-            => await _unitOfWork.DoctorServices.RegisterDoctor(input);
+        public async Task<ActionResult<ResponseService<RegisterDoctorOutput>>> RegisterDoctor([FromForm] RegisterDoctor input)
+            => Result(await _unitOfWork.DoctorServices.RegisterDoctor(input), nameof(RegisterDoctor));
 
         [AllowAnonymous]
         [HttpPost(nameof(LoginDoctor))]
-        public async Task<ResponseService<LoginOutput>> LoginDoctor(LoginInput input)
-            => await _unitOfWork.DoctorServices.LoginDoctor(input);
+        public async Task<ActionResult<ResponseService<LoginOutput>>> LoginDoctor(LoginDoctorInput input)
+            => Result(await _unitOfWork.DoctorServices.LoginDoctor(input), nameof(LoginDoctor));
     }
 }

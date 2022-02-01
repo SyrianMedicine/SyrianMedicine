@@ -1,11 +1,8 @@
 using System.Text;
-using System.Threading.Tasks;
 using DAL.DataContext;
 using DAL.Entities.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Extensions

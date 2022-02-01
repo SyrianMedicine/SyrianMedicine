@@ -5,37 +5,37 @@ using DAL.Entities.Identity;
 using DAL.Entities.Identity.Enums;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Models.Doctor.Inputs;
-using Models.Doctor.Outputs;
+using Models.Nurse;
+using Models.Nurse.Inputs;
+using Models.Nurse.Outputs;
 using Services.Common;
 
 namespace Services
 {
-    public class DoctorService : GenericRepository<Doctor>, IDoctorService
+    public class NurseService : GenericRepository<Nurse>, INurseService
     {
         private readonly IMapper _mapper;
         private readonly IIdentityRepository _identityRepository;
-        private readonly IGenericRepository<DocumentsDoctor> _documentDoctor;
+        private readonly IGenericRepository<DocumentsNurse> _documentNurse;
         private readonly ITokenService _tokenService;
-
-        public DoctorService(IIdentityRepository identityRepository, IGenericRepository<DocumentsDoctor> documentDoctor,
+        public NurseService(IIdentityRepository identityRepository, IGenericRepository<DocumentsNurse> documentNurse,
          IMapper mapper, ITokenService tokenService, StoreContext dbContext) : base(dbContext)
         {
             _mapper = mapper;
             _identityRepository = identityRepository;
-            _documentDoctor = documentDoctor;
+            _documentNurse = documentNurse;
             _tokenService = tokenService;
         }
 
-        public async Task<IReadOnlyList<DoctorOutput>> GetAllDoctors()
-            => _mapper.Map<IReadOnlyList<Doctor>, IReadOnlyList<DoctorOutput>>(await GetQuery().Include(us => us.User).ToListAsync());
+        public async Task<IReadOnlyList<NurseOutput>> GetAllNurses()
+            => _mapper.Map<IReadOnlyList<Nurse>, IReadOnlyList<NurseOutput>>(await GetQuery().Include(e => e.User).ToListAsync());
 
-        public async Task<DoctorOutput> GetDoctor(int id)
-            => _mapper.Map<Doctor, DoctorOutput>(await GetQuery().Where(e => e.Id == id).Include(e => e.User).FirstOrDefaultAsync());
+        public async Task<NurseOutput> GetNurse(int id)
+            => _mapper.Map<Nurse, NurseOutput>(await GetQuery().Where(e => e.Id == id).Include(e => e.User).FirstOrDefaultAsync());
 
-        public async Task<ResponseService<LoginOutput>> LoginDoctor(LoginDoctorInput input)
+        public async Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input)
         {
-            var response = new ResponseService<LoginOutput>();
+            var response = new ResponseService<LoginNurseOutput>();
             try
             {
                 var user = await _identityRepository.GetUserByEmailAsync(input.Email);
@@ -82,9 +82,9 @@ namespace Services
             return response;
         }
 
-        public async Task<ResponseService<RegisterDoctorOutput>> RegisterDoctor(RegisterDoctor input)
+        public async Task<ResponseService<RegisterNurseOutput>> RegisterNurse(RegisterNurse input)
         {
-            var response = new ResponseService<RegisterDoctorOutput>();
+            var response = new ResponseService<RegisterNurseOutput>();
             try
             {
                 // this user is exist 
@@ -96,15 +96,14 @@ namespace Services
                 }
                 var files = input.Files;
 
-                // doctor register without documents
+                // nurse register without documents
                 if (files.Length == 0)
                 {
-                    response.Message = "Please send your document if you want register as a doctor!";
+                    response.Message = "Please send your document if you want register as a nurse!";
                     response.StatusCode = StatusCodes.BadRequest;
                     return response;
                 }
 
-                // Doctor doctor = _mapper.Map<RegisterDoctor, Doctor>(input);
                 User user = new()
                 {
                     UserName = input.UserName,
@@ -117,7 +116,7 @@ namespace Services
                     State = (PersonState)input.State,
                     HomeNumber = input.HomeNumber,
                 };
-                Doctor doctor = new()
+                Nurse nurse = new()
                 {
                     StartTimeWork = input.StartTimeWork,
                     EndTimeWork = input.EndTimeWork,
@@ -130,7 +129,7 @@ namespace Services
 
                 if (await _identityRepository.CreateUserAsync(user, input.Password))
                 {
-                    await InsertAsync(doctor);
+                    await InsertAsync(nurse);
                     if (!await CompleteAsync())
                     {
                         response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
@@ -139,18 +138,18 @@ namespace Services
                     }
                     foreach (var file in files)
                     {
-                        var path = Path.Combine("wwwroot/Documents/doctor/", "DocumentFor" + user.UserName + "_" + file.FileName);
+                        var path = Path.Combine("wwwroot/Documents/nurse/", "DocumentFor" + user.UserName + "_" + file.FileName);
                         var stream = new FileStream(path, FileMode.Create);
                         await file.CopyToAsync(stream);
                         await stream.DisposeAsync();
-                        var docModel = new DocumentsDoctorModel()
+                        var docModel = new DocumentsNurseModel()
                         {
-                            DoctorId = doctor.Id,
+                            NurseId = nurse.Id,
                             UrlFile = path[7..]
                         };
-                        var doc = _mapper.Map<DocumentsDoctor>(docModel);
-                        await _documentDoctor.InsertAsync(doc);
-                        if (!await _documentDoctor.CompleteAsync())
+                        var doc = _mapper.Map<DocumentsNurse>(docModel);
+                        await _documentNurse.InsertAsync(doc);
+                        if (!await _documentNurse.CompleteAsync())
                         {
                             response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
                             response.StatusCode = StatusCodes.InternalServerError;
@@ -162,7 +161,7 @@ namespace Services
                     await _identityRepository.AddRoleToUserAsync(dbUser, Roles.Sick.ToString());
                     response.Message = "Done";
                     response.StatusCode = StatusCodes.Created;
-                    response.Data = new RegisterDoctorOutput()
+                    response.Data = new RegisterNurseOutput()
                     {
                         DisplayName = input.FirstName + " " + input.LastName,
                         UserName = input.UserName,
@@ -183,12 +182,13 @@ namespace Services
             }
             return response;
         }
+
     }
-    public interface IDoctorService : IGenericRepository<Doctor>
+    public interface INurseService : IGenericRepository<Nurse>
     {
-        public Task<IReadOnlyList<DoctorOutput>> GetAllDoctors();
-        public Task<DoctorOutput> GetDoctor(int id);
-        public Task<ResponseService<LoginOutput>> LoginDoctor(LoginDoctorInput input);
-        public Task<ResponseService<RegisterDoctorOutput>> RegisterDoctor(RegisterDoctor input);
+        public Task<IReadOnlyList<NurseOutput>> GetAllNurses();
+        public Task<NurseOutput> GetNurse(int id);
+        public Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input);
+        public Task<ResponseService<RegisterNurseOutput>> RegisterNurse(RegisterNurse input);
     }
 }

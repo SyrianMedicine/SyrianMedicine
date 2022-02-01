@@ -16,12 +16,15 @@ namespace API.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped(typeof(IGenericRepository<DocumentsDoctor>), typeof(GenericRepository<DocumentsDoctor>));
             services.AddScoped<IDoctorService, DoctorService>();
+            services.AddScoped(typeof(IGenericRepository<DocumentsNurse>), typeof(GenericRepository<DocumentsNurse>));
+            services.AddScoped<INurseService, NurseService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }
         public static IServiceCollection AddAutoMapperServices(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(DoctorProfile));
+            services.AddAutoMapper(typeof(NurseProfile));
             return services;
         }
         public static IServiceCollection AddSwaggerServices(this IServiceCollection services)

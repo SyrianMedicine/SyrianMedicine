@@ -1,6 +1,6 @@
 namespace Models.Doctor.Outputs
 {
-    public class DoctorsOutput
+    public class DoctorOutput
     {
         public string UserName { get; set; }
         public string DisplayName { get; set; }
