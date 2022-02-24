@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "LJVAxyy7Gdcf7wO/Gk7O9dgdcLP/Fx9T1LzOdvdwek0=",
+  "Hash": "EwuiPhfXeje0GTj2h+fRJQcA3kDsrEQRqqWkJZhs3wI=",
   "Source": "API",
   "BasePath": "_content/API",
   "Mode": "Default",
@@ -134,6 +134,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/Documents/nurse/DocumentForn_f45d08a2df1a5862.jpg"
+    },
+    {
+      "Identity": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/Documents/nurse/DocumentForn_Screenshot from 2021-09-04 10-10-23.png",
+      "SourceId": "API",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/",
+      "BasePath": "_content/API",
+      "RelativePath": "Documents/nurse/DocumentForn_Screenshot from 2021-09-04 10-10-23.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/Documents/nurse/DocumentForn_Screenshot from 2021-09-04 10-10-23.png"
     },
     {
       "Identity": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/Documents/nurse/DocumentForn1_42-423656_app-developer-vector-png-transparent-png.png",

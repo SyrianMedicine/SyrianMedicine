@@ -2,8 +2,7 @@ namespace DAL.Entities.Identity.Enums
 {
     public enum UserType
     {
-        Admin = 1,
-        Sick,
+        Sick = 1,
         Doctor,
         Nurse,
         Secretary
