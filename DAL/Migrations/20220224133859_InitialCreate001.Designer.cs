@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20220131172305_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20220224133859_InitialCreate001")]
+    partial class InitialCreate001
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -229,13 +229,31 @@ namespace DAL.Migrations
                     b.Property<int>("AccountState")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HomeNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumer")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PictureUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WebSite")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("Hospitals");
                 });
@@ -306,6 +324,9 @@ namespace DAL.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
@@ -370,6 +391,9 @@ namespace DAL.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("UserType")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -910,15 +934,6 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DAL.Entities.Identity.Hospital", b =>
-                {
-                    b.HasOne("DAL.Entities.Identity.User", "User")
-                        .WithOne("Hospital")
-                        .HasForeignKey("DAL.Entities.Identity.Hospital", "UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("DAL.Entities.Identity.Nurse", b =>
                 {
                     b.HasOne("DAL.Entities.Identity.User", "User")
@@ -1226,8 +1241,6 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Identity.User", b =>
                 {
                     b.Navigation("Doctor");
-
-                    b.Navigation("Hospital");
 
                     b.Navigation("Nurse");
 

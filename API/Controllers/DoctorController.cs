@@ -17,12 +17,10 @@ namespace API.Controllers
         }
 
 
-        [Authorize]
         [HttpGet(nameof(Doctors))]
         public async Task<IReadOnlyList<DoctorOutput>> Doctors()
             => await _unitOfWork.DoctorServices.GetAllDoctors();
 
-        [Authorize]
         [HttpGet(nameof(Doctor))]
         public async Task<DoctorOutput> Doctor(int id)
             => await _unitOfWork.DoctorServices.GetDoctor(id);

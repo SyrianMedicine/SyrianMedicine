@@ -45,20 +45,20 @@ namespace Services
                     if (user == null)
                     {
                         response.Message = "UserName or Email not exist!";
-                        response.StatusCode = StatusCodes.NotFound;
+                        response.Status = StatusCodes.NotFound.ToString();
                         return response;
                     }
                 }
                 if (!await _identityRepository.CheckPassword(user, input.Password))
                 {
                     response.Message = "Password not correct!";
-                    response.StatusCode = StatusCodes.BadRequest;
+                    response.Status = StatusCodes.BadRequest.ToString();
                     return response;
                 }
                 if (await _identityRepository.LoginUser(user, input.Password))
                 {
                     response.Message = "Done";
-                    response.StatusCode = StatusCodes.Ok;
+                    response.Status = StatusCodes.Ok.ToString();
                     response.Data = new()
                     {
                         FullName = user.FirstName + user.LastName,
@@ -70,14 +70,14 @@ namespace Services
                 else
                 {
                     response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
-                    response.StatusCode = StatusCodes.InternalServerError;
+                    response.Status = StatusCodes.InternalServerError.ToString();
                     return response;
                 }
             }
             catch
             {
                 response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
-                response.StatusCode = StatusCodes.InternalServerError;
+                response.Status = StatusCodes.InternalServerError.ToString();
             }
             return response;
         }
@@ -91,7 +91,7 @@ namespace Services
                 if (await _identityRepository.GetUserByEmailAsync(input.Email) != null || await _identityRepository.GetUserByNameAsync(input.UserName) != null)
                 {
                     response.Message = "Username or Email is Exist!";
-                    response.StatusCode = StatusCodes.BadRequest;
+                    response.Status = StatusCodes.BadRequest.ToString();
                     return response;
                 }
                 var files = input.Files;
@@ -100,7 +100,7 @@ namespace Services
                 if (files.Length == 0)
                 {
                     response.Message = "Please send your document if you want register as a nurse!";
-                    response.StatusCode = StatusCodes.BadRequest;
+                    response.Status = StatusCodes.BadRequest.ToString();
                     return response;
                 }
 
@@ -115,6 +115,7 @@ namespace Services
                     Location = input.Location,
                     State = (PersonState)input.State,
                     HomeNumber = input.HomeNumber,
+                    UserType = UserType.Nurse
                 };
                 Nurse nurse = new()
                 {
@@ -133,7 +134,7 @@ namespace Services
                     if (!await CompleteAsync())
                     {
                         response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
-                        response.StatusCode = StatusCodes.InternalServerError;
+                        response.Status = StatusCodes.InternalServerError.ToString();
                         return response;
                     }
                     foreach (var file in files)
@@ -152,7 +153,7 @@ namespace Services
                         if (!await _documentNurse.CompleteAsync())
                         {
                             response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
-                            response.StatusCode = StatusCodes.InternalServerError;
+                            response.Status = StatusCodes.InternalServerError.ToString();
                             return response;
                         }
                     }
@@ -160,7 +161,7 @@ namespace Services
                     var dbUser = await _identityRepository.GetUserByEmailAsync(input.Email);
                     await _identityRepository.AddRoleToUserAsync(dbUser, Roles.Sick.ToString());
                     response.Message = "Done";
-                    response.StatusCode = StatusCodes.Created;
+                    response.Status = StatusCodes.Created.ToString();
                     response.Data = new RegisterNurseOutput()
                     {
                         DisplayName = input.FirstName + " " + input.LastName,
@@ -171,14 +172,14 @@ namespace Services
                 else
                 {
                     response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
-                    response.StatusCode = StatusCodes.InternalServerError;
+                    response.Status = StatusCodes.InternalServerError.ToString();
                     return response;
                 }
             }
             catch
             {
                 response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
-                response.StatusCode = StatusCodes.InternalServerError;
+                response.Status = StatusCodes.InternalServerError.ToString();
             }
             return response;
         }

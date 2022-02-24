@@ -14,14 +14,13 @@ namespace DAL.Entities.Identity
         public PersonState State { get; set; }
         public string HomeNumber { get; set; }
         public Gender Gender { get; set; }
-
+        public string City { get; set; }
+        public UserType UserType { get; set; } = UserType.Sick;
         public virtual List<ReserveDoctor> ReserveWithDoctor { get; set; }
         public virtual List<ReserveNurse> ReserveWithNurse { get; set; }
         public virtual List<ReserveHospital> ReserveHospital { get; set; }
-
         public virtual Doctor Doctor { get; set; }
         public virtual Nurse Nurse { get; set; }
-        public virtual Hospital Hospital { get; set; }
         public virtual Secretary Secretary { get; set; }
     }
 }

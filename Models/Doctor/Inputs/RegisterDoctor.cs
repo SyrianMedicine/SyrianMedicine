@@ -19,6 +19,7 @@ namespace Models.Doctor.Inputs
         public string Location { get; set; }
         public int State { get; set; }
         public string HomeNumber { get; set; }
+        public string City { get; set; }
         public IFormFile[] Files { get; set; }
     }
 }

@@ -160,6 +160,12 @@ namespace DAL.Repositories
             return true;
         }
 
+        public async Task<IReadOnlyList<User>> AllUsers()
+            => await _dbContext.Users.ToListAsync();
+
+        public IQueryable<User> GetUsersQuery()
+            => _userManager.Users.AsQueryable();
+
 
     }
     public interface IIdentityRepository
@@ -176,6 +182,7 @@ namespace DAL.Repositories
         public Task<Role> GetRoleByIdAsync(string id);
         public Task<Role> GetRoleByNameAsync(string name);
         public Task<List<Role>> GetRolesAsync();
+        public IQueryable<User> GetUsersQuery();
         public IQueryable<Role> GetRolesQuery();
         public Task<bool> CreateRoleAsync(Role inputRole);
         public Task<bool> UpdateRoleAsync(Role inputRole);
@@ -187,5 +194,6 @@ namespace DAL.Repositories
         public Task<bool> ChangePasssword(User user, string currentPassword, string newPassword);
         public Task<bool> CheckPassword(User user, string Password);
         public Task<bool> DeleteRoleInUser(User user, string role);
+        public Task<IReadOnlyList<User>> AllUsers();
     }
 }

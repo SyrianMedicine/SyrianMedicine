@@ -18,6 +18,7 @@ namespace API.Extensions
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped(typeof(IGenericRepository<DocumentsNurse>), typeof(GenericRepository<DocumentsNurse>));
             services.AddScoped<INurseService, NurseService>();
+            services.AddScoped<ISickService, SickService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }
@@ -25,6 +26,7 @@ namespace API.Extensions
         {
             services.AddAutoMapper(typeof(DoctorProfile));
             services.AddAutoMapper(typeof(NurseProfile));
+            services.AddAutoMapper(typeof(SickProfile));
             return services;
         }
         public static IServiceCollection AddSwaggerServices(this IServiceCollection services)

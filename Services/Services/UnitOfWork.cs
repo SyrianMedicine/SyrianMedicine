@@ -7,11 +7,14 @@ namespace Services
         private readonly StoreContext _dbContext;
         public IDoctorService DoctorServices { get; }
         public INurseService NurseServices { get; }
+        public ISickService SickServices { get; }
 
-        public UnitOfWork(IDoctorService DoctorServices, INurseService NurseServices, StoreContext dbContext)
+
+        public UnitOfWork(IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices, StoreContext dbContext)
         {
             this.DoctorServices = DoctorServices;
             this.NurseServices = NurseServices;
+            this.SickServices = SickServices;
             _dbContext = dbContext;
         }
     }
@@ -19,5 +22,6 @@ namespace Services
     {
         public IDoctorService DoctorServices { get; }
         public INurseService NurseServices { get; }
+        public ISickService SickServices { get; }
     }
 }
