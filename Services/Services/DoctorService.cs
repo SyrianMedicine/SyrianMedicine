@@ -1,3 +1,4 @@
+using System.Data;
 using AutoMapper;
 using DAL.DataContext;
 using DAL.Entities;
@@ -5,6 +6,7 @@ using DAL.Entities.Identity;
 using DAL.Entities.Identity.Enums;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Models.Doctor.Inputs;
 using Models.Doctor.Outputs;
 using Services.Common;
@@ -85,6 +87,7 @@ namespace Services
         public async Task<ResponseService<RegisterDoctorOutput>> RegisterDoctor(RegisterDoctor input)
         {
             var response = new ResponseService<RegisterDoctorOutput>();
+            IDbContextTransaction transaction = await BeginTransactionAsync(IsolationLevel.ReadCommitted);
             try
             {
                 // this user is exist 
@@ -170,6 +173,7 @@ namespace Services
                         UserName = input.UserName,
                         Token = await _tokenService.CreateToken(dbUser)
                     };
+                    await transaction.CommitAsync();
                 }
                 else
                 {
@@ -180,6 +184,7 @@ namespace Services
             }
             catch
             {
+                await transaction.RollbackAsync();
                 response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
                 response.Status = StatusCodes.InternalServerError.ToString();
             }

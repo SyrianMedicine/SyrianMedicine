@@ -1,3 +1,4 @@
+using System.Data;
 using AutoMapper;
 using DAL.DataContext;
 using DAL.Entities;
@@ -5,6 +6,11 @@ using DAL.Entities.Identity;
 using DAL.Entities.Identity.Enums;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Models.Bed.Inputs;
+using Models.Bed.Outputs;
+using Models.Department.Inputs;
+using Models.Department.Outputs;
 using Models.Hospital;
 using Models.Hospital.Inputs;
 using Models.Hospital.Outputs;
@@ -18,13 +24,18 @@ namespace Services
         private readonly IIdentityRepository _identityRepository;
         private readonly ITokenService _tokenService;
         private readonly IGenericRepository<DocumentsHospital> _documentsHospital;
+        private readonly IGenericRepository<Department> _department;
+        private readonly IGenericRepository<Bed> _bed;
 
-        public HospitalService(IIdentityRepository identityRepository, IGenericRepository<DocumentsHospital> documentsHospital, ITokenService tokenService, IMapper mapper, StoreContext dbContext) : base(dbContext)
+        public HospitalService(IIdentityRepository identityRepository, IGenericRepository<DocumentsHospital> documentsHospital,
+        IGenericRepository<Department> department, IGenericRepository<Bed> bed, ITokenService tokenService, IMapper mapper, StoreContext dbContext) : base(dbContext)
         {
             _mapper = mapper;
             _identityRepository = identityRepository;
             _tokenService = tokenService;
             _documentsHospital = documentsHospital;
+            _department = department;
+            _bed = bed;
         }
 
         public async Task<IReadOnlyList<HospitalOutput>> GetAllHospitals()
@@ -83,6 +94,7 @@ namespace Services
         public async Task<ResponseService<RegisterHospitalOutput>> RegisterHospital(RegisterHospital input)
         {
             var response = new ResponseService<RegisterHospitalOutput>();
+            IDbContextTransaction transaction = await BeginTransactionAsync(IsolationLevel.ReadCommitted);
             try
             {
                 // this user is exist 
@@ -159,6 +171,7 @@ namespace Services
                         UserName = input.UserName,
                         Token = await _tokenService.CreateToken(dbUser)
                     };
+                    await transaction.CommitAsync();
                 }
                 else
                 {
@@ -169,11 +182,75 @@ namespace Services
             }
             catch
             {
+                await transaction.RollbackAsync();
                 response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
                 response.Status = StatusCodes.InternalServerError.ToString();
             }
             return response;
         }
+
+        public async Task<ResponseService<bool>> AddDebartmentsToHospital(List<CreateDepartment> inputs)
+        {
+            var response = new ResponseService<bool>();
+            IDbContextTransaction transaction = await BeginTransactionAsync(IsolationLevel.ReadCommitted);
+            try
+            {
+                foreach (var input in inputs)
+                {
+                    await _department.InsertAsync(_mapper.Map<CreateDepartment, Department>(input));
+                }
+                await transaction.CommitAsync();
+                await _department.CompleteAsync();
+                response.Data = true;
+                response.Message = "Done";
+                response.Status = StatusCodes.Created.ToString();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+            }
+            return response;
+        }
+
+        public async Task<IReadOnlyList<DepartmentOutput>> GetDepartmentsForHospital(string username)
+        {
+            var hospital = await GetQuery().Include(e => e.User).FirstOrDefaultAsync(e => e.User.UserName == username);
+            return _mapper.Map<IReadOnlyList<Department>, IReadOnlyList<DepartmentOutput>>
+                (await _department.GetQuery().Include(e => e.Hospital).Where(e => e.HospitalId == hospital.Id).ToListAsync());
+        }
+
+        public async Task<DepartmentOutput> GetDepartment(int id)
+            => _mapper.Map<Department, DepartmentOutput>(await _department.GetQuery().Include(e => e.Hospital).FirstOrDefaultAsync(e => e.Id == id));
+        public async Task<ResponseService<bool>> AddBedsToDepartment(List<CreateBed> inputs)
+        {
+            var response = new ResponseService<bool>();
+            IDbContextTransaction transaction = await BeginTransactionAsync(IsolationLevel.ReadCommitted);
+            try
+            {
+                foreach (var input in inputs)
+                {
+                    await _bed.InsertAsync(_mapper.Map<CreateBed, Bed>(input));
+                }
+                await transaction.CommitAsync();
+                await _department.CompleteAsync();
+                response.Data = true;
+                response.Message = "Done";
+                response.Status = StatusCodes.Created.ToString();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+            }
+            return response;
+        }
+        public async Task<IReadOnlyList<BedOutput>> GetBedsForDepartment(int departmentId)
+            => _mapper.Map<IReadOnlyList<Bed>, IReadOnlyList<BedOutput>>(await _bed.GetQuery().Include(e => e.Department).Where(e => e.DepartmentId == departmentId).ToListAsync());
+        public async Task<BedOutput> GetBed(int id)
+            => _mapper.Map<Bed, BedOutput>(await _bed.GetQuery().Include(e => e.Department).FirstOrDefaultAsync(e => e.Id == id));
     }
     public interface IHospitalService : IGenericRepository<Hospital>
     {
@@ -181,5 +258,12 @@ namespace Services
         public Task<ResponseService<RegisterHospitalOutput>> LoginHospital(LoginHospital input);
         public Task<IReadOnlyList<HospitalOutput>> GetAllHospitals();
         public Task<HospitalOutput> GetHospital(string username);
+        public Task<ResponseService<bool>> AddDebartmentsToHospital(List<CreateDepartment> inputs);
+        public Task<IReadOnlyList<DepartmentOutput>> GetDepartmentsForHospital(string username);
+        public Task<DepartmentOutput> GetDepartment(int id);
+        public Task<ResponseService<bool>> AddBedsToDepartment(List<CreateBed> inputs);
+        public Task<IReadOnlyList<BedOutput>> GetBedsForDepartment(int departmentId);
+        public Task<BedOutput> GetBed(int id);
+
     }
 }

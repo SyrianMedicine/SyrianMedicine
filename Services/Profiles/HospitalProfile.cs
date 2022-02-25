@@ -1,6 +1,10 @@
 using AutoMapper;
 using DAL.Entities;
 using DAL.Entities.Identity;
+using Models.Bed.Inputs;
+using Models.Bed.Outputs;
+using Models.Department.Inputs;
+using Models.Department.Outputs;
 using Models.Hospital;
 using Models.Hospital.Outputs;
 
@@ -24,6 +28,13 @@ namespace Services.Profiles
 
             CreateMap<DocumentsHospitalModel, DocumentsHospital>().ReverseMap();
 
+            CreateMap<CreateDepartment, Department>().ReverseMap();
+            CreateMap<Department, DepartmentOutput>()
+                .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.Hospital.Name));
+
+            CreateMap<CreateBed, Bed>().ReverseMap();
+            CreateMap<Bed, BedOutput>()
+                .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
         }
     }
 }

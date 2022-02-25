@@ -1,6 +1,10 @@
 using API.Controllers.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models.Bed.Inputs;
+using Models.Bed.Outputs;
+using Models.Department.Inputs;
+using Models.Department.Outputs;
 using Models.Hospital.Inputs;
 using Models.Hospital.Outputs;
 using Services;
@@ -33,6 +37,30 @@ namespace API.Controllers
         [HttpPost(nameof(LoginHospital))]
         public async Task<ActionResult<ResponseService<RegisterHospitalOutput>>> LoginHospital(LoginHospital input)
             => Result(await _unitOfWork.HospitalServices.LoginHospital(input), nameof(LoginHospital));
+
+        [HttpPost(nameof(AddDebartmentsToHospital))]
+        public async Task<ActionResult<ResponseService<bool>>> AddDebartmentsToHospital(List<CreateDepartment> inputs)
+            => Result(await _unitOfWork.HospitalServices.AddDebartmentsToHospital(inputs), nameof(AddDebartmentsToHospital));
+
+        [HttpGet("DepartmentsFor/{username}")]
+        public async Task<IReadOnlyList<DepartmentOutput>> GetDepartmentsForHospital(string username)
+            => await _unitOfWork.HospitalServices.GetDepartmentsForHospital(username);
+
+        [HttpGet("Department/{id}")]
+        public async Task<DepartmentOutput> GetDepartments(int id)
+            => await _unitOfWork.HospitalServices.GetDepartment(id);
+
+        [HttpPost(nameof(AddBedsToDebartments))]
+        public async Task<ActionResult<ResponseService<bool>>> AddBedsToDebartments(List<CreateBed> inputs)
+            => Result(await _unitOfWork.HospitalServices.AddBedsToDepartment(inputs), nameof(AddBedsToDebartments));
+
+        [HttpGet("BedFor/{departmentId}")]
+        public async Task<IReadOnlyList<BedOutput>> GetBedsForDepartment(int departmentId)
+            => await _unitOfWork.HospitalServices.GetBedsForDepartment(departmentId);
+
+        [HttpGet("Bed/{id}")]
+        public async Task<BedOutput> GetBed(int id)
+            => await _unitOfWork.HospitalServices.GetBed(id);
 
     }
 }

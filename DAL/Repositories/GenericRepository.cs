@@ -1,7 +1,9 @@
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using DAL.DataContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace DAL.Repositories
 {
@@ -40,6 +42,13 @@ namespace DAL.Repositories
             if (disposing)
                 dbContext.Dispose();
         }
+        public async Task<IDbContextTransaction> BeginTransactionAsync(
+           IsolationLevel isolationLevel = IsolationLevel.Unspecified,
+           CancellationToken cancellationToken = default)
+        {
+            IDbContextTransaction dbContextTransaction = await dbContext.Database.BeginTransactionAsync(isolationLevel, cancellationToken);
+            return dbContextTransaction;
+        }
     }
 
     public interface IGenericRepository<TEntity> where TEntity : class
@@ -50,5 +59,8 @@ namespace DAL.Repositories
         public Task DeleteAsync(object id);
         public void UpdateAsync(TEntity entity);
         public Task<bool> CompleteAsync();
+        public Task<IDbContextTransaction> BeginTransactionAsync(
+           IsolationLevel isolationLevel = IsolationLevel.Unspecified,
+           CancellationToken cancellationToken = default);
     }
 }
