@@ -15,9 +15,11 @@ namespace API.Extensions
             services.AddScoped<IIdentityRepository, IdentityRepository>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped(typeof(IGenericRepository<DocumentsDoctor>), typeof(GenericRepository<DocumentsDoctor>));
-            services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped(typeof(IGenericRepository<DocumentsNurse>), typeof(GenericRepository<DocumentsNurse>));
+            services.AddScoped(typeof(IGenericRepository<DocumentsHospital>), typeof(GenericRepository<DocumentsHospital>));
+            services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<INurseService, NurseService>();
+            services.AddScoped<IHospitalService, HospitalService>();
             services.AddScoped<ISickService, SickService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
@@ -27,6 +29,7 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(DoctorProfile));
             services.AddAutoMapper(typeof(NurseProfile));
             services.AddAutoMapper(typeof(SickProfile));
+            services.AddAutoMapper(typeof(HospitalProfile));
             return services;
         }
         public static IServiceCollection AddSwaggerServices(this IServiceCollection services)

@@ -9,12 +9,14 @@ namespace Services
         public INurseService NurseServices { get; }
         public ISickService SickServices { get; }
 
+        public IHospitalService HospitalServices { get; }
 
-        public UnitOfWork(IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices, StoreContext dbContext)
+        public UnitOfWork(IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices, IHospitalService HospitalServices, StoreContext dbContext)
         {
             this.DoctorServices = DoctorServices;
             this.NurseServices = NurseServices;
             this.SickServices = SickServices;
+            this.HospitalServices = HospitalServices;
             _dbContext = dbContext;
         }
     }
@@ -23,5 +25,7 @@ namespace Services
         public IDoctorService DoctorServices { get; }
         public INurseService NurseServices { get; }
         public ISickService SickServices { get; }
+        public IHospitalService HospitalServices { get; }
+
     }
 }

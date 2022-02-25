@@ -17,6 +17,7 @@ namespace Services.Profiles
                 .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.User.State))
                 .ForMember(dest => dest.HomeNumber, opt => opt.MapFrom(src => src.User.HomeNumber))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.User.Gender))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.User.City))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
 

@@ -20,7 +20,7 @@ namespace API.Controllers
         public async Task<IReadOnlyList<SickOutput>> Sicks()
             => await _unitOfWork.SickServices.GetAllSicks();
 
-        [HttpGet(nameof(Sick))]
+        [HttpGet("{username}")]
         public async Task<SickOutput> Sick(string username)
             => await _unitOfWork.SickServices.GetSick(username);
 

@@ -21,9 +21,9 @@ namespace API.Controllers
         public async Task<IReadOnlyList<DoctorOutput>> Doctors()
             => await _unitOfWork.DoctorServices.GetAllDoctors();
 
-        [HttpGet(nameof(Doctor))]
-        public async Task<DoctorOutput> Doctor(int id)
-            => await _unitOfWork.DoctorServices.GetDoctor(id);
+        [HttpGet("{username}")]
+        public async Task<DoctorOutput> Doctor(string username)
+            => await _unitOfWork.DoctorServices.GetDoctor(username);
 
         [AllowAnonymous]
         [HttpPost(nameof(RegisterDoctor))]

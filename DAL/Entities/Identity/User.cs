@@ -7,8 +7,8 @@ namespace DAL.Entities.Identity
 {
     public class User : IdentityUser
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string FirstName { get; set; } = "";
+        public string LastName { get; set; } = "";
         public string PictureUrl { get; set; }
         public string Location { get; set; }
         public PersonState State { get; set; }
@@ -22,5 +22,7 @@ namespace DAL.Entities.Identity
         public virtual Doctor Doctor { get; set; }
         public virtual Nurse Nurse { get; set; }
         public virtual Secretary Secretary { get; set; }
+        public virtual Hospital Hospital { get; set; }
+
     }
 }

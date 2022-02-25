@@ -30,8 +30,8 @@ namespace Services
         public async Task<IReadOnlyList<NurseOutput>> GetAllNurses()
             => _mapper.Map<IReadOnlyList<Nurse>, IReadOnlyList<NurseOutput>>(await GetQuery().Include(e => e.User).ToListAsync());
 
-        public async Task<NurseOutput> GetNurse(int id)
-            => _mapper.Map<Nurse, NurseOutput>(await GetQuery().Where(e => e.Id == id).Include(e => e.User).FirstOrDefaultAsync());
+        public async Task<NurseOutput> GetNurse(string username)
+            => _mapper.Map<Nurse, NurseOutput>(await GetQuery().Include(e => e.User).FirstOrDefaultAsync(e => e.User.UserName == username));
 
         public async Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input)
         {
@@ -115,7 +115,8 @@ namespace Services
                     Location = input.Location,
                     State = (PersonState)input.State,
                     HomeNumber = input.HomeNumber,
-                    UserType = UserType.Nurse
+                    UserType = UserType.Nurse,
+                    City = input.City
                 };
                 Nurse nurse = new()
                 {
@@ -188,7 +189,7 @@ namespace Services
     public interface INurseService : IGenericRepository<Nurse>
     {
         public Task<IReadOnlyList<NurseOutput>> GetAllNurses();
-        public Task<NurseOutput> GetNurse(int id);
+        public Task<NurseOutput> GetNurse(string username);
         public Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input);
         public Task<ResponseService<RegisterNurseOutput>> RegisterNurse(RegisterNurse input);
     }

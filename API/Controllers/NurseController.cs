@@ -22,9 +22,9 @@ namespace API.Controllers
         public async Task<IReadOnlyList<NurseOutput>> Nurses()
             => await _unitOfWork.NurseServices.GetAllNurses();
 
-        [HttpGet(nameof(Nurse))]
-        public async Task<NurseOutput> Nurse(int id)
-            => await _unitOfWork.NurseServices.GetNurse(id);
+        [HttpGet("{username}")]
+        public async Task<NurseOutput> Nurse(string username)
+            => await _unitOfWork.NurseServices.GetNurse(username);
 
         [AllowAnonymous]
         [HttpPost(nameof(RegisterNurse))]

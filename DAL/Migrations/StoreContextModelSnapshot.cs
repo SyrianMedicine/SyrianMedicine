@@ -26,6 +26,9 @@ namespace DAL.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
@@ -81,8 +84,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HospitalId")
-                        .IsUnique();
+                    b.HasIndex("HospitalId");
 
                     b.ToTable("Departments");
                 });
@@ -227,31 +229,19 @@ namespace DAL.Migrations
                     b.Property<int>("AccountState")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("City")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("HomeNumber")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PhoneNumer")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PictureUrl")
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("WebSite")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Hospitals");
                 });
@@ -861,8 +851,8 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Department", b =>
                 {
                     b.HasOne("DAL.Entities.Identity.Hospital", "Hospital")
-                        .WithOne("Department")
-                        .HasForeignKey("DAL.Entities.Department", "HospitalId")
+                        .WithMany("Departments")
+                        .HasForeignKey("HospitalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -928,6 +918,15 @@ namespace DAL.Migrations
                         .HasForeignKey("DAL.Entities.Identity.Doctor", "UserId");
 
                     b.Navigation("Nurse");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Identity.Hospital", b =>
+                {
+                    b.HasOne("DAL.Entities.Identity.User", "User")
+                        .WithOne("Hospital")
+                        .HasForeignKey("DAL.Entities.Identity.Hospital", "UserId");
 
                     b.Navigation("User");
                 });
@@ -1220,7 +1219,7 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Identity.Hospital", b =>
                 {
-                    b.Navigation("Department");
+                    b.Navigation("Departments");
 
                     b.Navigation("DocumentsHospital");
 
@@ -1239,6 +1238,8 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Identity.User", b =>
                 {
                     b.Navigation("Doctor");
+
+                    b.Navigation("Hospital");
 
                     b.Navigation("Nurse");
 

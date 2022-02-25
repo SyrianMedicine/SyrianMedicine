@@ -12,6 +12,7 @@ namespace Models.Doctor.Outputs
         public string PhoneNumber { get; set; }
         public string Gender { get; set; }
         public string AboutMe { get; set; }
+        public string City { get; set; }
         public string Specialization { get; set; }
         public bool WorkAtHome { get; set; }
         public DateTime StartTimeWork { get; set; }

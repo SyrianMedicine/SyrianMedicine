@@ -10,6 +10,7 @@ namespace Models.Nurse.Outputs
         public string AccountState { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
+        public string City { get; set; }
         public string DisplayName { get; set; }
         public string PictureUrl { get; set; }
         public string Location { get; set; }

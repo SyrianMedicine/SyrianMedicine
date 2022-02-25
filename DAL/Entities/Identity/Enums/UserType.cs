@@ -5,6 +5,7 @@ namespace DAL.Entities.Identity.Enums
         Sick = 1,
         Doctor,
         Nurse,
-        Secretary
+        Secretary,
+        Hospital
     }
 }
