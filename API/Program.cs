@@ -1,8 +1,10 @@
+using System.Reflection;
 using API.Extensions;
 using DAL.DataContext;
 using DAL.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Services.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,8 +17,12 @@ builder.Services.AddInjectionServices();
 builder.Services.AddIdentityServices(config);
 builder.Services.AddSwaggerServices();
 builder.Services.AddEndpointsApiExplorer();
-
-
+builder.Services.AddSwaggerGen(options =>
+{
+ 
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 var app = builder.Build();
 
 // for migrate data to database

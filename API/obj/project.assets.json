@@ -2973,19 +2973,19 @@
     ]
   },
   "packageFolders": {
-    "/home/ahmadnour/.nuget/packages/": {}
+    "/home/saryatulimat/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/ahmadnour/Documents/SyrianMedicine/API/API.csproj",
+      "projectUniqueName": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/API/API.csproj",
       "projectName": "API",
-      "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/API/API.csproj",
-      "packagesPath": "/home/ahmadnour/.nuget/packages/",
-      "outputPath": "/home/ahmadnour/Documents/SyrianMedicine/API/obj/",
+      "projectPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/API/API.csproj",
+      "packagesPath": "/home/saryatulimat/.nuget/packages/",
+      "outputPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/API/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/ahmadnour/.nuget/NuGet/NuGet.Config"
+        "/home/saryatulimat/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
@@ -2997,8 +2997,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "/home/ahmadnour/Documents/SyrianMedicine/Services/Services.csproj": {
-              "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/Services/Services.csproj"
+            "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Services/Services.csproj": {
+              "projectPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Services/Services.csproj"
             }
           }
         }

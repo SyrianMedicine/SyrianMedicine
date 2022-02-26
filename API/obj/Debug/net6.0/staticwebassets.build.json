@@ -1,105 +1,11 @@
 {
   "Version": 1,
-  "Hash": "flmI2hIQLeUi5jA/C/eb+p2QgqnE+YCar6FSwLqrtfA=",
+  "Hash": "bUm1vPqwZHJejLhtNIB7WgmMI8ngxypkYrDApg4MvgQ=",
   "Source": "API",
   "BasePath": "_content/API",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [
-    {
-      "Name": "API/wwwroot",
-      "Source": "API",
-      "ContentRoot": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/",
-      "BasePath": "_content/API",
-      "Pattern": "**"
-    }
-  ],
-  "Assets": [
-    {
-      "Identity": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/Documents/doctor/DocumentFordoctor_new-york-hd-is-1366x768.jpg",
-      "SourceId": "API",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/",
-      "BasePath": "_content/API",
-      "RelativePath": "Documents/doctor/DocumentFordoctor_new-york-hd-is-1366x768.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/Documents/doctor/DocumentFordoctor_new-york-hd-is-1366x768.jpg"
-    },
-    {
-      "Identity": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/Documents/doctor/DocumentFortest_f45d08a2df1a5862.jpg",
-      "SourceId": "API",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/",
-      "BasePath": "_content/API",
-      "RelativePath": "Documents/doctor/DocumentFortest_f45d08a2df1a5862.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/Documents/doctor/DocumentFortest_f45d08a2df1a5862.jpg"
-    },
-    {
-      "Identity": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/Documents/hospital/DocumentForhamah_new-york-hd-is-1366x768.jpg",
-      "SourceId": "API",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/",
-      "BasePath": "_content/API",
-      "RelativePath": "Documents/hospital/DocumentForhamah_new-york-hd-is-1366x768.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/Documents/hospital/DocumentForhamah_new-york-hd-is-1366x768.jpg"
-    },
-    {
-      "Identity": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/Documents/hospital/DocumentForhos_h21.jpg",
-      "SourceId": "API",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/",
-      "BasePath": "_content/API",
-      "RelativePath": "Documents/hospital/DocumentForhos_h21.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/Documents/hospital/DocumentForhos_h21.jpg"
-    },
-    {
-      "Identity": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/Documents/nurse/DocumentFornu_f45d08a2df1a5862.jpg",
-      "SourceId": "API",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/ahmadnour/Documents/SyrianMedicine/API/wwwroot/",
-      "BasePath": "_content/API",
-      "RelativePath": "Documents/nurse/DocumentFornu_f45d08a2df1a5862.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/Documents/nurse/DocumentFornu_f45d08a2df1a5862.jpg"
-    }
-  ]
+  "DiscoveryPatterns": [],
+  "Assets": []
 }
