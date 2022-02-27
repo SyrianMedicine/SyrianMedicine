@@ -2,7 +2,6 @@ using AutoMapper;
 using DAL.Entities.Identity;
 using DAL.Entities.Identity.Enums;
 using DAL.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Models.Sick.Inputs;
 using Models.Sick.Outputs;
 using Services.Common;
@@ -80,7 +79,7 @@ namespace Services
             {
                 if (await _identityRepository.GetUserByEmailAsync(input.Email) != null || await _identityRepository.GetUserByNameAsync(input.UserName) != null)
                 {
-                    response.Message = "Username or Email is Exist!";
+                    response.Message = "Username or Email is exist!";
                     response.Status = StatusCodes.BadRequest.ToString();
                     return response;
                 }
@@ -110,6 +109,50 @@ namespace Services
             }
             return response;
         }
+        public async Task<ResponseService<bool>> UpdateSick(UpdateSick input, string userId)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+                var dbUser = await _identityRepository.GetUserByIdAsync(userId);
+
+                if (input.FirstName != null)
+                    dbUser.FirstName = input.FirstName;
+                if (input.LastName != null)
+                    dbUser.LastName = input.LastName;
+                if (input.PhoneNumber != null)
+                    dbUser.PhoneNumber = input.PhoneNumber;
+                if (input.HomeNumber != null)
+                    dbUser.HomeNumber = input.HomeNumber;
+                if (input.Location != null)
+                    dbUser.Location = input.Location;
+                if (input.City != null)
+                    dbUser.City = input.City;
+                if (input.Gender != -1)
+                    dbUser.Gender = (Gender)input.Gender;
+                if (input.State != -1)
+                    dbUser.State = (PersonState)input.State;
+
+                if (await _identityRepository.UpdateUserAsync(dbUser))
+                {
+                    response.Data = true;
+                    response.Message = "Update successed";
+                    response.Status = StatusCodes.Ok.ToString();
+                }
+                else
+                {
+                    response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
+                    response.Status = StatusCodes.InternalServerError.ToString();
+                }
+                return response;
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+            }
+            return response;
+        }
     }
     public interface ISickService
     {
@@ -117,5 +160,6 @@ namespace Services
         public Task<SickOutput> GetSick(string username);
         public Task<ResponseService<LoginSickOutput>> LoginSick(LoginSick input);
         public Task<ResponseService<RegisterSickOutput>> RegisterSick(RegisterSick input);
+        public Task<ResponseService<bool>> UpdateSick(UpdateSick input, string userId);
     }
 }

@@ -1,4 +1,5 @@
 using DAL.DataContext;
+using DAL.Repositories;
 
 namespace Services
 {
@@ -8,15 +9,18 @@ namespace Services
         public IDoctorService DoctorServices { get; }
         public INurseService NurseServices { get; }
         public ISickService SickServices { get; }
-
         public IHospitalService HospitalServices { get; }
 
-        public UnitOfWork(IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices, IHospitalService HospitalServices, StoreContext dbContext)
+        public IIdentityRepository IdentityRepository { get; }
+
+        public UnitOfWork(IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
+            IIdentityRepository IdentityRepository, IHospitalService HospitalServices, StoreContext dbContext)
         {
             this.DoctorServices = DoctorServices;
             this.NurseServices = NurseServices;
             this.SickServices = SickServices;
             this.HospitalServices = HospitalServices;
+            this.IdentityRepository = IdentityRepository;
             _dbContext = dbContext;
         }
     }
@@ -26,6 +30,7 @@ namespace Services
         public INurseService NurseServices { get; }
         public ISickService SickServices { get; }
         public IHospitalService HospitalServices { get; }
+        public IIdentityRepository IdentityRepository { get; }
 
     }
 }

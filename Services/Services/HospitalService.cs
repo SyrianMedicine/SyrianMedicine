@@ -66,12 +66,16 @@ namespace Services
                     response.Status = StatusCodes.BadRequest.ToString();
                     return response;
                 }
+                var hospital = await GetQuery().FirstOrDefaultAsync(ex => ex.UserId == user.Id);
+
                 if (await _identityRepository.LoginUser(user, input.Password))
                 {
-                    response.Message = "Done";
+                    response.Message = $"Welcome {hospital.Name}";
                     response.Status = StatusCodes.Ok.ToString();
                     response.Data = new()
                     {
+                        Id = hospital.Id,
+                        Email = user.Email,
                         UserName = user.UserName,
                         Token = await _tokenService.CreateToken(user)
                     };
@@ -121,7 +125,6 @@ namespace Services
                     City = input.City,
                     UserType = UserType.Hospital,
                     HomeNumber = input.HomeNumber,
-                    PictureUrl = input.PhoneNumer
                 };
                 Hospital hospital = new()
                 {
@@ -164,10 +167,12 @@ namespace Services
 
                     var dbUser = await _identityRepository.GetUserByEmailAsync(input.Email);
                     await _identityRepository.AddRoleToUserAsync(dbUser, Roles.Sick.ToString());
-                    response.Message = "Done";
+                    response.Message = $"Welcome {hospital.Name}";
                     response.Status = StatusCodes.Created.ToString();
                     response.Data = new RegisterHospitalOutput()
                     {
+                        Id = hospital.Id,
+                        Email = input.Email,
                         UserName = input.UserName,
                         Token = await _tokenService.CreateToken(dbUser)
                     };
@@ -202,7 +207,7 @@ namespace Services
                 await transaction.CommitAsync();
                 await _department.CompleteAsync();
                 response.Data = true;
-                response.Message = "Done";
+                response.Message = "Debartments are added";
                 response.Status = StatusCodes.Created.ToString();
             }
             catch
@@ -213,14 +218,12 @@ namespace Services
             }
             return response;
         }
-
         public async Task<IReadOnlyList<DepartmentOutput>> GetDepartmentsForHospital(string username)
         {
             var hospital = await GetQuery().Include(e => e.User).FirstOrDefaultAsync(e => e.User.UserName == username);
             return _mapper.Map<IReadOnlyList<Department>, IReadOnlyList<DepartmentOutput>>
                 (await _department.GetQuery().Include(e => e.Hospital).Where(e => e.HospitalId == hospital.Id).ToListAsync());
         }
-
         public async Task<DepartmentOutput> GetDepartment(int id)
             => _mapper.Map<Department, DepartmentOutput>(await _department.GetQuery().Include(e => e.Hospital).FirstOrDefaultAsync(e => e.Id == id));
         public async Task<ResponseService<bool>> AddBedsToDepartment(List<CreateBed> inputs)
@@ -236,7 +239,7 @@ namespace Services
                 await transaction.CommitAsync();
                 await _department.CompleteAsync();
                 response.Data = true;
-                response.Message = "Done";
+                response.Message = "Beds are added";
                 response.Status = StatusCodes.Created.ToString();
             }
             catch
@@ -251,6 +254,67 @@ namespace Services
             => _mapper.Map<IReadOnlyList<Bed>, IReadOnlyList<BedOutput>>(await _bed.GetQuery().Include(e => e.Department).Where(e => e.DepartmentId == departmentId).ToListAsync());
         public async Task<BedOutput> GetBed(int id)
             => _mapper.Map<Bed, BedOutput>(await _bed.GetQuery().Include(e => e.Department).FirstOrDefaultAsync(e => e.Id == id));
+
+        public async Task<ResponseService<bool>> UpdateHospital(UpdateHospital input, string userId)
+        {
+            var response = new ResponseService<bool>();
+            IDbContextTransaction transaction = await BeginTransactionAsync(IsolationLevel.ReadCommitted);
+            try
+            {
+                var dbHospital = await GetByIdAsync(input.Id);
+                if (dbHospital == null)
+                {
+                    response.Message = "This hospital is not exist!";
+                    response.Status = StatusCodes.NotFound.ToString();
+                    return response;
+                }
+
+                var dbUser = await _identityRepository.GetUserByIdAsync(userId);
+                if (dbUser.Id != dbHospital.UserId)
+                {
+                    response.Message = "You are not authorized";
+                    response.Status = StatusCodes.Unauthorized.ToString();
+                    return response;
+                }
+
+                if (input.City != null)
+                    dbUser.City = input.City;
+
+                if (input.Location != null)
+                    dbUser.Location = input.Location;
+                if (input.HomeNumber != null)
+                    dbUser.HomeNumber = input.HomeNumber;
+
+                if (input.WebSite != null)
+                    dbHospital.WebSite = input.WebSite;
+                if (input.AboutHospital != null)
+                    dbHospital.AboutHospital = input.AboutHospital;
+
+                if (await _identityRepository.UpdateUserAsync(dbUser))
+                {
+                    UpdateAsync(dbHospital);
+                    await CompleteAsync();
+                    response.Message = "Update successed";
+                    response.Status = StatusCodes.Ok.ToString();
+                    response.Data = true;
+                    await transaction.CommitAsync();
+                }
+                else
+                {
+                    response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
+                    response.Status = StatusCodes.BadRequest.ToString();
+                }
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+            }
+            return response;
+
+        }
+
     }
     public interface IHospitalService : IGenericRepository<Hospital>
     {
@@ -264,6 +328,6 @@ namespace Services
         public Task<ResponseService<bool>> AddBedsToDepartment(List<CreateBed> inputs);
         public Task<IReadOnlyList<BedOutput>> GetBedsForDepartment(int departmentId);
         public Task<BedOutput> GetBed(int id);
-
+        public Task<ResponseService<bool>> UpdateHospital(UpdateHospital input, string userId);
     }
 }

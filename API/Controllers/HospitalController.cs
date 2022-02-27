@@ -33,6 +33,10 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<RegisterHospitalOutput>>> RegisterHospital([FromForm] RegisterHospital input)
             => Result(await _unitOfWork.HospitalServices.RegisterHospital(input), nameof(RegisterHospital));
 
+        [HttpPost(nameof(UpdateHospital)), Authorize(Roles = "Hospital , Sick")]
+        public async Task<ActionResult<ResponseService<bool>>> UpdateHospital(UpdateHospital input)
+            => Result(await _unitOfWork.HospitalServices.UpdateHospital(input, (await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)).Id), nameof(UpdateHospital));
+
         [AllowAnonymous]
         [HttpPost(nameof(LoginHospital))]
         public async Task<ActionResult<ResponseService<RegisterHospitalOutput>>> LoginHospital(LoginHospital input)
@@ -61,6 +65,5 @@ namespace API.Controllers
         [HttpGet("Bed/{id}")]
         public async Task<BedOutput> GetBed(int id)
             => await _unitOfWork.HospitalServices.GetBed(id);
-
     }
 }

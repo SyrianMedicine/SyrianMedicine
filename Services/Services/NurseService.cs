@@ -59,7 +59,7 @@ namespace Services
                 }
                 if (await _identityRepository.LoginUser(user, input.Password))
                 {
-                    response.Message = "Done";
+                    response.Message = $"Welcome {user.FirstName + " " + user.LastName}";
                     response.Status = StatusCodes.Ok.ToString();
                     response.Data = new()
                     {
@@ -103,6 +103,15 @@ namespace Services
                 if (files.Length == 0)
                 {
                     response.Message = "Please send your document if you want register as a nurse!";
+                    response.Status = StatusCodes.BadRequest.ToString();
+                    return response;
+                }
+
+                TimeSpan date = input.EndTimeWork.Subtract(input.StartTimeWork);
+                int hours = date.Hours;
+                if (input.StartTimeWork >= input.EndTimeWork || hours < 1)
+                {
+                    response.Message = "Time to start work must be less then end time to end work!";
                     response.Status = StatusCodes.BadRequest.ToString();
                     return response;
                 }
@@ -164,10 +173,12 @@ namespace Services
 
                     var dbUser = await _identityRepository.GetUserByEmailAsync(input.Email);
                     await _identityRepository.AddRoleToUserAsync(dbUser, Roles.Sick.ToString());
-                    response.Message = "Done";
+                    response.Message = $"Welcome {dbUser.FirstName + " " + dbUser.LastName}";
                     response.Status = StatusCodes.Created.ToString();
                     response.Data = new RegisterNurseOutput()
                     {
+                        Id = nurse.Id,
+                        Email = input.Email,
                         DisplayName = input.FirstName + " " + input.LastName,
                         UserName = input.UserName,
                         Token = await _tokenService.CreateToken(dbUser)
@@ -189,7 +200,82 @@ namespace Services
             }
             return response;
         }
+        public async Task<ResponseService<bool>> UpdateNurse(UpdateNurse input, string userId)
+        {
+            var response = new ResponseService<bool>();
+            IDbContextTransaction transaction = await BeginTransactionAsync(IsolationLevel.ReadCommitted);
+            try
+            {
+                var dbNurse = await GetByIdAsync(input.Id);
+                if (dbNurse == null)
+                {
+                    response.Message = "This nurse is not exist!";
+                    response.Status = StatusCodes.NotFound.ToString();
+                    return response;
+                }
+                var dbUser = await _identityRepository.GetUserByIdAsync(userId);
+                if (dbUser.Id != dbNurse.UserId)
+                {
+                    response.Message = "You are not authorized";
+                    response.Status = StatusCodes.Unauthorized.ToString();
+                    return response;
+                }
 
+                TimeSpan date = input.EndTimeWork.Subtract(input.StartTimeWork);
+                int hours = date.Hours;
+                if (input.StartTimeWork >= input.EndTimeWork || hours < 1)
+                {
+                    response.Message = "Time to start work must be less then end time to end work!";
+                    response.Status = StatusCodes.BadRequest.ToString();
+                    return response;
+                }
+
+                if (input.City != null)
+                    dbUser.City = input.City;
+                if (input.FirstName != null)
+                    dbUser.FirstName = input.FirstName;
+                if (input.LastName != null)
+                    dbUser.LastName = input.LastName;
+                if (input.PhoneNumber != null)
+                    dbUser.PhoneNumber = input.PhoneNumber;
+                if (input.Location != null)
+                    dbUser.Location = input.Location;
+                if (input.HomeNumber != null)
+                    dbUser.HomeNumber = input.HomeNumber;
+                if (input.State != -1)
+                    dbUser.State = (PersonState)input.State;
+
+                if (input.Specialization != null)
+                    dbNurse.Specialization = input.Specialization;
+                if (input.AboutMe != null)
+                    dbNurse.AboutMe = input.AboutMe;
+                dbNurse.WorkAtHome = input.WorkAtHome;
+                dbNurse.StartTimeWork = input.StartTimeWork;
+                dbNurse.EndTimeWork = input.EndTimeWork;
+
+                if (await _identityRepository.UpdateUserAsync(dbUser))
+                {
+                    UpdateAsync(dbNurse);
+                    await CompleteAsync();
+                    response.Message = "Update successed";
+                    response.Status = StatusCodes.Ok.ToString();
+                    response.Data = true;
+                    await transaction.CommitAsync();
+                }
+                else
+                {
+                    response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
+                    response.Status = StatusCodes.BadRequest.ToString();
+                }
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+            }
+            return response;
+        }
     }
     public interface INurseService : IGenericRepository<Nurse>
     {
@@ -197,5 +283,7 @@ namespace Services
         public Task<NurseOutput> GetNurse(string username);
         public Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input);
         public Task<ResponseService<RegisterNurseOutput>> RegisterNurse(RegisterNurse input);
+        public Task<ResponseService<bool>> UpdateNurse(UpdateNurse input, string userId);
+
     }
 }

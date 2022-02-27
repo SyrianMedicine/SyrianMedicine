@@ -3,6 +3,7 @@ namespace Models.Sick.Outputs
 {
     public class SickOutput
     {
+        public string Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
         public string DisplayName { get; set; }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using DAL.Entities;
 using DAL.Entities.Identity;
+using Models.Doctor.Inputs;
 using Models.Doctor.Outputs;
 
 namespace Services.Profiles

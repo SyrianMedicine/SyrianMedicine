@@ -2,6 +2,7 @@ namespace Models.Nurse.Outputs
 {
     public class NurseOutput
     {
+        public int Id { get; set; }
         public string AboutMe { get; set; }
         public string Specialization { get; set; }
         public bool WorkAtHome { get; set; }

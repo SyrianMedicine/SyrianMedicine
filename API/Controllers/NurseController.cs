@@ -26,15 +26,16 @@ namespace API.Controllers
         public async Task<NurseOutput> Nurse(string username)
             => await _unitOfWork.NurseServices.GetNurse(username);
 
-        [AllowAnonymous]
         [HttpPost(nameof(RegisterNurse))]
         public async Task<ActionResult<ResponseService<RegisterNurseOutput>>> RegisterNurse([FromForm] RegisterNurse input)
             => Result(await _unitOfWork.NurseServices.RegisterNurse(input), nameof(RegisterNurse));
 
-        [AllowAnonymous]
         [HttpPost(nameof(LoginNurse))]
         public async Task<ActionResult<ResponseService<LoginOutput>>> LoginNurse(LoginNurseInput input)
             => Result(await _unitOfWork.NurseServices.LoginNurse(input), nameof(LoginNurse));
 
+        [HttpPost(nameof(UpdateNurse)), Authorize(Roles = "Nurse , Sick")]
+        public async Task<ActionResult<ResponseService<bool>>> UpdateNurse(UpdateNurse input)
+            => Result(await _unitOfWork.NurseServices.UpdateNurse(input, (await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)).Id), nameof(UpdateNurse));
     }
 }

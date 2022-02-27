@@ -59,11 +59,11 @@ namespace Services
                 }
                 if (await _identityRepository.LoginUser(user, input.Password))
                 {
-                    response.Message = "Done";
+                    response.Message = $"Welcome {user.FirstName + " " + user.LastName}";
                     response.Status = StatusCodes.Ok.ToString();
                     response.Data = new()
                     {
-                        FullName = user.FirstName + user.LastName,
+                        DisplayName = user.FirstName + user.LastName,
                         UserName = user.UserName,
                         Email = user.Email,
                         Token = await _tokenService.CreateToken(user)
@@ -102,12 +102,20 @@ namespace Services
                 // doctor register without documents
                 if (files.Length == 0)
                 {
-                    response.Message = "Please send your document if you want register as a doctor!";
+                    response.Message = "Please send your document if you want to register as a doctor!";
                     response.Status = StatusCodes.BadRequest.ToString();
                     return response;
                 }
 
-                // Doctor doctor = _mapper.Map<RegisterDoctor, Doctor>(input);
+                TimeSpan date = input.EndTimeWork.Subtract(input.StartTimeWork);
+                int hours = date.Hours;
+                if (input.StartTimeWork >= input.EndTimeWork || hours < 1)
+                {
+                    response.Message = "Time to start work must be less then end time to end work!";
+                    response.Status = StatusCodes.BadRequest.ToString();
+                    return response;
+                }
+
                 User user = new()
                 {
                     UserName = input.UserName,
@@ -165,12 +173,14 @@ namespace Services
 
                     var dbUser = await _identityRepository.GetUserByEmailAsync(input.Email);
                     await _identityRepository.AddRoleToUserAsync(dbUser, Roles.Sick.ToString());
-                    response.Message = "Done";
+                    response.Message = $"Welcome {dbUser.FirstName + " " + dbUser.LastName}";
                     response.Status = StatusCodes.Created.ToString();
                     response.Data = new RegisterDoctorOutput()
                     {
+                        Id = doctor.Id,
                         DisplayName = input.FirstName + " " + input.LastName,
                         UserName = input.UserName,
+                        Email = input.Email,
                         Token = await _tokenService.CreateToken(dbUser)
                     };
                     await transaction.CommitAsync();
@@ -190,6 +200,82 @@ namespace Services
             }
             return response;
         }
+        public async Task<ResponseService<bool>> UpdateDoctor(UpdateDoctor input, string userId)
+        {
+            var response = new ResponseService<bool>();
+            IDbContextTransaction transaction = await BeginTransactionAsync(IsolationLevel.ReadCommitted);
+            try
+            {
+                var dbDoctor = await GetByIdAsync(input.Id);
+                if (dbDoctor == null)
+                {
+                    response.Message = "This doctor is not exist!";
+                    response.Status = StatusCodes.NotFound.ToString();
+                    return response;
+                }
+                var dbUser = await _identityRepository.GetUserByIdAsync(userId);
+                if (dbUser.Id != dbDoctor.UserId)
+                {
+                    response.Message = "You are not authorized";
+                    response.Status = StatusCodes.Unauthorized.ToString();
+                    return response;
+                }
+
+                TimeSpan date = input.EndTimeWork.Subtract(input.StartTimeWork);
+                int hours = date.Hours;
+                if (input.StartTimeWork >= input.EndTimeWork || hours < 1)
+                {
+                    response.Message = "Time to start work must be less then end time to end work!";
+                    response.Status = StatusCodes.BadRequest.ToString();
+                    return response;
+                }
+
+                if (input.City != null)
+                    dbUser.City = input.City;
+                if (input.FirstName != null)
+                    dbUser.FirstName = input.FirstName;
+                if (input.LastName != null)
+                    dbUser.LastName = input.LastName;
+                if (input.PhoneNumber != null)
+                    dbUser.PhoneNumber = input.PhoneNumber;
+                if (input.Location != null)
+                    dbUser.Location = input.Location;
+                if (input.HomeNumber != null)
+                    dbUser.HomeNumber = input.HomeNumber;
+                if (input.State != -1)
+                    dbUser.State = (PersonState)input.State;
+
+                if (input.Specialization != null)
+                    dbDoctor.Specialization = input.Specialization;
+                if (input.AboutMe != null)
+                    dbDoctor.AboutMe = input.AboutMe;
+                dbDoctor.WorkAtHome = input.WorkAtHome;
+                dbDoctor.StartTimeWork = input.StartTimeWork;
+                dbDoctor.EndTimeWork = input.EndTimeWork;
+
+                if (await _identityRepository.UpdateUserAsync(dbUser))
+                {
+                    UpdateAsync(dbDoctor);
+                    await CompleteAsync();
+                    response.Message = "Update successed";
+                    response.Status = StatusCodes.Ok.ToString();
+                    response.Data = true;
+                    await transaction.CommitAsync();
+                }
+                else
+                {
+                    response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
+                    response.Status = StatusCodes.BadRequest.ToString();
+                }
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+            }
+            return response;
+        }
     }
     public interface IDoctorService : IGenericRepository<Doctor>
     {
@@ -197,5 +283,6 @@ namespace Services
         public Task<DoctorOutput> GetDoctor(string username);
         public Task<ResponseService<LoginOutput>> LoginDoctor(LoginDoctorInput input);
         public Task<ResponseService<RegisterDoctorOutput>> RegisterDoctor(RegisterDoctor input);
+        public Task<ResponseService<bool>> UpdateDoctor(UpdateDoctor input, string userId);
     }
 }
