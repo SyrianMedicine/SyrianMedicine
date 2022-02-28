@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20220225062527_InitialCreate001")]
-    partial class InitialCreate001
+    [Migration("20220228160551_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -57,15 +57,12 @@ namespace DAL.Migrations
                     b.Property<bool>("IsEdited")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
 
@@ -157,23 +154,18 @@ namespace DAL.Migrations
                     b.Property<DateTime>("FollowDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("FollowedUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FollowedUserId1")
+                    b.Property<string>("FollowedUserId")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FollowedUserId1");
+                    b.HasIndex("FollowedUserId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId", "FollowedUserId")
+                        .IsUnique();
 
                     b.ToTable("Follows");
                 });
@@ -394,6 +386,9 @@ namespace DAL.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
+                    b.HasIndex("UserName")
+                        .IsUnique();
+
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
@@ -410,15 +405,12 @@ namespace DAL.Migrations
                     b.Property<DateTime>("LikeDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Likes");
 
@@ -440,15 +432,12 @@ namespace DAL.Migrations
                     b.Property<string>("PostText")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Posts");
                 });
@@ -467,9 +456,10 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PostId");
-
                     b.HasIndex("TagId");
+
+                    b.HasIndex("PostId", "TagId")
+                        .IsUnique();
 
                     b.ToTable("PostTags");
                 });
@@ -560,17 +550,14 @@ namespace DAL.Migrations
                     b.Property<bool>("IsEdited")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CommentId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("SubComments");
                 });
@@ -598,17 +585,15 @@ namespace DAL.Migrations
                     b.Property<int>("TagId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TagId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId", "TagId")
+                        .IsUnique();
 
                     b.ToTable("UserTags");
                 });
@@ -757,13 +742,10 @@ namespace DAL.Migrations
                 {
                     b.HasBaseType("DAL.Entities.Comment");
 
-                    b.Property<int>("OnAccountId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("OnAccountId1")
+                    b.Property<string>("OnAccountId")
                         .HasColumnType("TEXT");
 
-                    b.HasIndex("OnAccountId1");
+                    b.HasIndex("OnAccountId");
 
                     b.HasDiscriminator().HasValue("AccountComment");
                 });
@@ -776,6 +758,9 @@ namespace DAL.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasIndex("CommentID");
+
+                    b.HasIndex("UserId", "CommentID")
+                        .IsUnique();
 
                     b.HasDiscriminator().HasValue("CommentLike");
                 });
@@ -815,6 +800,9 @@ namespace DAL.Migrations
 
                     b.HasIndex("PostID");
 
+                    b.HasIndex("UserId", "PostID")
+                        .IsUnique();
+
                     b.HasDiscriminator().HasValue("PostLike");
                 });
 
@@ -825,7 +813,8 @@ namespace DAL.Migrations
                     b.Property<int>("SubCommentID")
                         .HasColumnType("INTEGER");
 
-                    b.HasIndex("SubCommentID");
+                    b.HasIndex("SubCommentID", "UserId")
+                        .IsUnique();
 
                     b.HasDiscriminator().HasValue("SubCommentLike");
                 });
@@ -845,7 +834,7 @@ namespace DAL.Migrations
                 {
                     b.HasOne("DAL.Entities.Identity.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -898,11 +887,11 @@ namespace DAL.Migrations
                 {
                     b.HasOne("DAL.Entities.Identity.User", "FollowedUser")
                         .WithMany()
-                        .HasForeignKey("FollowedUserId1");
+                        .HasForeignKey("FollowedUserId");
 
                     b.HasOne("DAL.Entities.Identity.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("FollowedUser");
 
@@ -963,7 +952,7 @@ namespace DAL.Migrations
                 {
                     b.HasOne("DAL.Entities.Identity.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -972,7 +961,7 @@ namespace DAL.Migrations
                 {
                     b.HasOne("DAL.Entities.Identity.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -1065,7 +1054,7 @@ namespace DAL.Migrations
 
                     b.HasOne("DAL.Entities.Identity.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Comment");
 
@@ -1082,7 +1071,7 @@ namespace DAL.Migrations
 
                     b.HasOne("DAL.Entities.Identity.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Tag");
 
@@ -1144,7 +1133,7 @@ namespace DAL.Migrations
                 {
                     b.HasOne("DAL.Entities.Identity.User", "OnAccount")
                         .WithMany()
-                        .HasForeignKey("OnAccountId1");
+                        .HasForeignKey("OnAccountId");
 
                     b.Navigation("OnAccount");
                 });

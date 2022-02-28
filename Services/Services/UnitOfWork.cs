@@ -10,10 +10,11 @@ namespace Services
         public INurseService NurseServices { get; }
         public ISickService SickServices { get; }
         public IHospitalService HospitalServices { get; }
-
+        public ITagService TagService { get; }
+        public IUserTagService UserTagService { get;}
         public IIdentityRepository IdentityRepository { get; }
 
-        public UnitOfWork(IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
+        public UnitOfWork(IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
             IIdentityRepository IdentityRepository, IHospitalService HospitalServices, StoreContext dbContext)
         {
             this.DoctorServices = DoctorServices;
@@ -21,6 +22,8 @@ namespace Services
             this.SickServices = SickServices;
             this.HospitalServices = HospitalServices;
             this.IdentityRepository = IdentityRepository;
+            this.TagService = TagService;
+            this.UserTagService = UserTagService;
             _dbContext = dbContext;
         }
     }
@@ -31,6 +34,8 @@ namespace Services
         public ISickService SickServices { get; }
         public IHospitalService HospitalServices { get; }
         public IIdentityRepository IdentityRepository { get; }
+        public ITagService TagService { get; }
 
+        public IUserTagService UserTagService { get;}
     }
 }

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/ahmadnour/Documents/SyrianMedicine/API/API.csproj": {}
+    "/home/saryatulimat/SyrianMedicine/SyrianMedicine/API/API.csproj": {}
   },
   "projects": {
-    "/home/ahmadnour/Documents/SyrianMedicine/API/API.csproj": {
+    "/home/saryatulimat/SyrianMedicine/SyrianMedicine/API/API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ahmadnour/Documents/SyrianMedicine/API/API.csproj",
+        "projectUniqueName": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/API/API.csproj",
         "projectName": "API",
-        "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/API/API.csproj",
-        "packagesPath": "/home/ahmadnour/.nuget/packages/",
-        "outputPath": "/home/ahmadnour/Documents/SyrianMedicine/API/obj/",
+        "projectPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/API/API.csproj",
+        "packagesPath": "/home/saryatulimat/.nuget/packages/",
+        "outputPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/API/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/ahmadnour/.nuget/NuGet/NuGet.Config"
+          "/home/saryatulimat/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -26,8 +26,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "/home/ahmadnour/Documents/SyrianMedicine/Services/Services.csproj": {
-                "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/Services/Services.csproj"
+              "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Services/Services.csproj": {
+                "projectPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Services/Services.csproj"
               }
             }
           }
@@ -97,17 +97,17 @@
         }
       }
     },
-    "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj": {
+    "/home/saryatulimat/SyrianMedicine/SyrianMedicine/DAL/DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj",
+        "projectUniqueName": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/DAL/DAL.csproj",
         "projectName": "DAL",
-        "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj",
-        "packagesPath": "/home/ahmadnour/.nuget/packages/",
-        "outputPath": "/home/ahmadnour/Documents/SyrianMedicine/DAL/obj/",
+        "projectPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/DAL/DAL.csproj",
+        "packagesPath": "/home/saryatulimat/.nuget/packages/",
+        "outputPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/DAL/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/ahmadnour/.nuget/NuGet/NuGet.Config"
+          "/home/saryatulimat/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -179,17 +179,17 @@
         }
       }
     },
-    "/home/ahmadnour/Documents/SyrianMedicine/Models/Models.csproj": {
+    "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Models/Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ahmadnour/Documents/SyrianMedicine/Models/Models.csproj",
+        "projectUniqueName": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Models/Models.csproj",
         "projectName": "Models",
-        "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/Models/Models.csproj",
-        "packagesPath": "/home/ahmadnour/.nuget/packages/",
-        "outputPath": "/home/ahmadnour/Documents/SyrianMedicine/Models/obj/",
+        "projectPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Models/Models.csproj",
+        "packagesPath": "/home/saryatulimat/.nuget/packages/",
+        "outputPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Models/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/ahmadnour/.nuget/NuGet/NuGet.Config"
+          "/home/saryatulimat/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -201,8 +201,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj": {
-                "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj"
+              "/home/saryatulimat/SyrianMedicine/SyrianMedicine/DAL/DAL.csproj": {
+                "projectPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/DAL/DAL.csproj"
               }
             }
           }
@@ -241,17 +241,17 @@
         }
       }
     },
-    "/home/ahmadnour/Documents/SyrianMedicine/Services/Services.csproj": {
+    "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Services/Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ahmadnour/Documents/SyrianMedicine/Services/Services.csproj",
+        "projectUniqueName": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Services/Services.csproj",
         "projectName": "Services",
-        "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/Services/Services.csproj",
-        "packagesPath": "/home/ahmadnour/.nuget/packages/",
-        "outputPath": "/home/ahmadnour/Documents/SyrianMedicine/Services/obj/",
+        "projectPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Services/Services.csproj",
+        "packagesPath": "/home/saryatulimat/.nuget/packages/",
+        "outputPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Services/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/ahmadnour/.nuget/NuGet/NuGet.Config"
+          "/home/saryatulimat/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -263,11 +263,11 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj": {
-                "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/DAL/DAL.csproj"
+              "/home/saryatulimat/SyrianMedicine/SyrianMedicine/DAL/DAL.csproj": {
+                "projectPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/DAL/DAL.csproj"
               },
-              "/home/ahmadnour/Documents/SyrianMedicine/Models/Models.csproj": {
-                "projectPath": "/home/ahmadnour/Documents/SyrianMedicine/Models/Models.csproj"
+              "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Models/Models.csproj": {
+                "projectPath": "/home/saryatulimat/SyrianMedicine/SyrianMedicine/Models/Models.csproj"
               }
             }
           }

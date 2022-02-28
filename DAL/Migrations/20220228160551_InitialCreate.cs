@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DAL.Migrations
 {
-    public partial class InitialCreate001 : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -185,22 +185,20 @@ namespace DAL.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     FollowDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId1 = table.Column<string>(type: "TEXT", nullable: true),
-                    FollowedUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    FollowedUserId1 = table.Column<string>(type: "TEXT", nullable: true)
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
+                    FollowedUserId = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Follows", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Follows_AspNetUsers_FollowedUserId1",
-                        column: x => x.FollowedUserId1,
+                        name: "FK_Follows_AspNetUsers_FollowedUserId",
+                        column: x => x.FollowedUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Follows_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Follows_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -260,15 +258,14 @@ namespace DAL.Migrations
                     PostText = table.Column<string>(type: "TEXT", nullable: true),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: false),
                     IsEdited = table.Column<bool>(type: "INTEGER", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId1 = table.Column<string>(type: "TEXT", nullable: true)
+                    UserId = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Posts_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Posts_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -279,16 +276,15 @@ namespace DAL.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId1 = table.Column<string>(type: "TEXT", nullable: true),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
                     TagId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserTags", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserTags_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_UserTags_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -423,24 +419,22 @@ namespace DAL.Migrations
                     CommentText = table.Column<string>(type: "TEXT", nullable: true),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: false),
                     IsEdited = table.Column<bool>(type: "INTEGER", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId1 = table.Column<string>(type: "TEXT", nullable: true),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
                     Discriminator = table.Column<string>(type: "TEXT", nullable: false),
-                    OnAccountId = table.Column<int>(type: "INTEGER", nullable: true),
-                    OnAccountId1 = table.Column<string>(type: "TEXT", nullable: true),
+                    OnAccountId = table.Column<string>(type: "TEXT", nullable: true),
                     PostId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_AspNetUsers_OnAccountId1",
-                        column: x => x.OnAccountId1,
+                        name: "FK_Comments_AspNetUsers_OnAccountId",
+                        column: x => x.OnAccountId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Comments_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Comments_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -576,16 +570,15 @@ namespace DAL.Migrations
                     CommentText = table.Column<string>(type: "TEXT", nullable: true),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: false),
                     IsEdited = table.Column<bool>(type: "INTEGER", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId1 = table.Column<string>(type: "TEXT", nullable: true),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
                     CommentId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SubComments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SubComments_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_SubComments_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -635,8 +628,7 @@ namespace DAL.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     LikeDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId1 = table.Column<string>(type: "TEXT", nullable: true),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
                     Discriminator = table.Column<string>(type: "TEXT", nullable: false),
                     CommentID = table.Column<int>(type: "INTEGER", nullable: true),
                     PostID = table.Column<int>(type: "INTEGER", nullable: true),
@@ -646,8 +638,8 @@ namespace DAL.Migrations
                 {
                     table.PrimaryKey("PK_Likes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Likes_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Likes_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -702,6 +694,12 @@ namespace DAL.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_UserName",
+                table: "AspNetUsers",
+                column: "UserName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -713,9 +711,9 @@ namespace DAL.Migrations
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_OnAccountId1",
+                name: "IX_Comments_OnAccountId",
                 table: "Comments",
-                column: "OnAccountId1");
+                column: "OnAccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_PostId",
@@ -723,9 +721,9 @@ namespace DAL.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_UserId1",
+                name: "IX_Comments_UserId",
                 table: "Comments",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Departments_HospitalId",
@@ -760,14 +758,15 @@ namespace DAL.Migrations
                 column: "NurseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Follows_FollowedUserId1",
+                name: "IX_Follows_FollowedUserId",
                 table: "Follows",
-                column: "FollowedUserId1");
+                column: "FollowedUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Follows_UserId1",
+                name: "IX_Follows_UserId_FollowedUserId",
                 table: "Follows",
-                column: "UserId1");
+                columns: new[] { "UserId", "FollowedUserId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Hospitals_UserId",
@@ -786,14 +785,27 @@ namespace DAL.Migrations
                 column: "PostID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_SubCommentID",
+                name: "IX_Likes_SubCommentID_UserId",
                 table: "Likes",
-                column: "SubCommentID");
+                columns: new[] { "SubCommentID", "UserId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_UserId1",
+                name: "IX_Likes_UserId",
                 table: "Likes",
-                column: "UserId1");
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Likes_UserId_CommentID",
+                table: "Likes",
+                columns: new[] { "UserId", "CommentID" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Likes_UserId_PostID",
+                table: "Likes",
+                columns: new[] { "UserId", "PostID" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Nurses_UserId",
@@ -802,14 +814,15 @@ namespace DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_UserId1",
+                name: "IX_Posts_UserId",
                 table: "Posts",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostTags_PostId",
+                name: "IX_PostTags_PostId_TagId",
                 table: "PostTags",
-                column: "PostId");
+                columns: new[] { "PostId", "TagId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_PostTags_TagId",
@@ -869,9 +882,9 @@ namespace DAL.Migrations
                 column: "CommentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubComments_UserId1",
+                name: "IX_SubComments_UserId",
                 table: "SubComments",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserTags_TagId",
@@ -879,9 +892,10 @@ namespace DAL.Migrations
                 column: "TagId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserTags_UserId1",
+                name: "IX_UserTags_UserId_TagId",
                 table: "UserTags",
-                column: "UserId1");
+                columns: new[] { "UserId", "TagId" },
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -45,6 +45,15 @@ namespace DAL.DataContext
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<User>().HasIndex(i=>i.UserName).IsUnique(); 
+            builder.Entity<UserTag>().HasIndex(i=>new {i.UserId,i.TagId}).IsUnique(); 
+            builder.Entity<CommentLike>().HasIndex(i=>new {i.UserId,i.CommentID}).IsUnique(); 
+            builder.Entity<Follow>().HasIndex(i=>new {i.UserId,i.FollowedUserId}).IsUnique(); 
+            builder.Entity<PostLike>().HasIndex(i=>new {i.UserId,i.PostID}).IsUnique(); 
+            builder.Entity<PostTag>().HasIndex(i=>new {i.PostId,i.TagId}).IsUnique(); 
+            builder.Entity<SubCommentLike>().HasIndex(i=>new {i.SubCommentID,i.UserId}).IsUnique();
         }
+ 
     }
+
 }

@@ -16,8 +16,9 @@ bin
 *.sln.docstates
 
 # User-specific files (MonoDevelop/Xamarin Studio)
-*.userprefs
-
+*.userprefs 
+API/bin
+API/obj
 # Mono auto generated files
 mono_crash.*
 
@@ -36,7 +37,6 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
-
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 

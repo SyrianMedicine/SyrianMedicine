@@ -153,3 +153,4 @@
 /home/saryatulimat/SyrianMedicine/SyrianMedicine/API/obj/Debug/net6.0/API.xml
 /home/ahmadnour/Documents/SyrianMedicine/API/bin/Debug/net6.0/API.xml
 /home/ahmadnour/Documents/SyrianMedicine/API/obj/Debug/net6.0/API.xml
+/home/saryatulimat/SyrianMedicine/SyrianMedicine/API/bin/Debug/net6.0/API.staticwebassets.runtime.json
