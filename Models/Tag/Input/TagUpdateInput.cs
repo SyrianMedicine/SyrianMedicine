@@ -14,12 +14,13 @@ namespace Models.Tag.Input
         /// <summary>
         /// tag name   
         /// </summary>
-        /// <value>Like (قلبية , عصبية ,) </value>
+        /// <value>Like (قلبية , عصبية , دوار,صداع) </value>
+        [Required]
         public String Name { get; set; }
     }
-    public class TagInputValidator : AbstractValidator<TagUpdateInput>
+    public class TagUpdateInputValidator : AbstractValidator<TagUpdateInput>
     {
-        public TagInputValidator()
+        public TagUpdateInputValidator()
         {
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage("enter Id");

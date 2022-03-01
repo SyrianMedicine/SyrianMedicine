@@ -46,7 +46,8 @@ namespace DAL.DataContext
         {
             base.OnModelCreating(builder);
             builder.Entity<User>().HasIndex(i=>i.UserName).IsUnique(); 
-            builder.Entity<UserTag>().HasIndex(i=>new {i.UserId,i.TagId}).IsUnique(); 
+            builder.Entity<UserTag>().HasIndex(i=>new {i.UserId,i.TagId}).IsUnique();
+            builder.Entity<Tag>().HasIndex(i=>new {i.Tagname}).IsUnique(); 
             builder.Entity<CommentLike>().HasIndex(i=>new {i.UserId,i.CommentID}).IsUnique(); 
             builder.Entity<Follow>().HasIndex(i=>new {i.UserId,i.FollowedUserId}).IsUnique(); 
             builder.Entity<PostLike>().HasIndex(i=>new {i.UserId,i.PostID}).IsUnique(); 

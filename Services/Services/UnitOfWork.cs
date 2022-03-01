@@ -1,5 +1,6 @@
 using DAL.DataContext;
 using DAL.Repositories;
+using Services.Services;
 
 namespace Services
 {
@@ -11,12 +12,15 @@ namespace Services
         public ISickService SickServices { get; }
         public IHospitalService HospitalServices { get; }
         public ITagService TagService { get; }
-        public IUserTagService UserTagService { get;}
+        public IUserTagService UserTagService { get; }
+
+        public IFollowService FollowService { get; }
         public IIdentityRepository IdentityRepository { get; }
 
-        public UnitOfWork(IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
+        public UnitOfWork(IFollowService FollowService, IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
             IIdentityRepository IdentityRepository, IHospitalService HospitalServices, StoreContext dbContext)
         {
+            this.FollowService = FollowService;
             this.DoctorServices = DoctorServices;
             this.NurseServices = NurseServices;
             this.SickServices = SickServices;
@@ -33,9 +37,12 @@ namespace Services
         public INurseService NurseServices { get; }
         public ISickService SickServices { get; }
         public IHospitalService HospitalServices { get; }
-        public IIdentityRepository IdentityRepository { get; }
+
         public ITagService TagService { get; }
 
-        public IUserTagService UserTagService { get;}
+        public IUserTagService UserTagService { get; }
+
+        public IFollowService FollowService { get; }
+        public IIdentityRepository IdentityRepository { get; }
     }
 }

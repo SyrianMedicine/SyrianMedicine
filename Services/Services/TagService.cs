@@ -15,10 +15,10 @@ namespace Services
 {
     public class TagService : GenericRepository<Tag>, ITagService
     {
-        private readonly IMapper _mapper; 
+        private readonly IMapper _mapper;
         public TagService(IMapper mapper, StoreContext dbContext) : base(dbContext)
         {
-            _mapper = mapper; 
+            _mapper = mapper;
         }
 
         public async Task<ResponseService<List<TagOutput>>> GetAllTags()
@@ -27,7 +27,7 @@ namespace Services
             {
                 Data = _mapper.Map<List<Tag>, List<TagOutput>>(await base.GetQuery().ToListAsync())
             };
-            return result.Data!=null&&result.Data.Any() ?
+            return result.Data != null && result.Data.Any() ?
              result.SetMessage("Ok").SetStatus(StatusCodes.Ok.ToString()) :
              result.SetMessage("no Tag added Now").SetStatus(StatusCodes.NotFound.ToString());
         }
@@ -61,7 +61,11 @@ namespace Services
             var tag = _mapper.Map<TagCreateInput, Tag>(Input);
             var result = new ResponseService<TagOutput>();
             try
-            {
+            { 
+                if (await base.GetQuery().Where(s => s.Tagname.Equals(Input.Name)).AnyAsync())
+                {
+                    result.SetMessage("Tag already exists").SetStatus(StatusCodes.BadRequest.ToString());
+                }
                 await base.InsertAsync(tag);
                 return await base.CompleteAsync() ?
                     result.SetMessage("Tag Created").SetData(_mapper.Map<Tag, TagOutput>(tag)).SetStatus(StatusCodes.Created.ToString())
@@ -70,7 +74,7 @@ namespace Services
             }
             catch
             {
-                return result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError)).SetStatus(StatusCodes.InternalServerError.ToString());
+                return ResponseService<TagOutput>.GetExeptionResponse();
             }
         }
         public async Task<ResponseService<TagOutput>> UpdateTag(TagUpdateInput Input)
@@ -90,7 +94,7 @@ namespace Services
             }
             catch
             {
-                return result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError)).SetStatus(StatusCodes.InternalServerError.ToString());
+                return ResponseService<TagOutput>.GetExeptionResponse();
             }
 
         }
@@ -98,28 +102,27 @@ namespace Services
         public async Task<ResponseService<bool>> DeleteTag(int Id)
         {
 
-            var result = new ResponseService<bool>();
+            var result = new ResponseService<bool>() { Data = false };
             try
             {
                 if (!await base.GetQuery().Where(i => i.Id == Id).AnyAsync())
-                    return result.SetData(false).SetMessage("NotFound").SetStatus(StatusCodes.NotFound.ToString());
+                    return result.SetMessage("NotFound").SetStatus(StatusCodes.NotFound.ToString());
                 if (await base.GetQuery().Select(i => i.Users.Any() || i.Posts.Any()).FirstOrDefaultAsync())
                 {
-                    return result.SetData(false).SetMessage("this tag is used").SetStatus(StatusCodes.BadRequest.ToString());
+                    return result.SetMessage("this tag is used").SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
                 await base.DeleteAsync(Id);
                 return await base.CompleteAsync() ?
                     result.SetData(true).SetMessage("Deleted").SetStatus(StatusCodes.Ok.ToString())
                     :
-                    result.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
+                    result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
             }
             catch
             {
-                return result.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError)).SetStatus(StatusCodes.InternalServerError.ToString());
+                return ResponseService<bool>.GetExeptionResponse();
             }
         }
-
     }
     public interface ITagService
     {

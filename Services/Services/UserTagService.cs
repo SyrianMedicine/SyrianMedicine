@@ -43,10 +43,10 @@ namespace Services
             try
             {
                 if (!await _iGenericRepositoryTag.GetQuery().Where(i => i.Id == id).AnyAsync())
-                    return result.SetMessage("Tag Not Found").SetMessage(StatusCodes.NotFound.ToString());
+                    return result.SetMessage("Tag Not Found").SetStatus(StatusCodes.NotFound.ToString());
 
                 if (await base.GetQuery().Where(i => i.TagId == id && i.UserId.Equals(user.Id)).AnyAsync())
-                    return result.SetMessage("this Tag already in your list").SetMessage(StatusCodes.BadRequest.ToString());
+                    return result.SetMessage("this Tag already in your list").SetStatus(StatusCodes.BadRequest.ToString());
 
                 await base.InsertAsync(new UserTag { TagId = id, UserId = user.Id });
                 return await base.CompleteAsync() ?
@@ -56,7 +56,7 @@ namespace Services
             }
             catch
             {
-                return result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError)).SetStatus(StatusCodes.InternalServerError.ToString());
+                return ResponseService<bool>.GetExeptionResponse();
             }
         }
 
@@ -66,8 +66,8 @@ namespace Services
             try
             {
                 var usrtag = await base.GetQuery().Where(i => i.TagId == id && i.UserId.Equals(user.Id)).FirstOrDefaultAsync();
-                if (usrtag != null)
-                    return result.SetMessage("Not Found in your list").SetMessage(StatusCodes.NotFound.ToString());
+                if (usrtag == null)
+                    return result.SetMessage("Not Found in your list").SetStatus(StatusCodes.NotFound.ToString());
                 await base.DeleteAsync(usrtag.Id);
                 return await base.CompleteAsync() ?
                     result.SetData(true).SetMessage("tag deleted from your intrested tag").SetStatus(StatusCodes.Ok.ToString())
@@ -76,7 +76,7 @@ namespace Services
             }
             catch
             {
-                return result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError)).SetStatus(StatusCodes.InternalServerError.ToString());
+                return ResponseService<bool>.GetExeptionResponse();
             }
         }
     }

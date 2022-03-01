@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Services;
 using Services.Profiles;
+using Services.Services;
 
 namespace API.Extensions
 {
@@ -22,12 +23,15 @@ namespace API.Extensions
             services.AddScoped(typeof(IGenericRepository<Bed>), typeof(GenericRepository<Bed>));
             services.AddScoped(typeof(IGenericRepository<Tag>), typeof(GenericRepository<Tag>));
             services.AddScoped(typeof(IGenericRepository<UserTag>), typeof(GenericRepository<UserTag>));
+
+            services.AddScoped(typeof(IGenericRepository<Follow>), typeof(GenericRepository<Follow>));
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<INurseService, NurseService>();
             services.AddScoped<IHospitalService, HospitalService>();
             services.AddScoped<ISickService, SickService>();
             services.AddScoped<ITagService, TagService>();
-            services.AddScoped<IUserTagService, UserTagService>();
+            services.AddScoped<IUserTagService, UserTagService>(); 
+            services.AddScoped<IFollowService, FollowService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }
@@ -37,7 +41,8 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(NurseProfile));
             services.AddAutoMapper(typeof(SickProfile));
             services.AddAutoMapper(typeof(HospitalProfile));
-            services.AddAutoMapper(typeof(TagProfile));
+            services.AddAutoMapper(typeof(TagProfile)); 
+            services.AddAutoMapper(typeof(FollowProfile));
             return services;
         }
         public static IServiceCollection AddSwaggerServices(this IServiceCollection services)

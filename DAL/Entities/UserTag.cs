@@ -11,6 +11,7 @@ namespace DAL.Entities
     public class UserTag
     {
         public int Id { get; set; }
+        [Required]
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))] 
         public virtual User User { get; set; } 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,9 +12,11 @@ namespace DAL.Entities
     {
         public int Id { get; set; }
         public DateTime FollowDate { get; set; }
+        [Required]
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]
         public virtual User User { get; set; }
+        [Required]
         public string FollowedUserId { get; set; }
         [ForeignKey(nameof(FollowedUserId))]
         public virtual User FollowedUser { get; set; }

@@ -20,8 +20,8 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
         /// <summary>
-        /// add tag to InterestedList of AuthorizedUser 
-        /// this help us to disply posts releted to user intrested tags
+        /// add tag to InterestedList of AuthorizedUser <br/>
+        /// <strong>this help us to disply posts releted to user intrested tags</strong>
         /// </summary>
         /// <param name="id">tag id</param>
         /// <returns>true for success or false for fail</returns>

@@ -20,5 +20,9 @@ namespace Services.Common
             this.Data = Data;
             return this;
         }
+        public static ResponseService<T> GetExeptionResponse()
+        {
+            return new ResponseService<T>().SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError)).SetStatus(StatusCodes.InternalServerError.ToString());
+        }
     }
 }
