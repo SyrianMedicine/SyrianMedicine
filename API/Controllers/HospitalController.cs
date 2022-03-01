@@ -54,9 +54,17 @@ namespace API.Controllers
         public async Task<DepartmentOutput> GetDepartments(int id)
             => await _unitOfWork.HospitalServices.GetDepartment(id);
 
-        [HttpPost(nameof(AddBedsToDebartments))]
-        public async Task<ActionResult<ResponseService<bool>>> AddBedsToDebartments(List<CreateBed> inputs)
-            => Result(await _unitOfWork.HospitalServices.AddBedsToDepartment(inputs), nameof(AddBedsToDebartments));
+        [HttpPost(nameof(AddBedsToDepartments))]
+        public async Task<ActionResult<ResponseService<bool>>> AddBedsToDepartments(List<CreateBed> inputs)
+            => Result(await _unitOfWork.HospitalServices.AddBedsToDepartment(inputs), nameof(AddBedsToDepartments));
+
+        [HttpPost(nameof(UpdateDepartment))]
+        public async Task<ActionResult<ResponseService<bool>>> UpdateDepartment(UpdateDepartment input)
+            => Result(await _unitOfWork.HospitalServices.UpdateDepartment(input, (await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)).Id), nameof(UpdateDepartment));
+
+        [HttpDelete(nameof(DeleteDepartment))]
+        public async Task<ActionResult<ResponseService<bool>>> DeleteDepartment(int id)
+            => Result(await _unitOfWork.HospitalServices.DeleteDepartment(id, (await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)).Id), nameof(DeleteDepartment));
 
         [HttpGet("BedFor/{departmentId}")]
         public async Task<IReadOnlyList<BedOutput>> GetBedsForDepartment(int departmentId)

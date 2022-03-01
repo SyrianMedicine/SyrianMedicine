@@ -34,6 +34,7 @@ namespace DAL.DataContext
         public DbSet<SubComment> SubComments { get; set; }
         public DbSet<SubCommentLike> SubCommentLikes { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<City> Cities { get; set; }
         public DbSet<UserTag> UserTags { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }

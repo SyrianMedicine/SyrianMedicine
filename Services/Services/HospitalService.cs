@@ -292,7 +292,7 @@ namespace Services
 
                 if (await _identityRepository.UpdateUserAsync(dbUser))
                 {
-                    UpdateAsync(dbHospital);
+                    Update(dbHospital);
                     await CompleteAsync();
                     response.Message = "Update successed";
                     response.Status = StatusCodes.Ok.ToString();
@@ -315,6 +315,81 @@ namespace Services
 
         }
 
+        public async Task<ResponseService<bool>> UpdateDepartment(UpdateDepartment input, string userId)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+                var dbDepartment = await _department.GetByIdAsync(input.Id);
+                if (dbDepartment == null)
+                {
+                    return response.SetMessage("This Department is not exist !")
+                        .SetStatus(StatusCodes.NotFound.ToString());
+                }
+                var dbHospital = await GetQuery().FirstOrDefaultAsync(ex => ex.UserId == userId);
+                if (dbHospital == null)
+                {
+                    return response.SetMessage("You not have this Department!")
+                        .SetStatus(StatusCodes.Unauthorized.ToString());
+                }
+
+                if (dbDepartment.HospitalId != dbHospital.Id)
+                {
+                    return response.SetMessage(@"You can't update this department")
+                        .SetStatus(StatusCodes.Unauthorized.ToString());
+                }
+
+                var department = _mapper.Map<UpdateDepartment, Department>(input);
+                _department.Update(department);
+                response = await _department.CompleteAsync() == true ?
+                response.SetData(true).SetMessage("Update successed").SetStatus(StatusCodes.Ok.ToString())
+                : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+            }
+            return response;
+        }
+
+        public async Task<ResponseService<bool>> DeleteDepartment(int id, string userId)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+                var dbDepartment = await _department.GetByIdAsync(id);
+                if (dbDepartment == null)
+                {
+                    return response.SetMessage("This Department is not exist !")
+                        .SetStatus(StatusCodes.NotFound.ToString());
+                }
+
+                var dbHospital = await GetQuery().FirstOrDefaultAsync(ex => ex.UserId == userId);
+                if (dbHospital == null)
+                {
+                    return response.SetMessage("You not have this Department!")
+                        .SetStatus(StatusCodes.Unauthorized.ToString());
+                }
+
+                if (dbDepartment.HospitalId != dbHospital.Id)
+                {
+                    return response.SetMessage(@"You can't update this department")
+                        .SetStatus(StatusCodes.Unauthorized.ToString());
+                }
+
+                await _department.DeleteAsync(dbDepartment.Id);
+                return await _department.CompleteAsync() == true ?
+                response.SetData(true).SetMessage("delete successed").SetStatus(StatusCodes.Ok.ToString())
+                : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+            }
+            return response;
+        }
     }
     public interface IHospitalService : IGenericRepository<Hospital>
     {
@@ -323,6 +398,8 @@ namespace Services
         public Task<IReadOnlyList<HospitalOutput>> GetAllHospitals();
         public Task<HospitalOutput> GetHospital(string username);
         public Task<ResponseService<bool>> AddDebartmentsToHospital(List<CreateDepartment> inputs);
+        public Task<ResponseService<bool>> UpdateDepartment(UpdateDepartment input, string userId);
+        public Task<ResponseService<bool>> DeleteDepartment(int id, string userId);
         public Task<IReadOnlyList<DepartmentOutput>> GetDepartmentsForHospital(string username);
         public Task<DepartmentOutput> GetDepartment(int id);
         public Task<ResponseService<bool>> AddBedsToDepartment(List<CreateBed> inputs);

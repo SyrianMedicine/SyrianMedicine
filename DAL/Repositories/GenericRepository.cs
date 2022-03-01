@@ -31,7 +31,7 @@ namespace DAL.Repositories
         public async Task InsertAsync(TEntity entity)
             => await dbSet.AddAsync(entity);
 
-        public void UpdateAsync(TEntity entity)
+        public void Update(TEntity entity)
             => dbSet.Update(entity);
 
         public async Task<bool> CompleteAsync()
@@ -57,7 +57,7 @@ namespace DAL.Repositories
         public Task<TEntity> GetByIdAsync(object id);
         public Task InsertAsync(TEntity entity);
         public Task DeleteAsync(object id);
-        public void UpdateAsync(TEntity entity);
+        public void Update(TEntity entity);
         public Task<bool> CompleteAsync();
         public Task<IDbContextTransaction> BeginTransactionAsync(
            IsolationLevel isolationLevel = IsolationLevel.Unspecified,

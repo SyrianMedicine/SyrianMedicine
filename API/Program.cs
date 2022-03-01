@@ -19,7 +19,7 @@ builder.Services.AddSwaggerServices();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
- 
+
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
@@ -35,6 +35,7 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<StoreContext>();
         var roleManager = services.GetRequiredService<RoleManager<Role>>(); await context.Database.MigrateAsync();
         await RoleSeed.SeedRoleAsync(roleManager);
+        await CitySeed.SeedCitiesAsync(context);
     }
     catch (Exception ex)
     {

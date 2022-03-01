@@ -86,7 +86,7 @@ namespace Services
             try
             {
 
-                base.UpdateAsync(tag);
+                base.Update(tag);
                 return await base.CompleteAsync() ?
                     result.SetMessage("Updated").SetData(_mapper.Map<Tag, TagOutput>(tag)).SetStatus(StatusCodes.Accepted.ToString())
                     :

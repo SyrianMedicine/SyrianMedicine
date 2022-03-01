@@ -255,7 +255,7 @@ namespace Services
 
                 if (await _identityRepository.UpdateUserAsync(dbUser))
                 {
-                    UpdateAsync(dbNurse);
+                    Update(dbNurse);
                     await CompleteAsync();
                     response.Message = "Update successed";
                     response.Status = StatusCodes.Ok.ToString();

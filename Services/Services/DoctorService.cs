@@ -12,7 +12,7 @@ using Models.Doctor.Outputs;
 using Services.Common;
 
 namespace Services
-{
+{ 
     public class DoctorService : GenericRepository<Doctor>, IDoctorService
     {
         private readonly IMapper _mapper;
@@ -255,7 +255,7 @@ namespace Services
 
                 if (await _identityRepository.UpdateUserAsync(dbUser))
                 {
-                    UpdateAsync(dbDoctor);
+                    Update(dbDoctor);
                     await CompleteAsync();
                     response.Message = "Update successed";
                     response.Status = StatusCodes.Ok.ToString();
