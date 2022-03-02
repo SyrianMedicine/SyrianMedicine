@@ -21,6 +21,9 @@ namespace DAL.Repositories
             var entity = await dbSet.FindAsync(id);
             dbSet.Remove(entity);
         }
+        public async Task<IReadOnlyList<TEntity>> GetAllAsync()
+            => await dbSet.ToListAsync();
+
 
         public IQueryable<TEntity> GetQuery()
             => dbSet.AsQueryable();
@@ -53,6 +56,7 @@ namespace DAL.Repositories
 
     public interface IGenericRepository<TEntity> where TEntity : class
     {
+        public Task<IReadOnlyList<TEntity>> GetAllAsync();
         public IQueryable<TEntity> GetQuery();
         public Task<TEntity> GetByIdAsync(object id);
         public Task InsertAsync(TEntity entity);

@@ -23,25 +23,27 @@ namespace API.Extensions
             services.AddScoped(typeof(IGenericRepository<Bed>), typeof(GenericRepository<Bed>));
             services.AddScoped(typeof(IGenericRepository<Tag>), typeof(GenericRepository<Tag>));
             services.AddScoped(typeof(IGenericRepository<UserTag>), typeof(GenericRepository<UserTag>));
-
+            services.AddScoped(typeof(IGenericRepository<City>), typeof(GenericRepository<City>));
             services.AddScoped(typeof(IGenericRepository<Follow>), typeof(GenericRepository<Follow>));
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<INurseService, NurseService>();
             services.AddScoped<IHospitalService, HospitalService>();
             services.AddScoped<ISickService, SickService>();
             services.AddScoped<ITagService, TagService>();
-            services.AddScoped<IUserTagService, UserTagService>(); 
+            services.AddScoped<IUserTagService, UserTagService>();
             services.AddScoped<IFollowService, FollowService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }
         public static IServiceCollection AddAutoMapperServices(this IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(CityProfile));
             services.AddAutoMapper(typeof(DoctorProfile));
             services.AddAutoMapper(typeof(NurseProfile));
             services.AddAutoMapper(typeof(SickProfile));
             services.AddAutoMapper(typeof(HospitalProfile));
-            services.AddAutoMapper(typeof(TagProfile)); 
+            services.AddAutoMapper(typeof(TagProfile));
             services.AddAutoMapper(typeof(FollowProfile));
             return services;
         }
