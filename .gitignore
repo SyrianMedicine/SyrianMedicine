@@ -450,7 +450,6 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 .cls
-**/bin/
 bin
 obj
 *.db

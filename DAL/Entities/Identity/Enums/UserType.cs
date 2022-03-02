@@ -6,6 +6,7 @@ namespace DAL.Entities.Identity.Enums
         Doctor,
         Nurse,
         Secretary,
-        Hospital
+        Hospital,
+        Admin
     }
 }

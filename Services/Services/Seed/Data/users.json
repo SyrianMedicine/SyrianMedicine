@@ -1,0 +1,41 @@
+[
+  {
+    "UserName": "AhmadNour",
+    "Email": "Ahmad.Nour.AlSabaggh@gmail.com",
+    "PhoneNumber": "0949151627",
+    "HomeNumber": "033231392",
+    "FirstName": "Ahmad Nour",
+    "LastName": "Al-Sabaggh",
+    "Gender": 1,
+    "City": "Hama",
+    "Location": "some place in the earth",
+    "State": 1,
+    "UserType": 6
+  },
+  {
+    "UserName": "SaryaTulaimat",
+    "Email": "sarya.tulaimat@outlook.com",
+    "PhoneNumber": "0952713953",
+    "HomeNumber": "033231392",
+    "FirstName": "Mohammad Sarya",
+    "LastName": "Tulaimat",
+    "Gender": 1,
+    "City": "Homs",
+    "Location": "some place in the earth",
+    "State": 1,
+    "UserType": 6
+  },
+  {
+    "UserName": "MohammadManfy",
+    "Email": "MohammadManfy@gmail.com",
+    "PhoneNumber": "0964827090",
+    "HomeNumber": "033231392",
+    "FirstName": "Mohammad",
+    "LastName": "Manfy",
+    "Gender": 1,
+    "City": "Deir Ez-Zor",
+    "Location": "some place in the earth",
+    "State": 1,
+    "UserType": 6
+  }
+]

@@ -34,7 +34,9 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<StoreContext>();
         var roleManager = services.GetRequiredService<RoleManager<Role>>(); await context.Database.MigrateAsync();
+        var userManager = services.GetRequiredService<UserManager<User>>(); await context.Database.MigrateAsync();
         await RoleSeed.SeedRoleAsync(roleManager);
+        await UserSeed.SeedUserAsync(userManager);
         await CitySeed.SeedCitiesAsync(context);
     }
     catch (Exception ex)
