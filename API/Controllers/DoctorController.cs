@@ -31,7 +31,7 @@ namespace API.Controllers
 
         [HttpPost(nameof(UpdateDoctor)), Authorize(Roles = "Doctor,Sick")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateDoctor(UpdateDoctor input)
-            => Result(await _unitOfWork.DoctorServices.UpdateDoctor(input, (await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)).Id), nameof(UpdateDoctor));
+            => Result(await _unitOfWork.DoctorServices.UpdateDoctor(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateDoctor));
 
         [HttpPost(nameof(LoginDoctor))]
         public async Task<ActionResult<ResponseService<LoginOutput>>> LoginDoctor(LoginDoctorInput input)

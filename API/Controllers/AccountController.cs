@@ -40,10 +40,13 @@ namespace API.Controllers
 
         [HttpPut(nameof(UploadImage))]
         public async Task<ActionResult<ResponseService<bool>>> UploadImage([FromForm] UploadImage input)
-            => Result(await _unitOfWork.AccountService.UploadImage(input, (await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)).Id), nameof(UploadImage));
+            => Result(await _unitOfWork.AccountService.UploadImage(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UploadImage));
 
         [HttpPost(nameof(LoginAdmin))]
         public async Task<ActionResult<ResponseService<LoginAdminOutput>>> LoginAdmin(LoginInput input)
             => Result(await _unitOfWork.AccountService.LoginAdmin(input), nameof(LoginAdmin));
+        [HttpPost(nameof(UpdateAdminProfile))]
+        public async Task<ActionResult<ResponseService<bool>>> UpdateAdminProfile(UpdateAdmin input)
+            => Result(await _unitOfWork.AccountService.UpdateAdminProfile(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateAdminProfile));
     }
 }

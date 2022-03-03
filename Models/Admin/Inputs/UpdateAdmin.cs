@@ -1,6 +1,6 @@
-namespace Models.Sick.Inputs
+namespace Models.Admin.Inputs
 {
-    public class UpdateSick
+    public class UpdateAdmin
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

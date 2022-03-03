@@ -33,7 +33,7 @@ namespace Services
             => _mapper.Map<IReadOnlyList<Nurse>, IReadOnlyList<NurseOutput>>(await GetQuery().Include(e => e.User).ToListAsync());
 
         public async Task<NurseOutput> GetNurse(string username)
-            => _mapper.Map<Nurse, NurseOutput>(await GetQuery().Include(e => e.User).FirstOrDefaultAsync(e => e.User.UserName == username));
+            => _mapper.Map<Nurse, NurseOutput>(await GetQuery().Include(e => e.User).FirstOrDefaultAsync(e => e.User.NormalizedUserName == username.ToUpper()));
 
         public async Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input)
         {
@@ -51,6 +51,22 @@ namespace Services
                         return response;
                     }
                 }
+
+                var dbNurse = await GetQuery().FirstOrDefaultAsync(ex => ex.UserId == user.Id);
+                var roles = await _identityRepository.GetRolesByUserIdAsync(user.Id);
+                bool found = false;
+                foreach (var role in roles)
+                {
+                    if (role == Roles.Nurse.ToString() || (dbNurse.AccountState == AccountState.Pending && role == Roles.Sick.ToString()))
+                        found = true;
+                }
+                if (!found)
+                {
+                    response.Message = "Oooops you are not nurse";
+                    response.Status = StatusCodes.BadRequest.ToString();
+                    return response;
+                }
+
                 if (!await _identityRepository.CheckPassword(user, input.Password))
                 {
                     response.Message = "Password not correct!";
@@ -61,13 +77,9 @@ namespace Services
                 {
                     response.Message = $"Welcome {user.FirstName + " " + user.LastName}";
                     response.Status = StatusCodes.Ok.ToString();
-                    response.Data = new()
-                    {
-                        FullName = user.FirstName + user.LastName,
-                        UserName = user.UserName,
-                        Email = user.Email,
-                        Token = await _tokenService.CreateToken(user)
-                    };
+                    var mapper = _mapper.Map<LoginNurseOutput>(user);
+                    mapper.Token = await _tokenService.CreateToken(user);
+                    response.Data = mapper;
                 }
                 else
                 {
@@ -111,39 +123,20 @@ namespace Services
                 int hours = date.Hours;
                 if (input.StartTimeWork >= input.EndTimeWork || hours < 1)
                 {
-                    response.Message = "Time to start work must be less then end time to end work!";
+                    response.Message = "Start time must be less than end time al least one hour";
                     response.Status = StatusCodes.BadRequest.ToString();
                     return response;
                 }
 
-                User user = new()
-                {
-                    UserName = input.UserName,
-                    Email = input.Email,
-                    FirstName = input.FirstName,
-                    LastName = input.LastName,
-                    Gender = (Gender)input.Gender,
-                    PhoneNumber = input.PhoneNumber,
-                    Location = input.Location,
-                    State = (PersonState)input.State,
-                    HomeNumber = input.HomeNumber,
-                    UserType = UserType.Nurse,
-                    City = input.City
-                };
-                Nurse nurse = new()
-                {
-                    StartTimeWork = input.StartTimeWork,
-                    EndTimeWork = input.EndTimeWork,
-                    AboutMe = input.AboutMe,
-                    WorkAtHome = input.WorkAtHome,
-                    Specialization = input.Specialization,
-                    AccountState = AccountState.Pending,
-                    UserId = user.Id
-                };
+                var userMapper = _mapper.Map<User>(input);
+                userMapper.UserType = UserType.Nurse;
+                var nurseMapper = _mapper.Map<Nurse>(input);
+                nurseMapper.UserId = userMapper.Id;
+                nurseMapper.AccountState = AccountState.Pending;
 
-                if (await _identityRepository.CreateUserAsync(user, input.Password))
+                if (await _identityRepository.CreateUserAsync(userMapper, input.Password))
                 {
-                    await InsertAsync(nurse);
+                    await InsertAsync(nurseMapper);
                     if (!await CompleteAsync())
                     {
                         response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
@@ -152,13 +145,13 @@ namespace Services
                     }
                     foreach (var file in files)
                     {
-                        var path = Path.Combine("wwwroot/Documents/nurse/", "DocumentFor" + user.UserName + "_" + file.FileName);
+                        var path = Path.Combine("wwwroot/Documents/nurse/", "DocumentFor" + userMapper.UserName + "_" + file.FileName);
                         var stream = new FileStream(path, FileMode.Create);
                         await file.CopyToAsync(stream);
                         await stream.DisposeAsync();
                         var docModel = new DocumentsNurseModel()
                         {
-                            NurseId = nurse.Id,
+                            NurseId = nurseMapper.Id,
                             UrlFile = path[7..]
                         };
                         var doc = _mapper.Map<DocumentsNurse>(docModel);
@@ -175,14 +168,9 @@ namespace Services
                     await _identityRepository.AddRoleToUserAsync(dbUser, Roles.Sick.ToString());
                     response.Message = $"Welcome {dbUser.FirstName + " " + dbUser.LastName}";
                     response.Status = StatusCodes.Created.ToString();
-                    response.Data = new RegisterNurseOutput()
-                    {
-                        Id = nurse.Id,
-                        Email = input.Email,
-                        DisplayName = input.FirstName + " " + input.LastName,
-                        UserName = input.UserName,
-                        Token = await _tokenService.CreateToken(dbUser)
-                    };
+                    var mapper = _mapper.Map<RegisterNurseOutput>(dbUser);
+                    mapper.Token = await _tokenService.CreateToken(dbUser);
+                    response.Data = mapper;
                     await transaction.CommitAsync();
                 }
                 else
@@ -200,21 +188,20 @@ namespace Services
             }
             return response;
         }
-        public async Task<ResponseService<bool>> UpdateNurse(UpdateNurse input, string userId)
+        public async Task<ResponseService<bool>> UpdateNurse(UpdateNurse input, User user)
         {
             var response = new ResponseService<bool>();
             IDbContextTransaction transaction = await BeginTransactionAsync(IsolationLevel.ReadCommitted);
             try
             {
-                var dbNurse = await GetByIdAsync(input.Id);
+                var dbNurse = await GetByIdAsync(input.NurseId);
                 if (dbNurse == null)
                 {
                     response.Message = "This nurse is not exist!";
                     response.Status = StatusCodes.NotFound.ToString();
                     return response;
                 }
-                var dbUser = await _identityRepository.GetUserByIdAsync(userId);
-                if (dbUser.Id != dbNurse.UserId)
+                if (user.Id != dbNurse.UserId)
                 {
                     response.Message = "You are not authorized";
                     response.Status = StatusCodes.Unauthorized.ToString();
@@ -225,37 +212,17 @@ namespace Services
                 int hours = date.Hours;
                 if (input.StartTimeWork >= input.EndTimeWork || hours < 1)
                 {
-                    response.Message = "Time to start work must be less then end time to end work!";
+                    response.Message = "Start time must be less than end time al least one hour";
                     response.Status = StatusCodes.BadRequest.ToString();
                     return response;
                 }
 
-                if (input.City != null)
-                    dbUser.City = input.City;
-                if (input.FirstName != null)
-                    dbUser.FirstName = input.FirstName;
-                if (input.LastName != null)
-                    dbUser.LastName = input.LastName;
-                if (input.PhoneNumber != null)
-                    dbUser.PhoneNumber = input.PhoneNumber;
-                if (input.Location != null)
-                    dbUser.Location = input.Location;
-                if (input.HomeNumber != null)
-                    dbUser.HomeNumber = input.HomeNumber;
-                if (input.State != -1)
-                    dbUser.State = (PersonState)input.State;
+                var userMapper = _mapper.Map(input, user);
+                var nurseMapper = _mapper.Map(input, dbNurse);
 
-                if (input.Specialization != null)
-                    dbNurse.Specialization = input.Specialization;
-                if (input.AboutMe != null)
-                    dbNurse.AboutMe = input.AboutMe;
-                dbNurse.WorkAtHome = input.WorkAtHome;
-                dbNurse.StartTimeWork = input.StartTimeWork;
-                dbNurse.EndTimeWork = input.EndTimeWork;
-
-                if (await _identityRepository.UpdateUserAsync(dbUser))
+                if (await _identityRepository.UpdateUserAsync(userMapper))
                 {
-                    Update(dbNurse);
+                    Update(nurseMapper);
                     await CompleteAsync();
                     response.Message = "Update successed";
                     response.Status = StatusCodes.Ok.ToString();
@@ -283,7 +250,6 @@ namespace Services
         public Task<NurseOutput> GetNurse(string username);
         public Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input);
         public Task<ResponseService<RegisterNurseOutput>> RegisterNurse(RegisterNurse input);
-        public Task<ResponseService<bool>> UpdateNurse(UpdateNurse input, string userId);
-
+        public Task<ResponseService<bool>> UpdateNurse(UpdateNurse input, User user);
     }
 }

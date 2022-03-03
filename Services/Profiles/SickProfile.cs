@@ -16,6 +16,7 @@ namespace Services.Profiles
             CreateMap<RegisterSick, User>();
             CreateMap<User, RegisterSickOutput>()
                 .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.FirstName + src.LastName));
+            CreateMap<UpdateSick, User>();
         }
     }
 }

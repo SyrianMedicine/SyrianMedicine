@@ -1,5 +1,6 @@
 using AutoMapper;
 using DAL.Entities;
+using DAL.Entities.Identity;
 using DAL.Entities.Identity.Enums;
 using DAL.Repositories;
 using Models.Admin.Inputs;
@@ -78,13 +79,9 @@ namespace Services
                 {
                     response.Message = $"Welcome {user.FirstName + " " + user.LastName}";
                     response.Status = StatusCodes.Ok.ToString();
-                    response.Data = new()
-                    {
-                        DisplayName = user.FirstName + user.LastName,
-                        UserName = user.UserName,
-                        Email = user.Email,
-                        Token = await _tokenService.CreateToken(user)
-                    };
+                    var mapper = _mapper.Map<LoginAdminOutput>(user);
+                    mapper.Token = await _tokenService.CreateToken(user);
+                    response.Data = mapper;
                 }
                 else
                 {
@@ -101,21 +98,20 @@ namespace Services
             return response;
         }
 
-        public async Task<ResponseService<bool>> UploadImage(UploadImage input, string userId)
+        public async Task<ResponseService<bool>> UploadImage(UploadImage input, User user)
         {
             var response = new ResponseService<bool>();
             try
             {
-                var dbUser = await _identityRepository.GetUserByIdAsync(userId);
-                if (File.Exists("wwwroot/" + dbUser.PictureUrl))
-                    File.Delete("wwwroot/" + dbUser.PictureUrl);
+                if (File.Exists("wwwroot/" + user.PictureUrl))
+                    File.Delete("wwwroot/" + user.PictureUrl);
 
-                var path = Path.Combine("wwwroot/Users/Images/" + "ProfileImageFor_" + dbUser.UserName + "_" + input.imageUrl.FileName);
+                var path = Path.Combine("wwwroot/Users/Images/" + "ProfileImageFor_" + user.UserName + "_" + input.imageUrl.FileName);
                 var stream = new FileStream(path, FileMode.Create);
                 await input.imageUrl.CopyToAsync(stream);
                 await stream.DisposeAsync();
-                dbUser.PictureUrl = path[7..];
-                await _identityRepository.UpdateUserAsync(dbUser);
+                user.PictureUrl = path[7..];
+                await _identityRepository.UpdateUserAsync(user);
                 return response.SetData(true).SetMessage("Image updated").SetStatus(StatusCodes.Ok.ToString());
             }
             catch
@@ -125,6 +121,48 @@ namespace Services
                 return response;
             }
         }
+
+        public async Task<ResponseService<bool>> UpdateAdminProfile(UpdateAdmin input, User user)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+
+                var roles = await _identityRepository.GetRolesByUserIdAsync(user.Id);
+                bool found = false;
+                foreach (var role in roles)
+                {
+                    if (role == Roles.Admin.ToString())
+                        found = true;
+                }
+                if (!found)
+                {
+                    response.Message = "Oooops you are not admin";
+                    response.Status = StatusCodes.BadRequest.ToString();
+                    return response;
+                }
+
+                var mapper = _mapper.Map(input, user);
+                if (await _identityRepository.UpdateUserAsync(mapper))
+                {
+                    response.Data = true;
+                    response.Message = "Update successed";
+                    response.Status = StatusCodes.Ok.ToString();
+                }
+                else
+                {
+                    response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
+                    response.Status = StatusCodes.InternalServerError.ToString();
+                }
+                return response;
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+            }
+            return response;
+        }
     }
     public interface IAccountService
     {
@@ -133,7 +171,8 @@ namespace Services
         public List<OptionDto> GetUserTypes();
         public List<OptionDto> GetAccountStates();
         public List<OptionDto> GetRoles();
-        public Task<ResponseService<bool>> UploadImage(UploadImage input, string userId);
+        public Task<ResponseService<bool>> UploadImage(UploadImage input, User user);
         public Task<ResponseService<LoginAdminOutput>> LoginAdmin(LoginInput input);
+        public Task<ResponseService<bool>> UpdateAdminProfile(UpdateAdmin input, User user);
     }
 }

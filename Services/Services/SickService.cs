@@ -43,6 +43,19 @@ namespace Services
                         return response;
                     }
                 }
+                var roles = await _identityRepository.GetRolesByUserIdAsync(user.Id);
+                bool found = false;
+                foreach (var role in roles)
+                {
+                    if (role == Roles.Sick.ToString())
+                        found = true;
+                }
+                if (!found)
+                {
+                    response.Message = "Oooops you are not sick";
+                    response.Status = StatusCodes.BadRequest.ToString();
+                    return response;
+                }
                 if (!await _identityRepository.CheckPassword(user, input.Password))
                 {
                     response.Message = "Password not correct!";
@@ -109,31 +122,16 @@ namespace Services
             }
             return response;
         }
-        public async Task<ResponseService<bool>> UpdateSick(UpdateSick input, string userId)
+        public async Task<ResponseService<bool>> UpdateSick(UpdateSick input, User user)
         {
             var response = new ResponseService<bool>();
             try
             {
-                var dbUser = await _identityRepository.GetUserByIdAsync(userId);
+                var userMapper = _mapper.Map(input, user);
+                userMapper.State = (PersonState)input.State;
+                userMapper.UserType = UserType.Sick;
 
-                if (input.FirstName != null)
-                    dbUser.FirstName = input.FirstName;
-                if (input.LastName != null)
-                    dbUser.LastName = input.LastName;
-                if (input.PhoneNumber != null)
-                    dbUser.PhoneNumber = input.PhoneNumber;
-                if (input.HomeNumber != null)
-                    dbUser.HomeNumber = input.HomeNumber;
-                if (input.Location != null)
-                    dbUser.Location = input.Location;
-                if (input.City != null)
-                    dbUser.City = input.City;
-                if (input.Gender != -1)
-                    dbUser.Gender = (Gender)input.Gender;
-                if (input.State != -1)
-                    dbUser.State = (PersonState)input.State;
-
-                if (await _identityRepository.UpdateUserAsync(dbUser))
+                if (await _identityRepository.UpdateUserAsync(userMapper))
                 {
                     response.Data = true;
                     response.Message = "Update successed";
@@ -160,6 +158,6 @@ namespace Services
         public Task<SickOutput> GetSick(string username);
         public Task<ResponseService<LoginSickOutput>> LoginSick(LoginSick input);
         public Task<ResponseService<RegisterSickOutput>> RegisterSick(RegisterSick input);
-        public Task<ResponseService<bool>> UpdateSick(UpdateSick input, string userId);
+        public Task<ResponseService<bool>> UpdateSick(UpdateSick input, User user);
     }
 }

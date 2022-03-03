@@ -40,6 +40,7 @@ namespace API.Extensions
         {
             services.AddAutoMapper(typeof(CityProfile));
             services.AddAutoMapper(typeof(DoctorProfile));
+            services.AddAutoMapper(typeof(AccountProfile));
             services.AddAutoMapper(typeof(NurseProfile));
             services.AddAutoMapper(typeof(SickProfile));
             services.AddAutoMapper(typeof(HospitalProfile));

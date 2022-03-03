@@ -6,6 +6,7 @@ using Models.Bed.Outputs;
 using Models.Department.Inputs;
 using Models.Department.Outputs;
 using Models.Hospital;
+using Models.Hospital.Inputs;
 using Models.Hospital.Outputs;
 
 namespace Services.Profiles
@@ -26,16 +27,30 @@ namespace Services.Profiles
             CreateMap<Hospital, RegisterHospitalOutput>()
                 .ForMember(e => e.UserName, opt => opt.MapFrom(src => src.User.UserName));
 
+            CreateMap<UpdateHospital, Hospital>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.HospitalId));
+            CreateMap<UpdateHospital, User>()
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumer));
+
+
+
+            CreateMap<User, RegisterHospitalOutput>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Hospital.Id));
+
+            CreateMap<RegisterHospital, User>();
+            CreateMap<RegisterHospital, Hospital>();
+
             CreateMap<DocumentsHospitalModel, DocumentsHospital>().ReverseMap();
 
+            CreateMap<UpdateDepartment, Department>();
             CreateMap<CreateDepartment, Department>().ReverseMap();
             CreateMap<Department, DepartmentOutput>()
                 .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.Hospital.Name));
-            CreateMap<UpdateDepartment, Department>();
-            
+
             CreateMap<CreateBed, Bed>().ReverseMap();
             CreateMap<Bed, BedOutput>()
                 .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
+            CreateMap<UpdateBed, Bed>();
         }
     }
 }

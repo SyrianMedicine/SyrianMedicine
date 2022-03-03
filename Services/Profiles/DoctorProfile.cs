@@ -22,6 +22,19 @@ namespace Services.Profiles
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
 
+            CreateMap<RegisterDoctor, User>();
+            CreateMap<RegisterDoctor, Doctor>();
+            CreateMap<UpdateDoctor, User>();
+            CreateMap<UpdateDoctor, Doctor>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.DoctorId));
+
+
+            CreateMap<User, LoginOutput>()
+                .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.FirstName + " " + src.LastName));
+            CreateMap<User, RegisterDoctorOutput>()
+                .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.FirstName + " " + src.LastName))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Doctor.Id));
+
             CreateMap<DocumentsDoctorModel, DocumentsDoctor>().ReverseMap();
         }
     }

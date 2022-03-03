@@ -36,6 +36,6 @@ namespace API.Controllers
 
         [HttpPost(nameof(UpdateNurse)), Authorize(Roles = "Nurse , Sick")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateNurse(UpdateNurse input)
-            => Result(await _unitOfWork.NurseServices.UpdateNurse(input, (await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)).Id), nameof(UpdateNurse));
+            => Result(await _unitOfWork.NurseServices.UpdateNurse(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateNurse));
     }
 }
