@@ -1,7 +1,11 @@
 using API.Controllers.Common;
 using Microsoft.AspNetCore.Mvc;
+using Models.Admin.Inputs;
+using Models.Admin.Outputs;
 using Models.Common;
+using Models.User;
 using Services;
+using Services.Common;
 
 namespace API.Controllers
 {
@@ -33,5 +37,13 @@ namespace API.Controllers
         [HttpGet(nameof(GetUserTypes))]
         public List<OptionDto> GetUserTypes()
         => _unitOfWork.AccountService.GetUserTypes();
+
+        [HttpPut(nameof(UploadImage))]
+        public async Task<ActionResult<ResponseService<bool>>> UploadImage([FromForm] UploadImage input)
+            => Result(await _unitOfWork.AccountService.UploadImage(input, (await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)).Id), nameof(UploadImage));
+
+        [HttpPost(nameof(LoginAdmin))]
+        public async Task<ActionResult<ResponseService<LoginAdminOutput>>> LoginAdmin(LoginInput input)
+            => Result(await _unitOfWork.AccountService.LoginAdmin(input), nameof(LoginAdmin));
     }
 }
