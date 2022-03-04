@@ -50,5 +50,16 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<bool>>> DeleteReserveDateWithDoctor(int id)
             => Result(await _unitOfWork.SickServices.DeleteReserveDateWithDoctor(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(DeleteReserveDateWithDoctor));
 
+        [HttpPost(nameof(ReserveDateWithNurse))]
+        public async Task<ActionResult<ResponseService<bool>>> ReserveDateWithNurse(ReserveDateWithNurse input)
+                    => Result(await _unitOfWork.SickServices.ReserveDateWithNurse(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(ReserveDateWithNurse));
+
+        [HttpPost(nameof(UpdateReserveDateWithNurse))]
+        public async Task<ActionResult<ResponseService<bool>>> UpdateReserveDateWithNurse(UpdateReserveDateWithNurse input)
+            => Result(await _unitOfWork.SickServices.UpdateReserveDateWithNurse(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateReserveDateWithNurse));
+
+        [HttpDelete(nameof(DeleteReserveDateWithNurse))]
+        public async Task<ActionResult<ResponseService<bool>>> DeleteReserveDateWithNurse(int id)
+            => Result(await _unitOfWork.SickServices.DeleteReserveDateWithNurse(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(DeleteReserveDateWithNurse));
     }
 }

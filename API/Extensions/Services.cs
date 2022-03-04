@@ -27,7 +27,9 @@ namespace API.Extensions
             services.AddScoped(typeof(IGenericRepository<City>), typeof(GenericRepository<City>));
             services.AddScoped(typeof(IGenericRepository<Follow>), typeof(GenericRepository<Follow>));
             services.AddScoped(typeof(IGenericRepository<ReserveDoctor>), typeof(GenericRepository<ReserveDoctor>));
+            services.AddScoped(typeof(IGenericRepository<ReserveNurse>), typeof(GenericRepository<ReserveNurse>));
             services.AddScoped(typeof(IGenericRepository<Doctor>), typeof(GenericRepository<Doctor>));
+            services.AddScoped(typeof(IGenericRepository<Nurse>), typeof(GenericRepository<Nurse>));
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<INurseService, NurseService>();
             services.AddScoped<IHospitalService, HospitalService>();
