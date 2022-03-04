@@ -37,5 +37,18 @@ namespace API.Controllers
         [HttpPost(nameof(UpdateSick)), Authorize(Roles = "Sick")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateSick(UpdateSick input)
             => Result(await _unitOfWork.SickServices.UpdateSick(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateSick));
+
+        [HttpPost(nameof(ReserveDateWithDoctor))]
+        public async Task<ActionResult<ResponseService<bool>>> ReserveDateWithDoctor(ReserveDateWithDoctor input)
+            => Result(await _unitOfWork.SickServices.ReserveDateWithDoctor(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(ReserveDateWithDoctor));
+
+        [HttpPost(nameof(UpdateReserveDateWithDoctor))]
+        public async Task<ActionResult<ResponseService<bool>>> UpdateReserveDateWithDoctor(UpdateReserveDateWithDoctor input)
+            => Result(await _unitOfWork.SickServices.UpdateReserveDateWithDoctor(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateReserveDateWithDoctor));
+
+        [HttpDelete(nameof(DeleteReserveDateWithDoctor))]
+        public async Task<ActionResult<ResponseService<bool>>> DeleteReserveDateWithDoctor(int id)
+            => Result(await _unitOfWork.SickServices.DeleteReserveDateWithDoctor(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(DeleteReserveDateWithDoctor));
+
     }
 }

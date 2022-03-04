@@ -1,5 +1,8 @@
 using AutoMapper;
+using DAL.Entities;
 using DAL.Entities.Identity;
+using DAL.Entities.Identity.Enums;
+using Models.Sick;
 using Models.Sick.Inputs;
 using Models.Sick.Outputs;
 
@@ -17,6 +20,8 @@ namespace Services.Profiles
             CreateMap<User, RegisterSickOutput>()
                 .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.FirstName + src.LastName));
             CreateMap<UpdateSick, User>();
+            CreateMap<ReserveDateWithDoctor, ReserveDoctor>();
+            CreateMap<UpdateReserveDateWithDoctor, ReserveDoctor>();
         }
     }
 }

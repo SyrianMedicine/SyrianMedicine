@@ -1,5 +1,6 @@
 using DAL.DataContext;
 using DAL.Entities;
+using DAL.Entities.Identity;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -25,6 +26,8 @@ namespace API.Extensions
             services.AddScoped(typeof(IGenericRepository<UserTag>), typeof(GenericRepository<UserTag>));
             services.AddScoped(typeof(IGenericRepository<City>), typeof(GenericRepository<City>));
             services.AddScoped(typeof(IGenericRepository<Follow>), typeof(GenericRepository<Follow>));
+            services.AddScoped(typeof(IGenericRepository<ReserveDoctor>), typeof(GenericRepository<ReserveDoctor>));
+            services.AddScoped(typeof(IGenericRepository<Doctor>), typeof(GenericRepository<Doctor>));
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<INurseService, NurseService>();
             services.AddScoped<IHospitalService, HospitalService>();

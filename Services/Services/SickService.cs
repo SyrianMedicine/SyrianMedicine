@@ -1,4 +1,5 @@
 using AutoMapper;
+using DAL.Entities;
 using DAL.Entities.Identity;
 using DAL.Entities.Identity.Enums;
 using DAL.Repositories;
@@ -13,11 +14,15 @@ namespace Services
         private readonly IMapper _mapper;
         private readonly IIdentityRepository _identityRepository;
         private readonly ITokenService _tokenService;
+        private readonly IGenericRepository<Doctor> _doctor;
+        private readonly IGenericRepository<ReserveDoctor> _reserveDoctor;
 
-        public SickService(IMapper mapper, IIdentityRepository identityRepository, ITokenService tokenService)
+        public SickService(IMapper mapper, IIdentityRepository identityRepository, IGenericRepository<Doctor> doctor, IGenericRepository<ReserveDoctor> reserveDoctor, ITokenService tokenService)
         {
             _mapper = mapper;
             _identityRepository = identityRepository;
+            _doctor = doctor;
+            _reserveDoctor = reserveDoctor;
             _tokenService = tokenService;
         }
 
@@ -151,6 +156,116 @@ namespace Services
             }
             return response;
         }
+        public async Task<ResponseService<bool>> ReserveDateWithDoctor(ReserveDateWithDoctor input, User user)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+                var roles = await _identityRepository.GetRolesByUserIdAsync(user.Id);
+                var role = roles.Where(e => e.Equals(Roles.Hospital.ToString())).FirstOrDefault();
+                if (role != null)
+                {
+                    return response.SetData(false).SetMessage("Hospital can't reserve date with doctor")
+                                   .SetStatus(StatusCodes.BadRequest.ToString());
+                }
+
+                var dbDoctor = await _doctor.GetByIdAsync(input.DoctorId);
+                if (dbDoctor == null)
+                {
+                    return response.SetData(false).SetMessage("This doctor is not exist")
+                                   .SetStatus(StatusCodes.NotFound.ToString());
+                }
+                if (dbDoctor.UserId == user.Id)
+                {
+                    return response.SetData(false).SetMessage("Loool you can't reserve date with yourself")
+                                   .SetStatus(StatusCodes.BadRequest.ToString());
+                }
+
+                var reserve = _mapper.Map<ReserveDoctor>(input);
+                reserve.UserId = user.Id;
+                reserve.ReserveState = ReserveState.Pending;
+                reserve.DateTime = DateTime.UtcNow;
+                await _reserveDoctor.InsertAsync(reserve);
+                return await _reserveDoctor.CompleteAsync() == true ?
+                    response.SetData(true).SetMessage("Your date is waiting doctor to approve it")
+                            .SetStatus(StatusCodes.Created.ToString())
+                    : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown))
+                              .SetStatus(StatusCodes.InternalServerError.ToString());
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+                return response;
+            }
+        }
+        public async Task<ResponseService<bool>> UpdateReserveDateWithDoctor(UpdateReserveDateWithDoctor input, User user)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+                var dbReserve = await _reserveDoctor.GetByIdAsync(input.Id);
+                if (dbReserve == null)
+                {
+                    return response.SetData(false).SetMessage("This reserve is not exist")
+                                   .SetStatus(StatusCodes.NotFound.ToString());
+                }
+
+                var mapper = _mapper.Map(input, dbReserve);
+                if (mapper.UserId != user.Id)
+                {
+                    return response.SetData(false).SetMessage("This reserve is not for you!")
+                                   .SetStatus(StatusCodes.Unauthorized.ToString());
+                }
+                _reserveDoctor.Update(mapper);
+                return await _reserveDoctor.CompleteAsync() == true ?
+                    response.SetData(true).SetMessage("Reverse updated")
+                            .SetStatus(StatusCodes.Ok.ToString())
+                    : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown))
+                            .SetStatus(StatusCodes.InternalServerError.ToString());
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+                return response;
+            }
+        }
+
+        public async Task<ResponseService<bool>> DeleteReserveDateWithDoctor(int id, User user)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+
+                var dbReserve = await _reserveDoctor.GetByIdAsync(id);
+                if (dbReserve == null)
+                {
+                    return response.SetData(false).SetMessage("This reserve is not exist")
+                                   .SetStatus(StatusCodes.NotFound.ToString());
+                }
+                if (dbReserve.UserId != user.Id)
+                {
+                    return response.SetData(false).SetMessage("This reserve is not for you!")
+                                   .SetStatus(StatusCodes.Unauthorized.ToString());
+                }
+
+                await _reserveDoctor.DeleteAsync(dbReserve.Id);
+                return await _reserveDoctor.CompleteAsync() == true ?
+                    response.SetData(true).SetMessage("Reverse deleted")
+                            .SetStatus(StatusCodes.Ok.ToString())
+                    : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown))
+                            .SetStatus(StatusCodes.InternalServerError.ToString());
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+                return response;
+            }
+        }
+
+
     }
     public interface ISickService
     {
@@ -159,5 +274,8 @@ namespace Services
         public Task<ResponseService<LoginSickOutput>> LoginSick(LoginSick input);
         public Task<ResponseService<RegisterSickOutput>> RegisterSick(RegisterSick input);
         public Task<ResponseService<bool>> UpdateSick(UpdateSick input, User user);
+        public Task<ResponseService<bool>> ReserveDateWithDoctor(ReserveDateWithDoctor input, User user);
+        public Task<ResponseService<bool>> UpdateReserveDateWithDoctor(UpdateReserveDateWithDoctor input, User user);
+        public Task<ResponseService<bool>> DeleteReserveDateWithDoctor(int id, User user);
     }
 }
