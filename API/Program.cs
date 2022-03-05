@@ -1,7 +1,9 @@
 using System.Reflection;
 using API.Extensions;
+using API.Hubs;
 using DAL.DataContext;
 using DAL.Entities.Identity;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -23,8 +25,9 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+builder.Services.AddCors();
+builder.Services.AddSignalR();
 var app = builder.Build();
-
 // for migrate data to database
 using (var scope = app.Services.CreateScope())
 {
@@ -60,4 +63,5 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<PostHub>("/post");
 app.Run();

@@ -22,7 +22,7 @@ namespace Services.Common
         }
         public static ResponseService<T> GetExeptionResponse()
         {
-            return new ResponseService<T>().SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError)).SetStatus(StatusCodes.InternalServerError.ToString());
+            return new ResponseService<T>().SetData(default).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError)).SetStatus(StatusCodes.InternalServerError.ToString());
         }
     }
 }

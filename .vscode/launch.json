@@ -9,11 +9,13 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
+
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/API/bin/Debug/net6.0/API.dll",
             "args": [],
             "cwd": "${workspaceFolder}/API",
             "stopAtEntry": false,
+            "console": "externalTerminal",
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
                 "action": "openExternally",
