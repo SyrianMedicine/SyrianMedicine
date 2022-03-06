@@ -37,5 +37,13 @@ namespace API.Controllers
         [HttpPost(nameof(UpdateNurse)), Authorize(Roles = "Nurse , Sick")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateNurse(UpdateNurse input)
             => Result(await _unitOfWork.NurseServices.UpdateNurse(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateNurse));
+
+        [HttpGet(nameof(GetAllReversedForNurse) + "/{id}")]
+        public async Task<IReadOnlyList<ReserveNurseOutput>> GetAllReversedForNurse(int id)
+            => await _unitOfWork.NurseServices.GetAllReversedForNurse(id);
+
+        [HttpPost(nameof(CheckReserve))]
+        public async Task<ActionResult<ResponseService<bool>>> CheckReserve(CheckReserve input)
+            => Result(await _unitOfWork.NurseServices.CheckReserve(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(CheckReserve));
     }
 }

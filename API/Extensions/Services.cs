@@ -28,10 +28,16 @@ namespace API.Extensions
             services.AddScoped(typeof(IGenericRepository<Follow>), typeof(GenericRepository<Follow>));
             services.AddScoped(typeof(IGenericRepository<ReserveDoctor>), typeof(GenericRepository<ReserveDoctor>));
             services.AddScoped(typeof(IGenericRepository<ReserveNurse>), typeof(GenericRepository<ReserveNurse>));
+            services.AddScoped(typeof(IGenericRepository<ReserveHospital>), typeof(GenericRepository<ReserveHospital>));
             services.AddScoped(typeof(IGenericRepository<Doctor>), typeof(GenericRepository<Doctor>));
             services.AddScoped(typeof(IGenericRepository<Nurse>), typeof(GenericRepository<Nurse>));
-
             services.AddScoped(typeof(IGenericRepository<Post>), typeof(GenericRepository<Post>));
+            services.AddScoped(typeof(IGenericRepository<Bed>), typeof(GenericRepository<Bed>));
+            services.AddScoped(typeof(IGenericRepository<Hospital>), typeof(GenericRepository<Hospital>));
+            services.AddScoped(typeof(IGenericRepository<Department>), typeof(GenericRepository<Department>));
+            services.AddScoped<IDoctorService, DoctorService>();
+            services.AddScoped<INurseService, NurseService>();
+            services.AddScoped<IHospitalService, HospitalService>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<INurseService, NurseService>();
             services.AddScoped<IHospitalService, HospitalService>();
@@ -39,7 +45,7 @@ namespace API.Extensions
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<IUserTagService, UserTagService>();
             services.AddScoped<IFollowService, FollowService>();
-            services.AddScoped<IAccountService, AccountService>(); 
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
@@ -53,8 +59,8 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(SickProfile));
             services.AddAutoMapper(typeof(HospitalProfile));
             services.AddAutoMapper(typeof(TagProfile));
-            services.AddAutoMapper(typeof(FollowProfile)); 
-            services.AddAutoMapper(typeof(PostProfile)); 
+            services.AddAutoMapper(typeof(FollowProfile));
+            services.AddAutoMapper(typeof(PostProfile));
             services.AddAutoMapper(typeof(UserCardProfile));
             return services;
         }

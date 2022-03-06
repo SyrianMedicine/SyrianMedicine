@@ -36,5 +36,14 @@ namespace API.Controllers
         [HttpPost(nameof(LoginDoctor))]
         public async Task<ActionResult<ResponseService<LoginOutput>>> LoginDoctor(LoginDoctorInput input)
             => Result(await _unitOfWork.DoctorServices.LoginDoctor(input), nameof(LoginDoctor));
+
+        [HttpGet(nameof(GetAllReversedForDoctor) + "/{id}")]
+        public async Task<IReadOnlyList<ReserveDoctorOutput>> GetAllReversedForDoctor(int id)
+            => await _unitOfWork.DoctorServices.GetAllReversedForDoctor(id);
+
+        [HttpPost(nameof(CheckReserve))]
+        public async Task<ActionResult<ResponseService<bool>>> CheckReserve(CheckReserve input)
+            => Result(await _unitOfWork.DoctorServices.CheckReserve(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(CheckReserve));
+
     }
 }
