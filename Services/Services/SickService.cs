@@ -198,6 +198,13 @@ namespace Services
                                    .SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
+                var dbReserve = await _reserveDoctor.GetQuery().Where(e => e.UserId == user.Id && e.DoctorId == input.DoctorId).FirstOrDefaultAsync();
+                if (dbReserve != null)
+                {
+                    return response.SetData(false).SetMessage("You can't reserve more than one date")
+                                    .SetStatus(StatusCodes.BadRequest.ToString());
+                }
+
                 var reserve = _mapper.Map<ReserveDoctor>(input);
                 reserve.UserId = user.Id;
                 reserve.ReserveState = ReserveState.Pending;
@@ -307,6 +314,13 @@ namespace Services
                                    .SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
+                var dbReserve = await _reserveNurse.GetQuery().Where(e => e.UserId == user.Id && e.NurseId == input.NurseId).FirstOrDefaultAsync();
+                if (dbReserve != null)
+                {
+                    return response.SetData(false).SetMessage("You can't reserve more than one date")
+                                    .SetStatus(StatusCodes.BadRequest.ToString());
+                }
+
                 var reserve = _mapper.Map<ReserveNurse>(input);
                 reserve.UserId = user.Id;
                 reserve.ReserveState = ReserveState.Pending;
@@ -409,6 +423,13 @@ namespace Services
                 if (dbBed.IsAvailable == false)
                 {
                     return response.SetData(false).SetMessage("This Bed is busy now").SetStatus(StatusCodes.BadRequest.ToString());
+                }
+
+                var dbReserve = await _reserveHospital.GetQuery().Include(e => e.Bed).ThenInclude(e => e.Department).Where(e => e.UserId == user.Id && e.Bed.Department.HospitalId == dbHospital.Id).FirstOrDefaultAsync();
+                if (dbReserve != null)
+                {
+                    return response.SetData(false).SetMessage("You can't reserve more than one date")
+                                    .SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
                 var reserve = _mapper.Map<ReserveHospital>(input);

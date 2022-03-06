@@ -18,12 +18,13 @@ namespace Services
         public IFollowService FollowService { get; }
         public IIdentityRepository IdentityRepository { get; }
         public IAccountService AccountService { get; }
+        public IDashboardService DashboardService { get; }
 
-        public UnitOfWork(IPostService PostService,IConnectionService ConnectionService,IFollowService FollowService, IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
-            IIdentityRepository IdentityRepository, IAccountService AccountService, IHospitalService HospitalServices, StoreContext dbContext)
+        public UnitOfWork(IPostService PostService, IConnectionService ConnectionService, IFollowService FollowService, IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
+            IIdentityRepository IdentityRepository, IDashboardService DashboardService, IAccountService AccountService, IHospitalService HospitalServices, StoreContext dbContext)
         {
-            this.PostService=PostService;
-            this.ConnectionService=ConnectionService;
+            this.PostService = PostService;
+            this.ConnectionService = ConnectionService;
             this.FollowService = FollowService;
             this.DoctorServices = DoctorServices;
             this.NurseServices = NurseServices;
@@ -33,6 +34,7 @@ namespace Services
             this.TagService = TagService;
             this.UserTagService = UserTagService;
             this.AccountService = AccountService;
+            this.DashboardService = DashboardService;
             _dbContext = dbContext;
         }
     }
@@ -51,5 +53,6 @@ namespace Services
         public IFollowService FollowService { get; }
         public IIdentityRepository IdentityRepository { get; }
         public IAccountService AccountService { get; }
+        public IDashboardService DashboardService { get; }
     }
 }

@@ -32,12 +32,12 @@ namespace API.Extensions
             services.AddScoped(typeof(IGenericRepository<Doctor>), typeof(GenericRepository<Doctor>));
             services.AddScoped(typeof(IGenericRepository<Nurse>), typeof(GenericRepository<Nurse>));
             services.AddScoped(typeof(IGenericRepository<Post>), typeof(GenericRepository<Post>));
-
             services.AddScoped(typeof(IGenericRepository<PostTag>), typeof(GenericRepository<PostTag>));
             services.AddScoped(typeof(IGenericRepository<Bed>), typeof(GenericRepository<Bed>));
             services.AddScoped(typeof(IGenericRepository<Hospital>), typeof(GenericRepository<Hospital>));
             services.AddScoped(typeof(IGenericRepository<Department>), typeof(GenericRepository<Department>));
             services.AddScoped(typeof(IGenericRepository<UserConnection>), typeof(GenericRepository<UserConnection>));
+            services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<INurseService, NurseService>();
             services.AddScoped<IHospitalService, HospitalService>();
@@ -49,7 +49,7 @@ namespace API.Extensions
             services.AddScoped<IUserTagService, UserTagService>();
             services.AddScoped<IFollowService, FollowService>();
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IPostService, PostService>(); 
+            services.AddScoped<IPostService, PostService>();
             services.AddScoped<IConnectionService, ConnectionService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
