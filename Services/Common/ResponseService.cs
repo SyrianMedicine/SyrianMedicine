@@ -20,6 +20,10 @@ namespace Services.Common
             this.Data = Data;
             return this;
         }
+        public  bool isDone()
+        {
+            return Status.Equals(StatusCodes.Ok.ToString()) || Status.Equals(StatusCodes.Accepted.ToString());
+        }
         public static ResponseService<T> GetExeptionResponse()
         {
             return new ResponseService<T>().SetData(default).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError)).SetStatus(StatusCodes.InternalServerError.ToString());

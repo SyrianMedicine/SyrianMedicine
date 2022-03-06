@@ -45,6 +45,7 @@ namespace Services.Services
                     var tagslist = await _tags.GetQuery().Where(s => input.TagsID.Contains(s.Id)).ToListAsync();
                     if (tagslist.Count != input.TagsID.Count)
                     {
+                        Transaction.Rollback();
                         return result.SetStatus(StatusCodes.BadRequest.ToString()).SetMessage("some tag not found");
                     }
                     else
@@ -102,7 +103,7 @@ namespace Services.Services
 
         public async Task<ResponseService<PostOutput>> GetPost(int Id)
         {
-            var post = await base.GetQuery().Include(i => i.User).Include(i => i.Tags).Where(i => i.Id == Id).FirstOrDefaultAsync();
+            var post = await base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s=>s.Tag).Where(i => i.Id == Id).FirstOrDefaultAsync();
             var result = new ResponseService<PostOutput>
             {
                 Data = _mapper.Map<Post, PostOutput>(post)
@@ -120,7 +121,7 @@ namespace Services.Services
         public async Task<ResponseService<PostOutput>> Update(PostUpdateInput input, User user)
         {
             var result = new ResponseService<PostOutput>();
-            var post = await base.GetQuery().Include(i => i.Tags).Include(i => i.User).Where(i => i.Id == input.Id).FirstOrDefaultAsync();
+            var post = await base.GetQuery().Include(i => i.Tags).ThenInclude(i => i.Tag).Include(i => i.User).Where(i => i.Id == input.Id).FirstOrDefaultAsync();
             if (!user.Id.Equals(post.UserId))
             {
                 return result.SetStatus(StatusCodes.Unauthorized.ToString());
@@ -134,11 +135,11 @@ namespace Services.Services
                 input.TagsID = input.TagsID != null && input.TagsID.Any() ? input.TagsID.Distinct().ToList() : null;
                 if (input.TagsID != null)
                 {
-                    foreach (var item in input.TagsID.Where(i => !post.Tags.Where(x => x.Id == i).Any()).ToList())
+                    foreach (var item in input.TagsID.Where(i => !post.Tags.Where(x => x.TagId == i).Any()).ToList())
                     {
                         dbContext.PostTags.Add(new PostTag { TagId = item, PostId = post.Id });
                     }
-                    var fordeltetag = post.Tags.Where(i => !input.TagsID.Where(x => x == i.Id).Any()).ToList();
+                    var fordeltetag = post.Tags.Where(i => !input.TagsID.Where(x => x == i.TagId).Any()).ToList();
                     dbContext.PostTags.RemoveRange(fordeltetag);
                 }
                 else if (post.Tags.Any())
@@ -149,7 +150,8 @@ namespace Services.Services
                 if (await base.CompleteAsync())
                 {
                     Transaction.Commit();
-                    return result.SetData(_mapper.Map<Post, PostOutput>(post)).SetStatus(StatusCodes.Ok.ToString());
+                    var r = await base.GetQuery().Include(i => i.User).Include(i => i.Tags).Where(i => i.Id == post.Id).FirstOrDefaultAsync();
+                    return result.SetData(_mapper.Map<Post, PostOutput>(r)).SetStatus(StatusCodes.Ok.ToString());
                 }
                 else
                 {

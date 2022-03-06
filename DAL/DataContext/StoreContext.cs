@@ -36,6 +36,7 @@ namespace DAL.DataContext
         public DbSet<Tag> Tags { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<UserTag> UserTags { get; set; }
+        public DbSet<UserConnection> UserConnections { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
 
@@ -51,6 +52,7 @@ namespace DAL.DataContext
             builder.Entity<Follow>().HasIndex(i => new { i.UserId, i.FollowedUserId }).IsUnique();
             builder.Entity<PostLike>().HasIndex(i => new { i.UserId, i.PostID }).IsUnique();
             builder.Entity<PostTag>().HasIndex(i => new { i.PostId, i.TagId }).IsUnique();
+            builder.Entity<UserConnection>().HasIndex(i => i.ConnectionID).IsUnique();
             builder.Entity<SubCommentLike>().HasIndex(i => new { i.SubCommentID, i.UserId }).IsUnique();
         }
 

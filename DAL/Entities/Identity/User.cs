@@ -18,7 +18,8 @@ namespace DAL.Entities.Identity
         public UserType UserType { get; set; } = UserType.Sick;
         public virtual List<ReserveDoctor> ReserveWithDoctor { get; set; }
         public virtual List<ReserveNurse> ReserveWithNurse { get; set; }
-        public virtual List<ReserveHospital> ReserveHospital { get; set; }
+        public virtual List<ReserveHospital> ReserveHospital { get; set; } 
+        public virtual List<UserConnection> UserConnections { get; set; }
         public virtual Doctor Doctor { get; set; }
         public virtual Nurse Nurse { get; set; }
         public virtual Secretary Secretary { get; set; }

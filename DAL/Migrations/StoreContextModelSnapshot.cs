@@ -640,6 +640,34 @@ namespace DAL.Migrations
                     b.ToTable("Tags");
                 });
 
+            modelBuilder.Entity("DAL.Entities.UserConnection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("ConnecteDateTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConnectionID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("userid")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConnectionID")
+                        .IsUnique();
+
+                    b.HasIndex("userid");
+
+                    b.ToTable("UserConnections");
+                });
+
             modelBuilder.Entity("DAL.Entities.UserTag", b =>
                 {
                     b.Property<int>("Id")
@@ -1115,6 +1143,15 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DAL.Entities.UserConnection", b =>
+                {
+                    b.HasOne("DAL.Entities.Identity.User", "user")
+                        .WithMany("UserConnections")
+                        .HasForeignKey("userid");
+
+                    b.Navigation("user");
+                });
+
             modelBuilder.Entity("DAL.Entities.UserTag", b =>
                 {
                     b.HasOne("DAL.Entities.Tag", "Tag")
@@ -1295,6 +1332,8 @@ namespace DAL.Migrations
                     b.Navigation("ReserveWithNurse");
 
                     b.Navigation("Secretary");
+
+                    b.Navigation("UserConnections");
                 });
 
             modelBuilder.Entity("DAL.Entities.Post", b =>

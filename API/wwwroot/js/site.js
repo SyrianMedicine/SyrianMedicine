@@ -2,24 +2,19 @@
 
 function connect() {
     var token = document.getElementById("token").value;
-    
     var connection = new signalR.HubConnectionBuilder()
-        .withUrl("/post", {
+        .withUrl("/Publichub", {
             accessTokenFactory: () => token
         }).withAutomaticReconnect()
         .build();
     connection.start().then(function () {}).catch(function (err) {
         return console.error(err.toString());
     });
-    connection.on("NotfiyPostadded", function (message) {
-        console.log("server: " + message);
+    connection.on("NotfiyUserFollowYou", function (user, messege) {
+        console.log(user);
     });
-    document.getElementById("sendButton").addEventListener("click", function (event) {
-        var message = document.getElementById("messageInput").value;
-        connection.invoke("post", message).catch(function (err) {
-            return console.error(err.toString());
-        });
-        event.preventDefault();
+    connection.on("NotfiyPostCreated", function (post, messege) {
+        console.log(post);
     });
 }
 document.getElementById("connect").addEventListener("click", connect);

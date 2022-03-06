@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Services.Seed;
 
+
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration config = builder.Configuration;
-
 builder.Services.AddControllers();
 builder.Services.AddDBContextServices(config);
 builder.Services.AddAutoMapperServices();
@@ -63,5 +63,5 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.MapHub<PostHub>("/post");
+app.MapHub<PublicHub>("/Publichub");
 app.Run();
