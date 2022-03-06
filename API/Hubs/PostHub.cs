@@ -8,21 +8,22 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace API.Hubs
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class PostHub : Hub<IPostHub>
     {
         public override Task OnConnectedAsync()
         {
-            Console.Write(Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception? exception)
         {
             return base.OnDisconnectedAsync(exception);
-        } 
+        }
+
+        [Authorize]
         public async Task post(string messege)
-        { 
+        {
+
             await Clients.All.NotfiyPostadded(messege);
         }
 
