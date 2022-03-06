@@ -42,7 +42,7 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<RegisterHospitalOutput>>> LoginHospital(LoginHospital input)
             => Result(await _unitOfWork.HospitalServices.LoginHospital(input), nameof(LoginHospital));
 
-        [HttpPost(nameof(AddDebartmentsToHospital))]
+        [HttpPost(nameof(AddDebartmentsToHospital)), Authorize(Roles = "Hospital")]
         public async Task<ActionResult<ResponseService<bool>>> AddDebartmentsToHospital(List<CreateDepartment> inputs)
             => Result(await _unitOfWork.HospitalServices.AddDebartmentsToHospital(inputs, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(AddDebartmentsToHospital));
 
@@ -54,15 +54,15 @@ namespace API.Controllers
         public async Task<DepartmentOutput> GetDepartments(int id)
             => await _unitOfWork.HospitalServices.GetDepartment(id);
 
-        [HttpPost(nameof(AddBedsToDepartments))]
+        [HttpPost(nameof(AddBedsToDepartments)), Authorize(Roles = "Hospital")]
         public async Task<ActionResult<ResponseService<bool>>> AddBedsToDepartments(List<CreateBed> inputs)
             => Result(await _unitOfWork.HospitalServices.AddBedsToDepartment(inputs, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(AddBedsToDepartments));
 
-        [HttpPost(nameof(UpdateDepartment))]
+        [HttpPost(nameof(UpdateDepartment)), Authorize(Roles = "Hospital")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateDepartment(UpdateDepartment input)
             => Result(await _unitOfWork.HospitalServices.UpdateDepartment(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateDepartment));
 
-        [HttpDelete(nameof(DeleteDepartment))]
+        [HttpDelete(nameof(DeleteDepartment)), Authorize(Roles = "Hospital")]
         public async Task<ActionResult<ResponseService<bool>>> DeleteDepartment(int id)
             => Result(await _unitOfWork.HospitalServices.DeleteDepartment(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(DeleteDepartment));
 
@@ -74,12 +74,21 @@ namespace API.Controllers
         public async Task<BedOutput> GetBed(int id)
             => await _unitOfWork.HospitalServices.GetBed(id);
 
-        [HttpPost(nameof(UpdateBed))]
+        [HttpPost(nameof(UpdateBed)), Authorize(Roles = "Hospital")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateBed(UpdateBed input)
             => Result(await _unitOfWork.HospitalServices.UpdateBed(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateBed));
 
-        [HttpDelete(nameof(DeleteBed))]
+        [HttpDelete(nameof(DeleteBed)), Authorize(Roles = "Hospital")]
         public async Task<ActionResult<ResponseService<bool>>> DeleteBed(int id)
-                    => Result(await _unitOfWork.HospitalServices.DeleteBed(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(DeleteBed));
+             => Result(await _unitOfWork.HospitalServices.DeleteBed(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(DeleteBed));
+
+        [HttpGet(nameof(GetAllBedReservedForHospital) + "/{hospitalId}"), Authorize(Roles = "Hospital")]
+        public async Task<IReadOnlyList<BedsReserved>> GetAllBedReservedForHospital(int hospitalId)
+            => await _unitOfWork.HospitalServices.GetAllBedReservedForHospital(hospitalId);
+
+        [HttpPost(nameof(CheckReserve)), Authorize(Roles = "Hospital")]
+        public async Task<ActionResult<ResponseService<bool>>> CheckReserve(CheckReserveHospital input)
+            => Result(await _unitOfWork.HospitalServices.CheckReserve(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(CheckReserve));
+
     }
 }

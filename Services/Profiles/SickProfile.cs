@@ -26,6 +26,9 @@ namespace Services.Profiles
 
             CreateMap<ReserveDateWithNurse, ReserveNurse>();
             CreateMap<UpdateReserveDateWithNurse, ReserveNurse>();
+
+            CreateMap<ReserveBedInHospital, ReserveHospital>();
+            CreateMap<UpdateReserveBedInHospital, ReserveHospital>();
         }
     }
 }

@@ -36,6 +36,14 @@ namespace Services.Profiles
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Doctor.Id));
 
             CreateMap<DocumentsDoctorModel, DocumentsDoctor>().ReverseMap();
+
+            CreateMap<ReserveDoctor, ReserveDoctorOutput>()
+                .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.Doctor.User.FirstName + " " + src.Doctor.User.LastName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Doctor.User.Email))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Doctor.User.UserName))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Doctor.User.PhoneNumber))
+                .ForMember(dest => dest.HomeNumber, opt => opt.MapFrom(src => src.Doctor.User.HomeNumber));
+            CreateMap<CheckReserve, ReserveDoctor>();
         }
     }
 }

@@ -11,6 +11,7 @@ using Models.Bed.Inputs;
 using Models.Bed.Outputs;
 using Models.Department.Inputs;
 using Models.Department.Outputs;
+using Models.Doctor.Outputs;
 using Models.Hospital;
 using Models.Hospital.Inputs;
 using Models.Hospital.Outputs;
@@ -26,13 +27,15 @@ namespace Services
         private readonly IGenericRepository<DocumentsHospital> _documentsHospital;
         private readonly IGenericRepository<Department> _department;
         private readonly IGenericRepository<Bed> _bed;
+        private readonly IGenericRepository<ReserveHospital> _reserveHospital;
 
         public HospitalService(IIdentityRepository identityRepository, IGenericRepository<DocumentsHospital> documentsHospital,
-        IGenericRepository<Department> department, IGenericRepository<Bed> bed, ITokenService tokenService, IMapper mapper, StoreContext dbContext) : base(dbContext)
+        IGenericRepository<Department> department, IGenericRepository<ReserveHospital> reserveHospital, IGenericRepository<Bed> bed, ITokenService tokenService, IMapper mapper, StoreContext dbContext) : base(dbContext)
         {
             _identityRepository = identityRepository;
             _tokenService = tokenService;
             _documentsHospital = documentsHospital;
+            _reserveHospital = reserveHospital;
             _department = department;
             _bed = bed;
             _mapper = mapper;
@@ -456,6 +459,54 @@ namespace Services
                 return response;
             }
         }
+
+        public async Task<IReadOnlyList<BedsReserved>> GetAllBedReservedForHospital(int id)
+            => _mapper.Map<IReadOnlyList<ReserveHospital>, IReadOnlyList<BedsReserved>>(await _reserveHospital.GetQuery().Include(e => e.Bed).ThenInclude(e => e.Department).ThenInclude(e => e.Hospital).Where(e => e.Bed.Department.HospitalId == id).ToListAsync());
+
+        public async Task<ResponseService<bool>> CheckReserve(CheckReserveHospital input, User user)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+                var dbHospital = await base.GetQuery().Where(ex => ex.UserId == user.Id).FirstOrDefaultAsync();
+                if (dbHospital == null)
+                {
+                    return response.SetMessage("You are not hospital").SetData(false).SetStatus(StatusCodes.Unauthorized.ToString());
+                }
+
+                var dbReserve = await _reserveHospital.GetByIdAsync(input.Id);
+                if (dbReserve == null)
+                {
+                    return response.SetMessage("This reserve is not exist").SetData(false).SetStatus(StatusCodes.NotFound.ToString());
+                }
+                var mapper = _mapper.Map(input, dbReserve);
+                var bed = await _bed.GetByIdAsync(dbReserve.BedId);
+                var department = await _department.GetByIdAsync(bed.DepartmentId);
+                if (department.HospitalId != dbHospital.Id)
+                {
+                    return response.SetData(false).SetMessage("You are not a hospital for this reserve").SetStatus(StatusCodes.Unauthorized.ToString());
+                }
+                if (input.ReserveState == ReserveState.Approved)
+                {
+                    bed.IsAvailable = false;
+                    _bed.Update(bed);
+                    if (await _reserveHospital.CompleteAsync() == false)
+                    {
+                        return response.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetData(false).SetStatus(StatusCodes.InternalServerError.ToString());
+                    }
+                }
+                _reserveHospital.Update(mapper);
+                return await _reserveHospital.CompleteAsync() == true ?
+                   response.SetData(true).SetMessage("Update successed").SetStatus(StatusCodes.Ok.ToString())
+                   : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+                return response;
+            }
+        }
     }
     public interface IHospitalService : IGenericRepository<Hospital>
     {
@@ -474,5 +525,7 @@ namespace Services
         public Task<IReadOnlyList<BedOutput>> GetBedsForDepartment(int departmentId);
         public Task<BedOutput> GetBed(int id);
         public Task<ResponseService<bool>> UpdateHospital(UpdateHospital input, User user);
+        public Task<IReadOnlyList<BedsReserved>> GetAllBedReservedForHospital(int id);
+        public Task<ResponseService<bool>> CheckReserve(CheckReserveHospital input, User user);
     }
 }

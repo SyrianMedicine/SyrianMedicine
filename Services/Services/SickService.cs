@@ -3,6 +3,7 @@ using DAL.Entities;
 using DAL.Entities.Identity;
 using DAL.Entities.Identity.Enums;
 using DAL.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Models.Sick.Inputs;
 using Models.Sick.Outputs;
 using Services.Common;
@@ -18,15 +19,25 @@ namespace Services
         private readonly IGenericRepository<ReserveDoctor> _reserveDoctor;
         private readonly IGenericRepository<Nurse> _nurse;
         private readonly IGenericRepository<ReserveNurse> _reserveNurse;
+        private readonly IGenericRepository<Hospital> _hospital;
+        private readonly IGenericRepository<Department> _department;
+        private readonly IGenericRepository<Bed> _bed;
+        private readonly IGenericRepository<ReserveHospital> _reserveHospital;
+
 
 
         public SickService(IMapper mapper, IIdentityRepository identityRepository, IGenericRepository<Nurse> nurse, IGenericRepository<ReserveNurse> reserveNurse,
-         IGenericRepository<Doctor> doctor, IGenericRepository<ReserveDoctor> reserveDoctor, ITokenService tokenService)
+         IGenericRepository<Doctor> doctor, IGenericRepository<Department> department, IGenericRepository<Bed> bed, IGenericRepository<ReserveHospital> reserveHospital,
+         IGenericRepository<Hospital> hospital, IGenericRepository<ReserveDoctor> reserveDoctor, ITokenService tokenService)
         {
             _mapper = mapper;
             _identityRepository = identityRepository;
             _doctor = doctor;
             _nurse = nurse;
+            _bed = bed;
+            _hospital = hospital;
+            _department = department;
+            _reserveHospital = reserveHospital;
             _reserveNurse = reserveNurse;
             _reserveDoctor = reserveDoctor;
             _tokenService = tokenService;
@@ -175,7 +186,7 @@ namespace Services
                                    .SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
-                var dbDoctor = await _doctor.GetByIdAsync(input.DoctorId);
+                var dbDoctor = await _doctor.GetQuery().Where(ex => ex.Id == input.DoctorId).Include(e => e.User).FirstOrDefaultAsync();
                 if (dbDoctor == null)
                 {
                     return response.SetData(false).SetMessage("This doctor is not exist")
@@ -284,7 +295,7 @@ namespace Services
                                    .SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
-                var dbNurse = await _nurse.GetByIdAsync(input.NurseId);
+                var dbNurse = await _nurse.GetQuery().Where(ex => ex.Id == input.NurseId).Include(e => e.User).FirstOrDefaultAsync();
                 if (dbNurse == null)
                 {
                     return response.SetData(false).SetMessage("This nurse is not exist")
@@ -353,7 +364,6 @@ namespace Services
             var response = new ResponseService<bool>();
             try
             {
-
                 var dbReserve = await _reserveNurse.GetByIdAsync(id);
                 if (dbReserve == null)
                 {
@@ -381,6 +391,101 @@ namespace Services
             }
         }
 
+        public async Task<ResponseService<bool>> ReserveBedInHospital(ReserveBedInHospital input, User user)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+                var dbBed = await _bed.GetByIdAsync(input.BedId);
+                if (dbBed == null)
+                {
+                    return response.SetData(false).SetMessage("This bed is not exist").SetStatus(StatusCodes.NotFound.ToString());
+                }
+                var dbHospital = await _hospital.GetByIdAsync((await _department.GetByIdAsync(dbBed.Id)).HospitalId);
+                if (dbHospital == null)
+                {
+                    return response.SetData(false).SetMessage("Oooh what happen this bed is not a part of any hospital!!").SetStatus(StatusCodes.NotFound.ToString());
+                }
+                if (dbBed.IsAvailable == false)
+                {
+                    return response.SetData(false).SetMessage("This Bed is busy now").SetStatus(StatusCodes.BadRequest.ToString());
+                }
+
+                var reserve = _mapper.Map<ReserveHospital>(input);
+                reserve.UserId = user.Id;
+                reserve.ReserveState = ReserveState.Pending;
+                reserve.DateTime = DateTime.UtcNow;
+                await _reserveHospital.InsertAsync(reserve);
+                return await _reserveHospital.CompleteAsync() == true ?
+                    response.SetData(true).SetMessage($"Your date is waiting hospital {dbHospital.Name} to approve it")
+                            .SetStatus(StatusCodes.Created.ToString())
+                    : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown))
+                              .SetStatus(StatusCodes.InternalServerError.ToString());
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+                return response;
+            }
+        }
+        public async Task<ResponseService<bool>> UpdateReserveBedInHospital(UpdateReserveBedInHospital input, User user)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+                var dbReserve = await _reserveHospital.GetByIdAsync(input.Id);
+                if (dbReserve == null)
+                {
+                    return response.SetData(false).SetMessage("This reserve is not exist").SetStatus(StatusCodes.NotFound.ToString());
+                }
+                var mapper = _mapper.Map(input, dbReserve);
+                _reserveHospital.Update(mapper);
+                return await _reserveHospital.CompleteAsync() == true ?
+                    response.SetData(true).SetMessage($"reserve updated")
+                            .SetStatus(StatusCodes.Created.ToString())
+                    : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown))
+                              .SetStatus(StatusCodes.InternalServerError.ToString());
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+                return response;
+            }
+        }
+        public async Task<ResponseService<bool>> DeleteReserveBedInHospital(int id, User user)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+                var dbReserve = await _reserveHospital.GetByIdAsync(id);
+                if (dbReserve == null)
+                {
+                    return response.SetData(false).SetMessage("This reserve is not exist")
+                                   .SetStatus(StatusCodes.NotFound.ToString());
+                }
+                if (dbReserve.UserId != user.Id)
+                {
+                    return response.SetData(false).SetMessage("This reserve is not for you!")
+                                   .SetStatus(StatusCodes.Unauthorized.ToString());
+                }
+
+                await _reserveHospital.DeleteAsync(dbReserve.Id);
+                return await _reserveHospital.CompleteAsync() == true ?
+                    response.SetData(true).SetMessage("Reverse deleted")
+                            .SetStatus(StatusCodes.Ok.ToString())
+                    : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown))
+                            .SetStatus(StatusCodes.InternalServerError.ToString());
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+                return response;
+            }
+        }
+
     }
     public interface ISickService
     {
@@ -395,5 +500,8 @@ namespace Services
         public Task<ResponseService<bool>> ReserveDateWithNurse(ReserveDateWithNurse input, User user);
         public Task<ResponseService<bool>> UpdateReserveDateWithNurse(UpdateReserveDateWithNurse input, User user);
         public Task<ResponseService<bool>> DeleteReserveDateWithNurse(int id, User user);
+        public Task<ResponseService<bool>> ReserveBedInHospital(ReserveBedInHospital input, User user);
+        public Task<ResponseService<bool>> UpdateReserveBedInHospital(UpdateReserveBedInHospital input, User user);
+        public Task<ResponseService<bool>> DeleteReserveBedInHospital(int id, User user);
     }
 }

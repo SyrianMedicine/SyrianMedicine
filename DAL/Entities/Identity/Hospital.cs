@@ -12,7 +12,6 @@ namespace DAL.Entities.Identity
         public AccountState AccountState { get; set; }
         public string WebSite { get; set; }
         public virtual List<Department> Departments { get; set; }
-        public virtual List<ReserveHospital> ReserveHospitalForUsers { get; set; }
         public virtual List<DocumentsHospital> DocumentsHospital { get; set; }
         public string UserId { get; set; }
         public virtual User User { get; set; }

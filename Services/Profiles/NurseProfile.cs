@@ -1,6 +1,7 @@
 using AutoMapper;
 using DAL.Entities;
 using DAL.Entities.Identity;
+using Models.Doctor.Outputs;
 using Models.Nurse;
 using Models.Nurse.Inputs;
 using Models.Nurse.Outputs;
@@ -42,6 +43,14 @@ namespace Services.Profiles
 
 
             CreateMap<DocumentsNurseModel, DocumentsNurse>().ReverseMap();
+
+            CreateMap<ReserveNurse, ReserveNurseOutput>()
+                .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.Nurse.User.FirstName + " " + src.Nurse.User.LastName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Nurse.User.Email))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Nurse.User.UserName))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Nurse.User.PhoneNumber))
+                .ForMember(dest => dest.HomeNumber, opt => opt.MapFrom(src => src.Nurse.User.HomeNumber));
+            CreateMap<CheckReserve, ReserveNurse>();
         }
     }
 }

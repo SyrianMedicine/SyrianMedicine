@@ -51,6 +51,11 @@ namespace Services.Profiles
             CreateMap<Bed, BedOutput>()
                 .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
             CreateMap<UpdateBed, Bed>();
+
+            CreateMap<ReserveHospital, BedsReserved>()
+                .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.Bed.Department.Hospital.Name))
+                .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Bed.Department.Name));
+            CreateMap<CheckReserveHospital, ReserveHospital>();
         }
     }
 }

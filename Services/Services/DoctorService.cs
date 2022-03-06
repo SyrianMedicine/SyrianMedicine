@@ -18,14 +18,16 @@ namespace Services
         private readonly IMapper _mapper;
         private readonly IIdentityRepository _identityRepository;
         private readonly IGenericRepository<DocumentsDoctor> _documentDoctor;
+        private readonly IGenericRepository<ReserveDoctor> _reserveDoctor;
         private readonly ITokenService _tokenService;
 
         public DoctorService(IIdentityRepository identityRepository, IGenericRepository<DocumentsDoctor> documentDoctor,
-         IMapper mapper, ITokenService tokenService, StoreContext dbContext) : base(dbContext)
+         IGenericRepository<ReserveDoctor> reserveDoctor, IMapper mapper, ITokenService tokenService, StoreContext dbContext) : base(dbContext)
         {
             _mapper = mapper;
             _identityRepository = identityRepository;
             _documentDoctor = documentDoctor;
+            _reserveDoctor = reserveDoctor;
             _tokenService = tokenService;
         }
 
@@ -243,6 +245,40 @@ namespace Services
             }
             return response;
         }
+        public async Task<IReadOnlyList<ReserveDoctorOutput>> GetAllReversedForDoctor(int id)
+            => _mapper.Map<IReadOnlyList<ReserveDoctor>, IReadOnlyList<ReserveDoctorOutput>>(await _reserveDoctor.GetQuery().Where(ex => ex.DoctorId == id).Include(e => e.Doctor).ThenInclude(e => e.User).ToListAsync());
+        public async Task<ResponseService<bool>> CheckReserve(CheckReserve input, User user)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+                var dbDoctor = await base.GetQuery().FirstOrDefaultAsync(ex => ex.UserId == user.Id);
+                if (dbDoctor == null)
+                {
+                    return response.SetData(false).SetMessage("You are not a doctor").SetStatus(StatusCodes.Unauthorized.ToString());
+                }
+                var dbReserve = await _reserveDoctor.GetByIdAsync(input.Id);
+                if (dbReserve == null)
+                {
+                    return response.SetData(false).SetMessage("This reserve is not exist").SetStatus(StatusCodes.NotFound.ToString());
+                }
+                if (dbReserve.DoctorId != dbDoctor.Id)
+                {
+                    return response.SetData(false).SetMessage("You are not a doctor for this reserve").SetStatus(StatusCodes.Unauthorized.ToString());
+                }
+
+                var mapper = _mapper.Map(input, dbReserve);
+                _reserveDoctor.Update(mapper);
+
+                return await _reserveDoctor.CompleteAsync() == true ?
+                response.SetData(true).SetMessage("Done").SetStatus(StatusCodes.Ok.ToString())
+                : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
+            }
+            catch
+            {
+                return ResponseService<bool>.GetExeptionResponse();
+            }
+        }
     }
     public interface IDoctorService : IGenericRepository<Doctor>
     {
@@ -251,5 +287,7 @@ namespace Services
         public Task<ResponseService<LoginOutput>> LoginDoctor(LoginDoctorInput input);
         public Task<ResponseService<RegisterDoctorOutput>> RegisterDoctor(RegisterDoctor input);
         public Task<ResponseService<bool>> UpdateDoctor(UpdateDoctor input, User user);
+        public Task<IReadOnlyList<ReserveDoctorOutput>> GetAllReversedForDoctor(int id);
+        public Task<ResponseService<bool>> CheckReserve(CheckReserve input, User user);
     }
 }

@@ -38,39 +38,39 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<bool>>> UpdateSick(UpdateSick input)
             => Result(await _unitOfWork.SickServices.UpdateSick(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateSick));
 
-        [HttpPost(nameof(ReserveDateWithDoctor))]
+        [HttpPost(nameof(ReserveDateWithDoctor)), Authorize(Roles = "Sick")]
         public async Task<ActionResult<ResponseService<bool>>> ReserveDateWithDoctor(ReserveDateWithDoctor input)
             => Result(await _unitOfWork.SickServices.ReserveDateWithDoctor(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(ReserveDateWithDoctor));
 
-        [HttpPost(nameof(UpdateReserveDateWithDoctor))]
+        [HttpPost(nameof(UpdateReserveDateWithDoctor)), Authorize(Roles = "Sick")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateReserveDateWithDoctor(UpdateReserveDateWithDoctor input)
             => Result(await _unitOfWork.SickServices.UpdateReserveDateWithDoctor(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateReserveDateWithDoctor));
 
-        [HttpDelete(nameof(DeleteReserveDateWithDoctor))]
+        [HttpDelete(nameof(DeleteReserveDateWithDoctor)), Authorize(Roles = "Sick")]
         public async Task<ActionResult<ResponseService<bool>>> DeleteReserveDateWithDoctor(int id)
             => Result(await _unitOfWork.SickServices.DeleteReserveDateWithDoctor(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(DeleteReserveDateWithDoctor));
 
-        [HttpPost(nameof(ReserveDateWithNurse))]
+        [HttpPost(nameof(ReserveDateWithNurse)), Authorize(Roles = "Sick")]
         public async Task<ActionResult<ResponseService<bool>>> ReserveDateWithNurse(ReserveDateWithNurse input)
             => Result(await _unitOfWork.SickServices.ReserveDateWithNurse(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(ReserveDateWithNurse));
 
-        [HttpPost(nameof(UpdateReserveDateWithNurse))]
+        [HttpPost(nameof(UpdateReserveDateWithNurse)), Authorize(Roles = "Sick")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateReserveDateWithNurse(UpdateReserveDateWithNurse input)
             => Result(await _unitOfWork.SickServices.UpdateReserveDateWithNurse(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateReserveDateWithNurse));
 
-        [HttpDelete(nameof(DeleteReserveDateWithNurse))]
+        [HttpDelete(nameof(DeleteReserveDateWithNurse)), Authorize(Roles = "Sick")]
         public async Task<ActionResult<ResponseService<bool>>> DeleteReserveDateWithNurse(int id)
             => Result(await _unitOfWork.SickServices.DeleteReserveDateWithNurse(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(DeleteReserveDateWithNurse));
 
-        [HttpPost(nameof(ReserveBedInHospital))]
+        [HttpPost(nameof(ReserveBedInHospital)), Authorize(Roles = "Sick")]
         public async Task<ActionResult<ResponseService<bool>>> ReserveBedInHospital(ReserveBedInHospital input)
             => Result(await _unitOfWork.SickServices.ReserveBedInHospital(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(ReserveBedInHospital));
 
-        [HttpPost(nameof(UpdateReserveBedInHospital))]
+        [HttpPost(nameof(UpdateReserveBedInHospital)), Authorize(Roles = "Sick")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateReserveBedInHospital(UpdateReserveBedInHospital input)
             => Result(await _unitOfWork.SickServices.UpdateReserveBedInHospital(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateReserveBedInHospital));
 
-        [HttpDelete(nameof(DeleteReserveBedInHospital))]
+        [HttpDelete(nameof(DeleteReserveBedInHospital)), Authorize(Roles = "Sick")]
         public async Task<ActionResult<ResponseService<bool>>> DeleteReserveBedInHospital(int id)
             => Result(await _unitOfWork.SickServices.DeleteReserveBedInHospital(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(DeleteReserveBedInHospital));
     }

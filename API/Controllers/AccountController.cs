@@ -1,4 +1,5 @@
 using API.Controllers.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Admin.Inputs;
 using Models.Admin.Outputs;
@@ -30,7 +31,7 @@ namespace API.Controllers
         public List<OptionDto> GetAccountStates()
             => _unitOfWork.AccountService.GetAccountStates();
 
-        [HttpGet(nameof(GetRoles))]
+        [HttpGet(nameof(GetRoles)), Authorize(Roles = "Admin")]
         public List<OptionDto> GetRoles()
                => _unitOfWork.AccountService.GetRoles();
 
@@ -38,14 +39,15 @@ namespace API.Controllers
         public List<OptionDto> GetUserTypes()
         => _unitOfWork.AccountService.GetUserTypes();
 
-        [HttpPut(nameof(UploadImage))]
+        [HttpPut(nameof(UploadImage)), Authorize]
         public async Task<ActionResult<ResponseService<bool>>> UploadImage([FromForm] UploadImage input)
             => Result(await _unitOfWork.AccountService.UploadImage(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UploadImage));
 
         [HttpPost(nameof(LoginAdmin))]
         public async Task<ActionResult<ResponseService<LoginAdminOutput>>> LoginAdmin(LoginInput input)
             => Result(await _unitOfWork.AccountService.LoginAdmin(input), nameof(LoginAdmin));
-        [HttpPost(nameof(UpdateAdminProfile))]
+
+        [HttpPost(nameof(UpdateAdminProfile)), Authorize(Roles = "Admin")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateAdminProfile(UpdateAdmin input)
             => Result(await _unitOfWork.AccountService.UpdateAdminProfile(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateAdminProfile));
     }
