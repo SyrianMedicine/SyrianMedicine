@@ -13,12 +13,10 @@ namespace DAL.Entities
         public int Id { get; set; }
         public DateTime FollowDate { get; set; }
         [Required]
-        public string UserId { get; set; }
-        [ForeignKey(nameof(UserId))]
+        public string UserId { get; set; } 
         public virtual User User { get; set; }
         [Required]
-        public string FollowedUserId { get; set; }
-        [ForeignKey(nameof(FollowedUserId))]
+        public string FollowedUserId { get; set; } 
         public virtual User FollowedUser { get; set; }
     }
 }

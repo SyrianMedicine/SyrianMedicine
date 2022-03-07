@@ -16,6 +16,6 @@ namespace DAL.Entities
         {
             return CommentType.AccountComment;
         }
-        public override string getRelatedObjectid() => this.OnAccountId;
+        public override string getRelatedObjectid() => OnAccount != null ? this.OnAccount.UserName : null;
     }
 }

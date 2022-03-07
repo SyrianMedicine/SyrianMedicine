@@ -115,11 +115,13 @@ namespace Services.Services
 
         public Task<ResponseService<List<PostOutput>>> GetUserHomePagePosts(User user)
         {
+            //todo: pagination not implemented yet
             throw new NotImplementedException();
         }
 
         public Task<ResponseService<List<PostOutput>>> GetUserProfilePosts(User user)
         {
+            //todo: pagination not implemented yet
             throw new NotImplementedException();
         }
 

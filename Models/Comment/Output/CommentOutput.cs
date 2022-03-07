@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Models.Post.Output;
 using Models.UserCard;
 
 namespace Models.Comment.Output
@@ -15,5 +16,7 @@ namespace Models.Comment.Output
         public UserCardOutput User { get; set; }
         public string RelatedObjectType { get; set; }
         public string RealtedObjectId { get; set; }
+        public PostOutput OnPost { get; set; }
+        public UserCardOutput OnAccount { get; set; }
     }
 }

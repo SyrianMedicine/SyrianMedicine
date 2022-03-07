@@ -7,6 +7,8 @@ namespace Services
     public class UnitOfWork : IUnitOfWork
     {
         private readonly StoreContext _dbContext;
+
+        public ICommentService CommentService { get; }
         public IPostService PostService { get; }
         public IConnectionService ConnectionService { get; }
         public IDoctorService DoctorServices { get; }
@@ -20,9 +22,10 @@ namespace Services
         public IAccountService AccountService { get; }
         public IDashboardService DashboardService { get; }
 
-        public UnitOfWork(IPostService PostService, IConnectionService ConnectionService, IFollowService FollowService, IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
+        public UnitOfWork(ICommentService CommentService, IPostService PostService, IConnectionService ConnectionService, IFollowService FollowService, IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
             IIdentityRepository IdentityRepository, IDashboardService DashboardService, IAccountService AccountService, IHospitalService HospitalServices, StoreContext dbContext)
         {
+            this.CommentService = CommentService;
             this.PostService = PostService;
             this.ConnectionService = ConnectionService;
             this.FollowService = FollowService;
@@ -43,6 +46,7 @@ namespace Services
 
         public IConnectionService ConnectionService { get; }
 
+        public ICommentService CommentService { get; }
         public IPostService PostService { get; }
         public IDoctorService DoctorServices { get; }
         public INurseService NurseServices { get; }

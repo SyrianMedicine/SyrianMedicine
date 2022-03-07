@@ -69,6 +69,9 @@ namespace Services.Services
         public async Task<List<UserConnection>> GetConnections(User user) =>
             await GetQuery().Where(i => i.user.NormalizedUserName.Equals(user.NormalizedUserName)).ToListAsync();
 
+        public async Task<List<UserConnection>> GetPostUserConnection(int Postid) =>
+           await dbContext.Posts.Where(i => i.Id == Postid).Select(s => s.User.UserConnections).FirstOrDefaultAsync();
+
     }
     public interface IConnectionService
     {
@@ -76,6 +79,7 @@ namespace Services.Services
         public Task<List<UserConnection>> GetConnections(User user);
         public Task<List<UserConnection>> GetUserFollowersConnection(string Userid);
         public Task<List<UserConnection>> GetUserFollowersConnection(User user);
+        public Task<List<UserConnection>> GetPostUserConnection(int Postid);
         public Task<bool> newConnection(User user, string ConnectionId, string Agent);
         public Task<bool> delete(string ConnectionId);
     }

@@ -69,7 +69,7 @@ namespace API.Controllers
         /// <param name="id">Integer number that Identity Post</param>
         /// <returns>true or false</returns>
         [Authorize]
-        [HttpPost(nameof(Delete))]
+        [HttpDelete(nameof(Delete))]
         public async Task<ActionResult<ResponseService<bool>>> Delete(int id) =>
            Result(await _unitOfWork.PostService.Delete(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
 
@@ -78,7 +78,7 @@ namespace API.Controllers
         /// </summary>
         /// <param name="id">Integer number that Identity Post</param>
         /// <returns>PostOutput</returns>
-        [HttpPost("{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ResponseService<PostOutput>>> GetPost(int id) =>
              Result(await _unitOfWork.PostService.GetPost(id));
 

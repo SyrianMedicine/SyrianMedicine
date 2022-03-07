@@ -6,6 +6,7 @@ using DAL.DataContext;
 using DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Models.Comment.Output;
 using Models.Post.Output;
 using Models.UserCard;
 using Services;
@@ -40,5 +41,6 @@ namespace API.Hubs
     {
         public Task NotfiyUserFollowYou(UserCardOutput user, string messege);
         public Task NotfiyPostCreated(PostOutput Post, string messege);
+        public Task NotfiyCommentCreated(CommentOutput Comment, string messege);
     }
 }

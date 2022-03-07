@@ -52,7 +52,7 @@ namespace API.Extensions
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IConnectionService, ConnectionService>();
-            services.AddScoped<IPostCommentService, PostCommentService>();
+            services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }
@@ -67,7 +67,7 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(TagProfile));
             services.AddAutoMapper(typeof(FollowProfile));
             services.AddAutoMapper(typeof(PostProfile));
-            services.AddAutoMapper(typeof(PostCommentProfile));
+            services.AddAutoMapper(typeof(CommentProfile));
             services.AddAutoMapper(typeof(UserCardProfile));
             return services;
         }

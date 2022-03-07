@@ -62,7 +62,7 @@ namespace API.Controllers
         /// <param name="username">user name for user to follow it</param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("{username}/" + nameof(UnFollow))]
+        [HttpDelete("{username}/" + nameof(UnFollow))]
         public async Task<ActionResult<ResponseService<bool>>> UnFollow(string username) =>
             Result(await _unitOfWork.FollowService.UnFollowUser(username, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
 
