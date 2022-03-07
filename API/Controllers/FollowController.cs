@@ -29,6 +29,8 @@ namespace API.Controllers
         }
         /// <summary>
         /// follow user <br/> 
+        /// Now! You will see  user  post in your Home Page and and recive Notification for user action<br/>
+        /// Note: this action will send notification for user that you are  start Following it
         /// </summary>
         /// <param name="username">user name for user to unfollow it</param>
         /// <returns></returns>
@@ -53,7 +55,9 @@ namespace API.Controllers
 
 
         /// <summary>
-        /// unfollow user 
+        /// unfollow user ,
+        /// remove User from yor follow list<br/>
+        /// now you cannot Know what user Do *_*
         /// </summary>
         /// <param name="username">user name for user to follow it</param>
         /// <returns></returns>
@@ -63,19 +67,36 @@ namespace API.Controllers
             Result(await _unitOfWork.FollowService.UnFollowUser(username, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
 
 
+        /// <summary>
+        ///  users that inputuser is Following them 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("{username}/" + nameof(FollowingList))]
         public async Task<ActionResult<ResponseService<FollowOutput>>> FollowingList(string username) =>
             Result(await _unitOfWork.FollowService.FollowingList(username));
 
+        /// <summary>
+        /// users that Follow inputuser 
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [HttpGet("{username}/" + nameof(FollowersList))]
         public async Task<ActionResult<ResponseService<FollowOutput>>> FollowersList(string username) =>
             Result(await _unitOfWork.FollowService.FollowersList(username));
 
+        /// <summary>
+        ///  users that You are Following them 
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         [HttpGet(nameof(FollowingList))]
         public async Task<ActionResult<ResponseService<FollowOutput>>> FollowingList() =>
          Result(await _unitOfWork.FollowService.FollowingList((await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)).UserName));
 
+        /// <summary>
+        /// users that Follow You 
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         [HttpGet(nameof(FollowersList))]
         public async Task<ActionResult<ResponseService<FollowOutput>>> FollowersList() =>

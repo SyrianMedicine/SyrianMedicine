@@ -18,6 +18,7 @@ namespace Services.Profiles
             CreateMap<Post, PostOutput>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.PostText, opt => opt.MapFrom(src => src.PostText))
+            .ForMember(dest => dest.IsEdited, opt => opt.MapFrom(src => src.IsEdited))
             .ForMember(dest => dest.Tags, opt => opt.MapFrom(S =>S.Tags!=null?S.Tags.Select(s=>s.Tag).ToList():null ))
             .ForMember(dest => dest.Type, opt => opt.MapFrom(S => S.Type))
             .ForMember(dest => dest.user, opt => opt.MapFrom(S => S.User));

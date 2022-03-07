@@ -20,24 +20,24 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
         /// <summary>
-        /// add tag to InterestedList of AuthorizedUser <br/>
-        /// <strong>this help us to disply posts releted to user intrested tags</strong>
+        /// add tag to AuthorizedUser TagList  <br/>
+        /// this help us to disply posts related to user tagList
         /// </summary>
         /// <param name="id">tag id</param>
         /// <returns>true for success or false for fail</returns>
         [Authorize]
-        [HttpPost("{id}/" + nameof(AddtoInterestedList))]
-        public async Task<ActionResult<ResponseService<bool>>> AddtoInterestedList(int id) =>
-             Result(await _unitOfWork.UserTagService.InterestInTag(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(AddtoInterestedList));
+        [HttpPost("{id}/" + nameof(AddtoTagList))]
+        public async Task<ActionResult<ResponseService<bool>>> AddtoTagList(int id) =>
+             Result(await _unitOfWork.UserTagService.AddtoTagList(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(AddtoTagList));
         /// <summary>
-        /// Remove tag from AuthorizedUser InterestedList
+        /// Remove tag from AuthorizedUser TagList
         /// </summary>
         /// <param name="id">tag id</param>
         /// <returns>true for success or false for fail</returns>
         [Authorize]
-        [HttpDelete("{id}/" + nameof(RemovefromInterestedList))]
-        public async Task<ActionResult<ResponseService<bool>>> RemovefromInterestedList(int id) =>
-               Result(await _unitOfWork.UserTagService.UnInterestInTag(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
+        [HttpDelete("{id}/" + nameof(RemovefromTagList))]
+        public async Task<ActionResult<ResponseService<bool>>> RemovefromTagList(int id) =>
+               Result(await _unitOfWork.UserTagService.RemovefromTagList(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
         /// <summary>
         /// get tag list for Authorized user
         /// </summary>
@@ -45,7 +45,7 @@ namespace API.Controllers
         [Authorize]
         [HttpGet(nameof(GetMylist))]
         public async Task<ActionResult<ResponseService<List<TagOutput>>>> GetMylist() =>
-            Result(await _unitOfWork.UserTagService.InterestedTags(await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
+            Result(await _unitOfWork.UserTagService.GetMylist(await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
 
     }
 }

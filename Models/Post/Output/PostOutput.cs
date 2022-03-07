@@ -15,6 +15,7 @@ namespace Models.Post.Output
         [Required]
         public string PostText { get; set; }
         public DAL.Entities.Post.PostType Type { get; set; }
+        public bool IsEdited { get; set; }
         public UserCardOutput user { get; set; }
         public List<TagOutput> Tags { get; set; }
 

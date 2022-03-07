@@ -25,7 +25,7 @@ namespace Services
             this._iGenericRepositoryTag = _iGenericRepositoryTag;
         }
 
-        public async Task<ResponseService<List<TagOutput>>> InterestedTags(User user)
+        public async Task<ResponseService<List<TagOutput>>> GetMylist(User user)
         {
             var result = new ResponseService<List<TagOutput>>()
             {
@@ -37,7 +37,7 @@ namespace Services
             result.SetMessage("you have no Interested Tags").SetStatus(StatusCodes.NotFound.ToString());
         }
 
-        public async Task<ResponseService<bool>> InterestInTag(int id, User user)
+        public async Task<ResponseService<bool>> AddtoTagList(int id, User user)
         {
             var result = new ResponseService<bool> { Data = false };
             try
@@ -60,7 +60,7 @@ namespace Services
             }
         }
 
-        public async Task<ResponseService<bool>> UnInterestInTag(int id, User user)
+        public async Task<ResponseService<bool>> RemovefromTagList(int id, User user)
         {
             var result = new ResponseService<bool> { Data = false };
             try
@@ -82,9 +82,9 @@ namespace Services
     }
     public interface IUserTagService
     {
-        public Task<ResponseService<bool>> InterestInTag(int id, User user);
-        public Task<ResponseService<bool>> UnInterestInTag(int id, User user);
-        public Task<ResponseService<List<TagOutput>>> InterestedTags(User user);
+        public Task<ResponseService<bool>> AddtoTagList(int id, User user);
+        public Task<ResponseService<bool>> RemovefromTagList(int id, User user);
+        public Task<ResponseService<List<TagOutput>>> GetMylist(User user);
          
     }
 }

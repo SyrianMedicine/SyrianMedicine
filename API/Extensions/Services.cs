@@ -37,6 +37,7 @@ namespace API.Extensions
             services.AddScoped(typeof(IGenericRepository<Hospital>), typeof(GenericRepository<Hospital>));
             services.AddScoped(typeof(IGenericRepository<Department>), typeof(GenericRepository<Department>));
             services.AddScoped(typeof(IGenericRepository<UserConnection>), typeof(GenericRepository<UserConnection>));
+            services.AddScoped(typeof(IGenericRepository<PostComment>), typeof(GenericRepository<PostComment>));
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<INurseService, NurseService>();
@@ -51,6 +52,7 @@ namespace API.Extensions
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IConnectionService, ConnectionService>();
+            services.AddScoped<IPostCommentService, PostCommentService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }
@@ -65,6 +67,7 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(TagProfile));
             services.AddAutoMapper(typeof(FollowProfile));
             services.AddAutoMapper(typeof(PostProfile));
+            services.AddAutoMapper(typeof(PostCommentProfile));
             services.AddAutoMapper(typeof(UserCardProfile));
             return services;
         }

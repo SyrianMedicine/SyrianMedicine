@@ -12,5 +12,10 @@ namespace DAL.Entities
         public string OnAccountId { get; set; }
         [ForeignKey(nameof(OnAccountId))]
         public virtual User OnAccount { get; set; }
+        public override CommentType getCommentType()
+        {
+            return CommentType.AccountComment;
+        }
+        public override string getRelatedObjectid() => this.OnAccountId;
     }
 }

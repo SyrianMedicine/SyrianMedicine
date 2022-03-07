@@ -103,7 +103,7 @@ namespace Services.Services
 
         public async Task<ResponseService<PostOutput>> GetPost(int Id)
         {
-            var post = await base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s=>s.Tag).Where(i => i.Id == Id).FirstOrDefaultAsync();
+            var post = await base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).Where(i => i.Id == Id).FirstOrDefaultAsync();
             var result = new ResponseService<PostOutput>
             {
                 Data = _mapper.Map<Post, PostOutput>(post)
@@ -113,7 +113,12 @@ namespace Services.Services
             result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
         }
 
-        public async Task<ResponseService<List<PostOutput>>> getPosts(User user)
+        public Task<ResponseService<List<PostOutput>>> GetUserHomePagePosts(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ResponseService<List<PostOutput>>> GetUserProfilePosts(User user)
         {
             throw new NotImplementedException();
         }
@@ -172,6 +177,7 @@ namespace Services.Services
         public Task<ResponseService<PostOutput>> Update(PostUpdateInput input, User user);
         public Task<ResponseService<bool>> Delete(int id, User user);
         public Task<ResponseService<PostOutput>> GetPost(int Id);
-        public Task<ResponseService<List<PostOutput>>> getPosts(User user);
+        public Task<ResponseService<List<PostOutput>>> GetUserProfilePosts(User user);
+        public Task<ResponseService<List<PostOutput>>> GetUserHomePagePosts(User user);
     }
 }

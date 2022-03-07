@@ -70,7 +70,7 @@ namespace Services
                 return await base.CompleteAsync() ?
                     result.SetMessage("Tag Created").SetData(_mapper.Map<Tag, TagOutput>(tag)).SetStatus(StatusCodes.Created.ToString())
                     :
-                    result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
+                    result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }
             catch
             {
@@ -90,7 +90,7 @@ namespace Services
                 return await base.CompleteAsync() ?
                     result.SetMessage("Updated").SetData(_mapper.Map<Tag, TagOutput>(tag)).SetStatus(StatusCodes.Accepted.ToString())
                     :
-                    result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
+                    result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }
             catch
             {
@@ -116,7 +116,7 @@ namespace Services
                 return await base.CompleteAsync() ?
                     result.SetData(true).SetMessage("Deleted").SetStatus(StatusCodes.Ok.ToString())
                     :
-                    result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
+                    result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }
             catch
             {

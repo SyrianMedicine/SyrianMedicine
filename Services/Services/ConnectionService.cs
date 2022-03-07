@@ -7,7 +7,6 @@ using DAL.Entities;
 using DAL.Entities.Identity;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
-
 namespace Services.Services
 {
     public class ConnectionService : GenericRepository<UserConnection>, IConnectionService
