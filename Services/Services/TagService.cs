@@ -14,10 +14,10 @@ using Microsoft.EntityFrameworkCore;
 namespace Services
 {
     public class TagService : GenericRepository<Tag>, ITagService
-    { 
-        public TagService(IMapper mapper, StoreContext dbContext) : base(dbContext,mapper)
+    {
+        public TagService(IMapper mapper, StoreContext dbContext) : base(dbContext, mapper)
         {
-          
+
         }
 
         public async Task<ResponseService<List<TagOutput>>> GetAllTags()
@@ -60,7 +60,7 @@ namespace Services
             var tag = _mapper.Map<TagCreateInput, Tag>(Input);
             var result = new ResponseService<TagOutput>();
             try
-            { 
+            {
                 if (await base.GetQuery().Where(s => s.Tagname.Equals(Input.Name)).AnyAsync())
                 {
                     result.SetMessage("Tag already exists").SetStatus(StatusCodes.BadRequest.ToString());

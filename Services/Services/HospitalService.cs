@@ -20,23 +20,25 @@ using Services.Common;
 namespace Services
 {
     public class HospitalService : GenericRepository<Hospital>, IHospitalService
-    { 
+    {
         private readonly IIdentityRepository _identityRepository;
         private readonly ITokenService _tokenService;
         private readonly IGenericRepository<DocumentsHospital> _documentsHospital;
         private readonly IGenericRepository<Department> _department;
         private readonly IGenericRepository<Bed> _bed;
         private readonly IGenericRepository<ReserveHospital> _reserveHospital;
+        private readonly IGenericRepository<HospitalHistory> _historyHospital;
 
         public HospitalService(IIdentityRepository identityRepository, IGenericRepository<DocumentsHospital> documentsHospital,
-        IGenericRepository<Department> department, IGenericRepository<ReserveHospital> reserveHospital, IGenericRepository<Bed> bed, ITokenService tokenService, IMapper mapper, StoreContext dbContext) : base(dbContext,mapper)
+        IGenericRepository<Department> department, IGenericRepository<HospitalHistory> historyHospital, IGenericRepository<ReserveHospital> reserveHospital, IGenericRepository<Bed> bed, ITokenService tokenService, IMapper mapper, StoreContext dbContext) : base(dbContext, mapper)
         {
             _identityRepository = identityRepository;
             _tokenService = tokenService;
             _documentsHospital = documentsHospital;
             _reserveHospital = reserveHospital;
             _department = department;
-            _bed = bed; 
+            _historyHospital = historyHospital;
+            _bed = bed;
         }
 
         public async Task<IReadOnlyList<HospitalOutput>> GetAllHospitals()
@@ -505,6 +507,44 @@ namespace Services
                 return response;
             }
         }
+        public async Task<ResponseService<bool>> MoveReserveToHistory(int id, User user)
+        {
+            var response = new ResponseService<bool>();
+            try
+            {
+                var dbReserve = await _reserveHospital.GetByIdAsync(id);
+                if (dbReserve == null)
+                {
+                    return response.SetData(false).SetMessage("Not exist").SetStatus(StatusCodes.NotFound.ToString());
+                }
+                if (dbReserve.UserId != user.Id)
+                {
+                    return response.SetData(false).SetMessage("you are unauthorize").SetStatus(StatusCodes.Unauthorized.ToString());
+                }
+
+                HospitalHistory history = new()
+                {
+                    BedId = dbReserve.BedId,
+                    DateTime = dbReserve.DateTime,
+                    Description = dbReserve.Description,
+                    Title = dbReserve.Title,
+                    UserId = dbReserve.UserId
+                };
+                await _reserveHospital.DeleteAsync(dbReserve);
+                await _historyHospital.InsertAsync(history);
+                await _historyHospital.CompleteAsync();
+                return await _reserveHospital.CompleteAsync() == true ?
+                    response.SetData(true).SetMessage("Moved successed").SetStatus(StatusCodes.Ok.ToString())
+                    : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
+            }
+            catch
+            {
+                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+                response.Status = StatusCodes.InternalServerError.ToString();
+                return response;
+            }
+        }
+
     }
     public interface IHospitalService : IGenericRepository<Hospital>
     {
@@ -525,5 +565,6 @@ namespace Services
         public Task<ResponseService<bool>> UpdateHospital(UpdateHospital input, User user);
         public Task<IReadOnlyList<BedsReserved>> GetAllBedReservedForHospital(int id);
         public Task<ResponseService<bool>> CheckReserve(CheckReserveHospital input, User user);
+        public Task<ResponseService<bool>> MoveReserveToHistory(int id, User user);
     }
 }

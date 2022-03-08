@@ -15,13 +15,13 @@ using Services.Common;
 namespace Services.Services
 {
     public class CommentService : GenericRepository<Comment>, ICommentService
-    { 
+    {
         private readonly IIdentityRepository identityRepository;
         private readonly IGenericRepository<Post> PostRepository;
-        public CommentService(IGenericRepository<Post> PostRepository, IIdentityRepository identityRepository, IMapper _mapper, StoreContext dbContext) : base(dbContext,_mapper)
+        public CommentService(IGenericRepository<Post> PostRepository, IIdentityRepository identityRepository, IMapper _mapper, StoreContext dbContext) : base(dbContext, _mapper)
         {
             this.PostRepository = PostRepository;
-            this.identityRepository = identityRepository; 
+            this.identityRepository = identityRepository;
         }
 
         public async Task<ResponseService<CommentOutput>> CreateAccountComment(AccountCommentCreateInput input, User user)

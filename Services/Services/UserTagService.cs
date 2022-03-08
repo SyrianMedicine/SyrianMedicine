@@ -15,11 +15,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Services
 {
     public class UserTagService : GenericRepository<UserTag>, IUserTagService
-    { 
-        private readonly  IGenericRepository<Tag> _iGenericRepositoryTag;
+    {
+        private readonly IGenericRepository<Tag> _iGenericRepositoryTag;
 
-        public UserTagService(IGenericRepository<Tag> _iGenericRepositoryTag, IMapper mapper, StoreContext dbContext) : base(dbContext,mapper)
-        { 
+        public UserTagService(IGenericRepository<Tag> _iGenericRepositoryTag, IMapper mapper, StoreContext dbContext) : base(dbContext, mapper)
+        {
             this._iGenericRepositoryTag = _iGenericRepositoryTag;
         }
 
@@ -83,6 +83,6 @@ namespace Services
         public Task<ResponseService<bool>> AddtoTagList(int id, User user);
         public Task<ResponseService<bool>> RemovefromTagList(int id, User user);
         public Task<ResponseService<List<TagOutput>>> GetMylist(User user);
-         
+
     }
 }

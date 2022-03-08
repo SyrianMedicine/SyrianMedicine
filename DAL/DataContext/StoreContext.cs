@@ -37,6 +37,9 @@ namespace DAL.DataContext
         public DbSet<City> Cities { get; set; }
         public DbSet<UserTag> UserTags { get; set; }
         public DbSet<UserConnection> UserConnections { get; set; }
+        public DbSet<DoctorHistory> DoctorHistories { get; set; }
+        public DbSet<NurseHistory> NurseHistories { get; set; }
+        public DbSet<HospitalHistory> HospitalHistories { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
 

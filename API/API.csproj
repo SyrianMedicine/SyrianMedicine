@@ -13,6 +13,8 @@
     <PackageReference Include="Xabe.FFmpeg" Version="5.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0"/>
+
   </ItemGroup>
   <PropertyGroup>
   <GenerateDocumentationFile>true</GenerateDocumentationFile>

@@ -14,14 +14,14 @@ using Services.Common;
 namespace Services.Services
 {
     public class FollowService : GenericRepository<Follow>, IFollowService
-    { 
+    {
 
         private readonly IIdentityRepository _identityRepository;
 
-        public FollowService(IIdentityRepository _identityRepository, IMapper _mapper, StoreContext dbContext) : base(dbContext,_mapper)
+        public FollowService(IIdentityRepository _identityRepository, IMapper _mapper, StoreContext dbContext) : base(dbContext, _mapper)
         {
             this._identityRepository = _identityRepository;
-            
+
         }
 
         public async Task<ResponseService<bool>> FollowUser(string username, User user)

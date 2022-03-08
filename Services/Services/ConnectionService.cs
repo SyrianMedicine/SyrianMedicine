@@ -13,7 +13,7 @@ namespace Services.Services
     public class ConnectionService : GenericRepository<UserConnection>, IConnectionService
     {
         private readonly StoreContext dbContext;
-        public ConnectionService(StoreContext dbContext,IMapper _mapper) : base(dbContext,_mapper)
+        public ConnectionService(StoreContext dbContext, IMapper _mapper) : base(dbContext, _mapper)
         {
             this.dbContext = dbContext;
         }

@@ -14,15 +14,15 @@ using Services.Common;
 namespace Services
 {
     public class DoctorService : GenericRepository<Doctor>, IDoctorService
-    { 
+    {
         private readonly IIdentityRepository _identityRepository;
         private readonly IGenericRepository<DocumentsDoctor> _documentDoctor;
         private readonly IGenericRepository<ReserveDoctor> _reserveDoctor;
         private readonly ITokenService _tokenService;
 
         public DoctorService(IIdentityRepository identityRepository, IGenericRepository<DocumentsDoctor> documentDoctor,
-         IGenericRepository<ReserveDoctor> reserveDoctor, IMapper mapper, ITokenService tokenService, StoreContext dbContext) : base(dbContext,mapper)
-        { 
+         IGenericRepository<ReserveDoctor> reserveDoctor, IMapper mapper, ITokenService tokenService, StoreContext dbContext) : base(dbContext, mapper)
+        {
             _identityRepository = identityRepository;
             _documentDoctor = documentDoctor;
             _reserveDoctor = reserveDoctor;

@@ -13,12 +13,9 @@ using Services.Common;
 namespace API.Controllers
 {
     public class HospitalController : BaseController
-    { 
-        public HospitalController(IUnitOfWork unitOfWork):base(unitOfWork)
-        { 
-
-            
-        }
+    {
+        public HospitalController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        { }
 
         [HttpGet(nameof(Hospitals))]
         public async Task<IReadOnlyList<HospitalOutput>> Hospitals()
@@ -89,6 +86,10 @@ namespace API.Controllers
         [HttpPost(nameof(CheckReserve)), Authorize(Roles = "Hospital")]
         public async Task<ActionResult<ResponseService<bool>>> CheckReserve(CheckReserveHospital input)
             => Result(await _unitOfWork.HospitalServices.CheckReserve(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(CheckReserve));
+
+        [HttpPost(nameof(MoveReserveToHistory) + "/{id}"), Authorize(Roles = "Hospital")]
+        public async Task<ActionResult<ResponseService<bool>>> MoveReserveToHistory(int id)
+            => Result(await _unitOfWork.HospitalServices.MoveReserveToHistory(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(MoveReserveToHistory));
 
     }
 }
