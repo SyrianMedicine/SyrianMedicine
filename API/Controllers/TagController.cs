@@ -18,11 +18,9 @@ namespace API.Controllers
     /// used as Keyword in post 
     /// </summary>
     public class TagController : BaseController
-    {
-        private readonly IUnitOfWork _unitOfWork;
-        public TagController(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
+    { 
+        public TagController(IUnitOfWork unitOfWork):base(unitOfWork)
+        { 
         }
 
         /// <summary>

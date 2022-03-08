@@ -10,10 +10,9 @@ namespace API.Controllers
 {
     public class SickController : BaseController
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public SickController(IUnitOfWork unitOfWork)
+        public SickController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            
         }
 
         [HttpGet(nameof(Sicks))]

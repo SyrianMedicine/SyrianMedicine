@@ -20,8 +20,7 @@ using Services.Common;
 namespace Services
 {
     public class HospitalService : GenericRepository<Hospital>, IHospitalService
-    {
-        private readonly IMapper _mapper;
+    { 
         private readonly IIdentityRepository _identityRepository;
         private readonly ITokenService _tokenService;
         private readonly IGenericRepository<DocumentsHospital> _documentsHospital;
@@ -30,15 +29,14 @@ namespace Services
         private readonly IGenericRepository<ReserveHospital> _reserveHospital;
 
         public HospitalService(IIdentityRepository identityRepository, IGenericRepository<DocumentsHospital> documentsHospital,
-        IGenericRepository<Department> department, IGenericRepository<ReserveHospital> reserveHospital, IGenericRepository<Bed> bed, ITokenService tokenService, IMapper mapper, StoreContext dbContext) : base(dbContext)
+        IGenericRepository<Department> department, IGenericRepository<ReserveHospital> reserveHospital, IGenericRepository<Bed> bed, ITokenService tokenService, IMapper mapper, StoreContext dbContext) : base(dbContext,mapper)
         {
             _identityRepository = identityRepository;
             _tokenService = tokenService;
             _documentsHospital = documentsHospital;
             _reserveHospital = reserveHospital;
             _department = department;
-            _bed = bed;
-            _mapper = mapper;
+            _bed = bed; 
         }
 
         public async Task<IReadOnlyList<HospitalOutput>> GetAllHospitals()

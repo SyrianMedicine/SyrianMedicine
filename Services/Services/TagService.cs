@@ -14,11 +14,10 @@ using Microsoft.EntityFrameworkCore;
 namespace Services
 {
     public class TagService : GenericRepository<Tag>, ITagService
-    {
-        private readonly IMapper _mapper;
-        public TagService(IMapper mapper, StoreContext dbContext) : base(dbContext)
+    { 
+        public TagService(IMapper mapper, StoreContext dbContext) : base(dbContext,mapper)
         {
-            _mapper = mapper;
+          
         }
 
         public async Task<ResponseService<List<TagOutput>>> GetAllTags()

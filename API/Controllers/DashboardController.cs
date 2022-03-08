@@ -8,11 +8,10 @@ namespace API.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class DashboardController : BaseController
-    {
-        private readonly IUnitOfWork _unitOfWork;
-        public DashboardController(IUnitOfWork unitOfWork)
+    { 
+        public DashboardController(IUnitOfWork unitOfWork):base(unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+           
         }
 
         [HttpPut(nameof(ValidateDoctor) + "/{id}")]

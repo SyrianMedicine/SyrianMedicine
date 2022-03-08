@@ -10,11 +10,10 @@ using Services.Common;
 namespace API.Controllers
 {
     public class DoctorController : BaseController
-    {
-        private readonly IUnitOfWork _unitOfWork;
-        public DoctorController(IUnitOfWork unitOfWork)
+    { 
+        public DoctorController(IUnitOfWork unitOfWork):base(unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            
         }
 
         [HttpGet(nameof(Doctors))]

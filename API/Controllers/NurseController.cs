@@ -10,11 +10,10 @@ using Services.Common;
 namespace API.Controllers
 {
     public class NurseController : BaseController
-    {
-        private readonly IUnitOfWork _unitOfWork;
-        public NurseController(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
+    { 
+        public NurseController(IUnitOfWork unitOfWork):base(unitOfWork)
+        { 
+            
         }
 
 

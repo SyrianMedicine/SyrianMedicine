@@ -12,11 +12,8 @@ namespace API.Controllers
 {
     public class AccountController : BaseController
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public AccountController(IUnitOfWork unitOfWork)
+        public AccountController(IUnitOfWork _unitOfWork) : base(_unitOfWork)
         {
-            _unitOfWork = unitOfWork;
-
         }
 
         [HttpGet(nameof(GetCities))]

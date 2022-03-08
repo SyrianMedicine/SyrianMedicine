@@ -17,14 +17,12 @@ namespace API.Controllers
 {
     public class PostController : BaseController
     {
-        private readonly IHubContext<PublicHub, IPublicHub> _hub;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IHubContext<PublicHub, IPublicHub> _hub; 
         private readonly IMapper _mapper;
-        public PostController(IMapper _mapper, IHubContext<PublicHub, IPublicHub> _hub, IUnitOfWork unitOfWork)
+        public PostController(IMapper _mapper, IHubContext<PublicHub, IPublicHub> _hub, IUnitOfWork unitOfWork):base(unitOfWork)
         {
             this._mapper = _mapper;
-            this._hub = _hub;
-            this._unitOfWork = unitOfWork;
+            this._hub = _hub; 
         }
 
         /// <summary>

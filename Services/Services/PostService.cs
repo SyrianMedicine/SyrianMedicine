@@ -18,14 +18,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Services.Services
 {
     public class PostService : GenericRepository<Post>, IPostService
-    {
-        private readonly IMapper _mapper;
-        IGenericRepository<Tag> _tags;
-        StoreContext dbContext;
-        public PostService(IGenericRepository<Tag> tags, StoreContext dbContext, IMapper _mapper) : base(dbContext)
+    { 
+        private readonly IGenericRepository<Tag> _tags;
+        private readonly StoreContext dbContext;
+        public PostService(IGenericRepository<Tag> tags, StoreContext dbContext, IMapper _mapper) : base(dbContext,_mapper)
         {
-            this.dbContext = dbContext;
-            this._mapper = _mapper;
+            this.dbContext = dbContext; 
             this._tags = tags;
         }
 

@@ -13,11 +13,11 @@ using Services.Common;
 namespace API.Controllers
 {
     public class HospitalController : BaseController
-    {
-        private readonly IUnitOfWork _unitOfWork;
-        public HospitalController(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
+    { 
+        public HospitalController(IUnitOfWork unitOfWork):base(unitOfWork)
+        { 
+
+            
         }
 
         [HttpGet(nameof(Hospitals))]

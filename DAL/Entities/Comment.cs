@@ -28,7 +28,7 @@ namespace DAL.Entities
         }
         public virtual string getRelatedObjectid()
         {
-            throw new NotImplementedException(); 
+            return null;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Services
     {
         private readonly StoreContext _dbContext;
 
+        public ISubCommentService SubCommentService { get; }
         public ICommentService CommentService { get; }
         public IPostService PostService { get; }
         public IConnectionService ConnectionService { get; }
@@ -22,9 +23,10 @@ namespace Services
         public IAccountService AccountService { get; }
         public IDashboardService DashboardService { get; }
 
-        public UnitOfWork(ICommentService CommentService, IPostService PostService, IConnectionService ConnectionService, IFollowService FollowService, IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
+        public UnitOfWork(ISubCommentService SubCommentService,ICommentService CommentService, IPostService PostService, IConnectionService ConnectionService, IFollowService FollowService, IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
             IIdentityRepository IdentityRepository, IDashboardService DashboardService, IAccountService AccountService, IHospitalService HospitalServices, StoreContext dbContext)
         {
+            this.SubCommentService=SubCommentService;
             this.CommentService = CommentService;
             this.PostService = PostService;
             this.ConnectionService = ConnectionService;
@@ -45,7 +47,7 @@ namespace Services
     {
 
         public IConnectionService ConnectionService { get; }
-
+        public ISubCommentService SubCommentService { get; }
         public ICommentService CommentService { get; }
         public IPostService PostService { get; }
         public IDoctorService DoctorServices { get; }

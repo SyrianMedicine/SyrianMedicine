@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Services;
 using Services.Common;
 
 namespace API.Controllers.Common
@@ -7,6 +8,11 @@ namespace API.Controllers.Common
     [ApiController]
     public class BaseController : ControllerBase
     {
+
+        protected readonly IUnitOfWork _unitOfWork;
+        public BaseController(IUnitOfWork _unitOfWork){
+            this._unitOfWork=_unitOfWork;
+        }
         public ActionResult Result<T>(ResponseService<T> response, string api = "")
             => response.Status switch
             {

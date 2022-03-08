@@ -4,15 +4,17 @@ using System.Threading.Tasks;
 using DAL.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-
+using AutoMapper;
 namespace DAL.Repositories
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         private readonly StoreContext dbContext;
         private readonly DbSet<TEntity> dbSet;
-        public GenericRepository(StoreContext dbContext)
+        protected readonly IMapper _mapper;
+        public GenericRepository(StoreContext dbContext, IMapper _mapper)
         {
+            this._mapper = _mapper;
             this.dbContext = dbContext;
             dbSet = dbContext.Set<TEntity>();
         }

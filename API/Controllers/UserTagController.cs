@@ -13,11 +13,9 @@ using Microsoft.AspNetCore.Authorization;
 namespace API.Controllers
 {
     public class UserTagController : BaseController
-    {
-        private readonly IUnitOfWork _unitOfWork;
-        public UserTagController(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
+    { 
+        public UserTagController(IUnitOfWork unitOfWork):base(unitOfWork)
+        { 
         }
         /// <summary>
         /// add tag to AuthorizedUser TagList  <br/>

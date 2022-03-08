@@ -19,13 +19,11 @@ namespace API.Controllers
     public class FollowController : BaseController
     {
         private readonly IHubContext<PublicHub, IPublicHub> _hub;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public FollowController(IMapper _mapper, IHubContext<PublicHub, IPublicHub> _hub, IUnitOfWork unitOfWork)
+        public FollowController(IMapper _mapper, IHubContext<PublicHub, IPublicHub> _hub, IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             this._mapper = _mapper;
             this._hub = _hub;
-            _unitOfWork = unitOfWork;
         }
         /// <summary>
         /// follow user <br/> 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DAL.DataContext;
 using DAL.Entities;
 using DAL.Entities.Identity;
@@ -11,8 +12,8 @@ namespace Services.Services
 {
     public class ConnectionService : GenericRepository<UserConnection>, IConnectionService
     {
-        StoreContext dbContext;
-        public ConnectionService(StoreContext dbContext) : base(dbContext)
+        private readonly StoreContext dbContext;
+        public ConnectionService(StoreContext dbContext,IMapper _mapper) : base(dbContext,_mapper)
         {
             this.dbContext = dbContext;
         }

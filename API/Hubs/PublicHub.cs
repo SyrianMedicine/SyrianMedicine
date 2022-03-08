@@ -42,5 +42,6 @@ namespace API.Hubs
         public Task NotfiyUserFollowYou(UserCardOutput user, string messege);
         public Task NotfiyPostCreated(PostOutput Post, string messege);
         public Task NotfiyCommentCreated(CommentOutput Comment, string messege);
+        public Task NotfiyReplyOnComment(SubCommentOutput Comment, string messege);
     }
 }
