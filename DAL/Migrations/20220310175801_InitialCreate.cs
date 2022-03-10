@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DAL.Migrations
 {
-    public partial class InitialCreate001 : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -287,6 +287,52 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Rate",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    userid = table.Column<string>(type: "TEXT", nullable: true),
+                    RateValue = table.Column<int>(type: "INTEGER", nullable: false),
+                    RatedUserid = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rate", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Rate_AspNetUsers_RatedUserid",
+                        column: x => x.RatedUserid,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Rate_AspNetUsers_userid",
+                        column: x => x.userid,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserConnections",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    userid = table.Column<string>(type: "TEXT", nullable: true),
+                    ConnectionID = table.Column<string>(type: "TEXT", nullable: true),
+                    UserAgent = table.Column<string>(type: "TEXT", nullable: true),
+                    ConnecteDateTime = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserConnections", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserConnections_AspNetUsers_userid",
+                        column: x => x.userid,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserTags",
                 columns: table => new
                 {
@@ -403,11 +449,45 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NurseHistories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    DateTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    TimeReverse = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
+                    NurseId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NurseHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NurseHistories_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_NurseHistories_Nurses_NurseId",
+                        column: x => x.NurseId,
+                        principalTable: "Nurses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ReserveNurses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    DateTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    TimeReverse = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ReserveState = table.Column<int>(type: "INTEGER", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: true),
                     NurseId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -509,6 +589,35 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DoctorHistories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    DateTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    TimeReverse = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
+                    DoctorId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DoctorHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DoctorHistories_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_DoctorHistories_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DocumentsDoctors",
                 columns: table => new
                 {
@@ -534,6 +643,11 @@ namespace DAL.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    DateTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    TimeReverse = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ReserveState = table.Column<int>(type: "INTEGER", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: true),
                     DoctorId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -608,12 +722,43 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "HospitalHistories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    DateTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
+                    BedId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HospitalHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HospitalHistories_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_HospitalHistories_Beds_BedId",
+                        column: x => x.BedId,
+                        principalTable: "Beds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ReserveHospitals",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    HospitalId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    DateTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ReserveState = table.Column<int>(type: "INTEGER", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: true),
                     BedId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -629,12 +774,6 @@ namespace DAL.Migrations
                         name: "FK_ReserveHospitals_Beds_BedId",
                         column: x => x.BedId,
                         principalTable: "Beds",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ReserveHospitals_Hospitals_HospitalId",
-                        column: x => x.HospitalId,
-                        principalTable: "Hospitals",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -750,6 +889,16 @@ namespace DAL.Migrations
                 column: "HospitalId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DoctorHistories_DoctorId",
+                table: "DoctorHistories",
+                column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoctorHistories_UserId",
+                table: "DoctorHistories",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Doctors_NurseID",
                 table: "Doctors",
                 column: "NurseID",
@@ -786,6 +935,16 @@ namespace DAL.Migrations
                 table: "Follows",
                 columns: new[] { "UserId", "FollowedUserId" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HospitalHistories_BedId",
+                table: "HospitalHistories",
+                column: "BedId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HospitalHistories_UserId",
+                table: "HospitalHistories",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Hospitals_UserId",
@@ -827,6 +986,16 @@ namespace DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_NurseHistories_NurseId",
+                table: "NurseHistories",
+                column: "NurseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NurseHistories_UserId",
+                table: "NurseHistories",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Nurses_UserId",
                 table: "Nurses",
                 column: "UserId",
@@ -849,6 +1018,17 @@ namespace DAL.Migrations
                 column: "TagId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Rate_RatedUserid",
+                table: "Rate",
+                column: "RatedUserid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rate_userid_RatedUserid",
+                table: "Rate",
+                columns: new[] { "userid", "RatedUserid" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ReserveDoctors_DoctorId",
                 table: "ReserveDoctors",
                 column: "DoctorId");
@@ -862,11 +1042,6 @@ namespace DAL.Migrations
                 name: "IX_ReserveHospitals_BedId",
                 table: "ReserveHospitals",
                 column: "BedId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ReserveHospitals_HospitalId",
-                table: "ReserveHospitals",
-                column: "HospitalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReserveHospitals_UserId",
@@ -912,6 +1087,17 @@ namespace DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserConnections_ConnectionID",
+                table: "UserConnections",
+                column: "ConnectionID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserConnections_userid",
+                table: "UserConnections",
+                column: "userid");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserTags_TagId",
                 table: "UserTags",
                 column: "TagId");
@@ -944,6 +1130,9 @@ namespace DAL.Migrations
                 name: "Cities");
 
             migrationBuilder.DropTable(
+                name: "DoctorHistories");
+
+            migrationBuilder.DropTable(
                 name: "DocumentsDoctors");
 
             migrationBuilder.DropTable(
@@ -956,10 +1145,19 @@ namespace DAL.Migrations
                 name: "Follows");
 
             migrationBuilder.DropTable(
+                name: "HospitalHistories");
+
+            migrationBuilder.DropTable(
                 name: "Likes");
 
             migrationBuilder.DropTable(
+                name: "NurseHistories");
+
+            migrationBuilder.DropTable(
                 name: "PostTags");
+
+            migrationBuilder.DropTable(
+                name: "Rate");
 
             migrationBuilder.DropTable(
                 name: "ReserveDoctors");
@@ -972,6 +1170,9 @@ namespace DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Secretaries");
+
+            migrationBuilder.DropTable(
+                name: "UserConnections");
 
             migrationBuilder.DropTable(
                 name: "UserTags");

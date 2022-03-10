@@ -41,6 +41,9 @@ namespace DAL.DataContext
         public DbSet<NurseHistory> NurseHistories { get; set; }
         public DbSet<HospitalHistory> HospitalHistories { get; set; }
         public DbSet<Role> Roles { get; set; }
+
+        public DbSet<Rating> Rate { get; set; }
+
         public DbSet<User> Users { get; set; }
 
         #endregion
@@ -59,6 +62,7 @@ namespace DAL.DataContext
             builder.Entity<PostTag>().HasIndex(i => new { i.PostId, i.TagId }).IsUnique();
             builder.Entity<UserConnection>().HasIndex(i => i.ConnectionID).IsUnique();
             builder.Entity<SubCommentLike>().HasIndex(i => new { i.SubCommentID, i.UserId }).IsUnique();
+            builder.Entity<Rating>().HasIndex(i => new { i.userid, i.RatedUserid }).IsUnique();
         }
 
     }

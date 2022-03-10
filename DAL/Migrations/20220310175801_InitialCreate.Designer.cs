@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20220306151337_InitialCreate")]
+    [Migration("20220310175801_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -103,6 +103,39 @@ namespace DAL.Migrations
                     b.ToTable("Departments");
                 });
 
+            modelBuilder.Entity("DAL.Entities.DoctorHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("TimeReverse")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DoctorHistories");
+                });
+
             modelBuilder.Entity("DAL.Entities.DocumentsDoctor", b =>
                 {
                     b.Property<int>("Id")
@@ -185,6 +218,36 @@ namespace DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Follows");
+                });
+
+            modelBuilder.Entity("DAL.Entities.HospitalHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BedId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BedId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("HospitalHistories");
                 });
 
             modelBuilder.Entity("DAL.Entities.Identity.Doctor", b =>
@@ -435,6 +498,39 @@ namespace DAL.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Like");
                 });
 
+            modelBuilder.Entity("DAL.Entities.NurseHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("NurseId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("TimeReverse")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NurseId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("NurseHistories");
+                });
+
             modelBuilder.Entity("DAL.Entities.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -485,6 +581,31 @@ namespace DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("PostTags");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RateValue")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RatedUserid")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("userid")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RatedUserid");
+
+                    b.HasIndex("userid", "RatedUserid")
+                        .IsUnique();
+
+                    b.ToTable("Rate");
                 });
 
             modelBuilder.Entity("DAL.Entities.ReserveDoctor", b =>
@@ -932,6 +1053,23 @@ namespace DAL.Migrations
                     b.Navigation("Hospital");
                 });
 
+            modelBuilder.Entity("DAL.Entities.DoctorHistory", b =>
+                {
+                    b.HasOne("DAL.Entities.Identity.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Entities.Identity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DAL.Entities.DocumentsDoctor", b =>
                 {
                     b.HasOne("DAL.Entities.Identity.Doctor", "Doctor")
@@ -968,18 +1106,35 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Follow", b =>
                 {
                     b.HasOne("DAL.Entities.Identity.User", "FollowedUser")
-                        .WithMany()
+                        .WithMany("Followers")
                         .HasForeignKey("FollowedUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DAL.Entities.Identity.User", "User")
-                        .WithMany()
+                        .WithMany("Following")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FollowedUser");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DAL.Entities.HospitalHistory", b =>
+                {
+                    b.HasOne("DAL.Entities.Bed", "Bed")
+                        .WithMany()
+                        .HasForeignKey("BedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Entities.Identity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Bed");
 
                     b.Navigation("User");
                 });
@@ -1045,6 +1200,23 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DAL.Entities.NurseHistory", b =>
+                {
+                    b.HasOne("DAL.Entities.Identity.Nurse", "Nurse")
+                        .WithMany()
+                        .HasForeignKey("NurseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Entities.Identity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Nurse");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DAL.Entities.Post", b =>
                 {
                     b.HasOne("DAL.Entities.Identity.User", "User")
@@ -1073,6 +1245,21 @@ namespace DAL.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Rating", b =>
+                {
+                    b.HasOne("DAL.Entities.Identity.User", "RatedUser")
+                        .WithMany()
+                        .HasForeignKey("RatedUserid");
+
+                    b.HasOne("DAL.Entities.Identity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("userid");
+
+                    b.Navigation("RatedUser");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DAL.Entities.ReserveDoctor", b =>
@@ -1322,6 +1509,10 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Identity.User", b =>
                 {
                     b.Navigation("Doctor");
+
+                    b.Navigation("Followers");
+
+                    b.Navigation("Following");
 
                     b.Navigation("Hospital");
 

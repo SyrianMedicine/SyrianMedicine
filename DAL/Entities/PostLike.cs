@@ -9,9 +9,15 @@ namespace DAL.Entities
     public class PostLike : Like
     {
         public int PostID { get; set; }
-        
         [ForeignKey(nameof(PostID))]
         public virtual Post Post { get; set; }
-
+        public override LikeType GetLikeType()
+        {
+            return LikeType.PostLike;
+        }
+        public override string GetObjectId()
+        {
+            return PostID.ToString();
+        }
     }
 }

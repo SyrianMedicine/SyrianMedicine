@@ -42,6 +42,11 @@ namespace API.Extensions
             services.AddScoped(typeof(IGenericRepository<PostComment>), typeof(GenericRepository<PostComment>));
             services.AddScoped(typeof(IGenericRepository<SubComment>), typeof(GenericRepository<SubComment>));
             services.AddScoped(typeof(IGenericRepository<HospitalHistory>), typeof(GenericRepository<HospitalHistory>));
+            services.AddScoped(typeof(IGenericRepository<Like>), typeof(GenericRepository<Like>)); 
+            services.AddScoped(typeof(IGenericRepository<PostLike>), typeof(GenericRepository<PostLike>)); 
+            services.AddScoped(typeof(IGenericRepository<CommentLike>), typeof(GenericRepository<CommentLike>));
+            services.AddScoped(typeof(IGenericRepository<SubCommentLike>), typeof(GenericRepository<SubCommentLike>));
+            services.AddScoped(typeof(IGenericRepository<Rating>), typeof(GenericRepository<Rating>));
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<INurseService, NurseService>();
@@ -57,7 +62,9 @@ namespace API.Extensions
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IConnectionService, ConnectionService>();
             services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<ISubCommentService, SubCommentService>();
+            services.AddScoped<ISubCommentService, SubCommentService>(); 
+            services.AddScoped<ILikeService, LikeService>(); 
+            services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddHostedService<BackgroundTask>();
             return services;
@@ -73,7 +80,8 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(TagProfile));
             services.AddAutoMapper(typeof(FollowProfile));
             services.AddAutoMapper(typeof(PostProfile));
-            services.AddAutoMapper(typeof(CommentProfile));
+            services.AddAutoMapper(typeof(CommentProfile)); 
+            services.AddAutoMapper(typeof(LikeProfile));
             services.AddAutoMapper(typeof(UserCardProfile));
             return services;
         }

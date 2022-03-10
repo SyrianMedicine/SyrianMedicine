@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using DAL.Entities.Identity;
 
 namespace DAL.Entities
 {
@@ -12,5 +13,14 @@ namespace DAL.Entities
         
         [ForeignKey(nameof(CommentID))]
         public virtual Comment Comment { get; set; }
+        public override User User { get => base.User; set => base.User = value; }
+        public override LikeType GetLikeType()
+        {
+            return LikeType.CommentLike;
+        }
+        public override string GetObjectId()
+        {
+            return CommentID.ToString();
+        }
     }
 }

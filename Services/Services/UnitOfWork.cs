@@ -23,10 +23,15 @@ namespace Services
         public IAccountService AccountService { get; }
         public IDashboardService DashboardService { get; }
 
-        public UnitOfWork(ISubCommentService SubCommentService,ICommentService CommentService, IPostService PostService, IConnectionService ConnectionService, IFollowService FollowService, IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
+        public IRatingService RatingService { get; }
+        public ILikeService LikeService{get;}
+
+        public UnitOfWork(ILikeService LikeService,IRatingService RatingService, ISubCommentService SubCommentService, ICommentService CommentService, IPostService PostService, IConnectionService ConnectionService, IFollowService FollowService, IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
             IIdentityRepository IdentityRepository, IDashboardService DashboardService, IAccountService AccountService, IHospitalService HospitalServices, StoreContext dbContext)
         {
-            this.SubCommentService=SubCommentService;
+            this.LikeService=LikeService;
+            this.RatingService = RatingService;
+            this.SubCommentService = SubCommentService;
             this.CommentService = CommentService;
             this.PostService = PostService;
             this.ConnectionService = ConnectionService;
@@ -45,7 +50,8 @@ namespace Services
     }
     public interface IUnitOfWork
     {
-
+        public ILikeService LikeService{get;}
+        public IRatingService RatingService { get; }
         public IConnectionService ConnectionService { get; }
         public ISubCommentService SubCommentService { get; }
         public ICommentService CommentService { get; }

@@ -18,7 +18,7 @@ namespace API.Hubs
     public class PublicHub : Hub<IPublicHub>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public PublicHub(StoreContext _dbContext, IUnitOfWork _unitOfWork)
+        public PublicHub(IUnitOfWork _unitOfWork)
         {
             this._unitOfWork = _unitOfWork;
         }

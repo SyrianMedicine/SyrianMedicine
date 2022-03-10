@@ -39,7 +39,7 @@ namespace Services.Services
                     con.ConnecteDateTime = DateTime.Now;
                     base.Update(con);
                 }
-                return await base.CompleteAsync() ? true : false;
+                return await base.CompleteAsync();
             }
             catch
             {
@@ -52,7 +52,7 @@ namespace Services.Services
             if (connection != null)
             {
                 await base.DeleteAsync(connection.Id);
-                return await base.CompleteAsync() ? true : false;
+                return await base.CompleteAsync();
             }
             return false;
         }

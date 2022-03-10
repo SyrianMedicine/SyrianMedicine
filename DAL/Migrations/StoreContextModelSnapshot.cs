@@ -581,6 +581,31 @@ namespace DAL.Migrations
                     b.ToTable("PostTags");
                 });
 
+            modelBuilder.Entity("DAL.Entities.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RateValue")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RatedUserid")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("userid")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RatedUserid");
+
+                    b.HasIndex("userid", "RatedUserid")
+                        .IsUnique();
+
+                    b.ToTable("Rate");
+                });
+
             modelBuilder.Entity("DAL.Entities.ReserveDoctor", b =>
                 {
                     b.Property<int>("Id")
@@ -1218,6 +1243,21 @@ namespace DAL.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Rating", b =>
+                {
+                    b.HasOne("DAL.Entities.Identity.User", "RatedUser")
+                        .WithMany()
+                        .HasForeignKey("RatedUserid");
+
+                    b.HasOne("DAL.Entities.Identity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("userid");
+
+                    b.Navigation("RatedUser");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DAL.Entities.ReserveDoctor", b =>

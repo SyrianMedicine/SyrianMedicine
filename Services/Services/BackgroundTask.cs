@@ -104,7 +104,7 @@ namespace Services
                     _logger.LogInformation("delete UserConnectionTable is starting now..");
                     var service = scope.ServiceProvider;
                     var dbContext = service.GetRequiredService<StoreContext>();
-                    var dbData = await dbContext.UserConnections.ToListAsync();
+                    var dbData = await dbContext.UserConnections.Where(s => (DateTime.Now.DayOfYear + DateTime.Now.Year * 366) - (s.ConnecteDateTime.DayOfYear + s.ConnecteDateTime.Year * 366)>=3).ToListAsync();
                     dbContext.RemoveRange(dbData);
                     await dbContext.SaveChangesAsync();
                 }

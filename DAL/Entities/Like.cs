@@ -10,11 +10,21 @@ namespace DAL.Entities
 {
     public class Like
     {
+        public enum LikeType { BaseLike = 1, CommentLike, PostLike, SubCommentLike }
         public int Id { get; set; }
         public DateTime LikeDate { get; set; }
         [Required]
-        public string UserId { get; set; } 
+        public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]
         public virtual User User { get; set; }
+
+        public virtual LikeType GetLikeType()
+        {
+            return LikeType.BaseLike;
+        }
+        public virtual string GetObjectId()
+        {
+            return null;
+        }
     }
 }
