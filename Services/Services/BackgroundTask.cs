@@ -20,30 +20,27 @@ namespace Services
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // this delay for solve problem when first migration happen 
+            // this for make method run just at 01:30 AM
+            var delay = CalculateDelayNeededToStartTask(DateTime.Now);
+            await Task.Delay(delay);
+
+            // this delay for solve problem when first migration happen, maybe first delay is 0:0:0
             await Task.Delay(20000);
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                DateTime datetime = DateTime.Now;
-                int hour = datetime.Hour;
-                int minute = datetime.Minute;
-                int second = datetime.Second;
-                if (1 - hour == 0 && 30 - minute == 0)
+                try
                 {
-                    try
-                    {
-                        _logger.LogInformation("Background services are starting now..");
-                        TimeSpan timeSpan = new(0, 0, 60);
-                        await Task.Delay(timeSpan, stoppingToken);
-                        await CancelReserves();
-                        await DeleteUserConnectionTable();
-                        await MoveAcceptedReserveForDoctorsAndNursesToHistoryTable();
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex.Message);
-                    }
+                    _logger.LogInformation("Background services are starting now..");
+                    await CancelReserves();
+                    await DeleteUserConnectionTable();
+                    await MoveAcceptedReserveForDoctorsAndNursesToHistoryTable();
+                    base.Dispose();
+                    await this.ExecuteAsync(stoppingToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
                 }
             }
         }
@@ -92,7 +89,6 @@ namespace Services
                     }
                     await dbContext.SaveChangesAsync();
                 }
-
             }
             catch (Exception ex)
             {
@@ -112,7 +108,6 @@ namespace Services
                     dbContext.RemoveRange(dbData);
                     await dbContext.SaveChangesAsync();
                 }
-
             }
             catch (Exception ex)
             {
@@ -145,6 +140,16 @@ namespace Services
             {
                 _logger.LogError(ex.Message);
             }
+        }
+
+        private TimeSpan CalculateDelayNeededToStartTask(DateTime timeNow)
+        {
+            int hours = (24 - timeNow.Hour + 1) % 24;
+            int minutes = (60 - timeNow.Minute + 30) % 60;
+            int seconds = (60 - timeNow.Second) % 60;
+            if (hours == 0 && minutes > 30)
+                hours = 23;
+            return new TimeSpan(hours, minutes, seconds);
         }
 
     }
