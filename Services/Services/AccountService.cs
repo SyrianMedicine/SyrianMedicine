@@ -3,9 +3,11 @@ using DAL.Entities;
 using DAL.Entities.Identity;
 using DAL.Entities.Identity.Enums;
 using DAL.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Models.Admin.Inputs;
 using Models.Admin.Outputs;
 using Models.Common;
+using Models.Helper;
 using Models.User;
 using Services.Common;
 
@@ -24,6 +26,10 @@ namespace Services
             _tokenService = tokenService;
             _mapper = mapper;
         }
+
+        public async Task<PagedList<OptionDto>> GetCities(Pagination input)
+            => _mapper.Map<PagedList<City>, PagedList<OptionDto>>(await PagedList<City>.CreatePagedListAsync(_cityRepository.GetQuery(), input.PageNumber, input.PageSize));
+
 
         public List<OptionDto> GetAccountStates()
             => Enum.GetValues<AccountState>().Cast<AccountState>().Select(e => new OptionDto { Id = (int)e, Name = e.ToString() }).ToList();
@@ -166,6 +172,7 @@ namespace Services
     }
     public interface IAccountService
     {
+        public Task<PagedList<OptionDto>> GetCities(Pagination input);
         public Task<IReadOnlyList<OptionDto>> GetCities();
         public List<OptionDto> GetGenders();
         public List<OptionDto> GetUserTypes();

@@ -1,7 +1,10 @@
 using AutoMapper;
+using DAL.Entities;
 using DAL.Entities.Identity;
 using Models.Admin.Inputs;
 using Models.Admin.Outputs;
+using Models.Common;
+using Models.Helper;
 
 namespace Services.Profiles
 {
@@ -12,6 +15,8 @@ namespace Services.Profiles
             CreateMap<User, LoginAdminOutput>()
                 .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.FirstName + " " + src.LastName));
             CreateMap<UpdateAdmin, User>();
+
+            CreateMap<PagedList<City>, PagedList<OptionDto>>();
         }
     }
 }

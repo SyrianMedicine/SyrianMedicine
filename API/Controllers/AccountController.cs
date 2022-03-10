@@ -1,9 +1,11 @@
 using API.Controllers.Common;
+using DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Admin.Inputs;
 using Models.Admin.Outputs;
 using Models.Common;
+using Models.Helper;
 using Models.User;
 using Services;
 using Services.Common;
@@ -19,6 +21,12 @@ namespace API.Controllers
         [HttpGet(nameof(GetCities))]
         public async Task<IReadOnlyList<OptionDto>> GetCities()
             => await _unitOfWork.AccountService.GetCities();
+
+
+        // Example For Sarye, I will delete it afer somedays
+        [HttpPost(nameof(GetPaginationCities))]
+        public async Task<PagedList<OptionDto>> GetPaginationCities(Pagination input)
+            => await _unitOfWork.AccountService.GetCities(input);
 
         [HttpGet(nameof(GetGenders))]
         public List<OptionDto> GetGenders()
