@@ -18,6 +18,15 @@ namespace API.Controllers
         {
         }
 
+
+        [HttpGet(nameof(IsUserNameExist) + "/{username}")]
+        public async Task<bool> IsUserNameExist(string username)
+            => await _unitOfWork.AccountService.IsUserNameExist(username);
+
+        [HttpGet(nameof(IsEmailExist) + "/{email}")]
+        public async Task<bool> IsEmailExist(string email)
+            => await _unitOfWork.AccountService.IsEmailExist(email);
+
         [HttpGet(nameof(GetCities))]
         public async Task<IReadOnlyList<OptionDto>> GetCities()
             => await _unitOfWork.AccountService.GetCities();

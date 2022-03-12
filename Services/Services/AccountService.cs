@@ -169,9 +169,17 @@ namespace Services
             }
             return response;
         }
+
+        public async Task<bool> IsUserNameExist(string username)
+            => await _identityRepository.GetUserByNameAsync(username) != null;
+        public async Task<bool> IsEmailExist(string email)
+                => await _identityRepository.GetUserByEmailAsync(email) != null;
+
     }
     public interface IAccountService
     {
+        public Task<bool> IsUserNameExist(string username);
+        public Task<bool> IsEmailExist(string email);
         public Task<PagedList<OptionDto>> GetCities(Pagination input);
         public Task<IReadOnlyList<OptionDto>> GetCities();
         public List<OptionDto> GetGenders();
