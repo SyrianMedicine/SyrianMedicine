@@ -21,6 +21,21 @@ namespace Services.Services
             this.dbContext = dbContext;
         }
 
+        public Task<ResponseService<List<LikeOutput>>> GetCommentLiks(int CommentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ResponseService<List<LikeOutput>>> GetPostLiks(int CommentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ResponseService<List<LikeOutput>>> GetSubCommentLiks(int CommentId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ResponseService<bool>> IsCommentliked(int id, User user) =>
              new()
              {
@@ -126,7 +141,7 @@ namespace Services.Services
                 {
                     return result.SetMessage("SubComment not found").SetStatus(StatusCodes.NotFound.ToString());
                 }
-                if ((await IsPostliked(id, user)).Data)
+                if ((await IsSubCommentliked(id, user)).Data)
                 {
                     return result.SetMessage("You are already like this SubComment").SetStatus(StatusCodes.BadRequest.ToString());
                 }
@@ -248,5 +263,9 @@ namespace Services.Services
         public Task<ResponseService<bool>> IsCommentliked(int CommentId, User user);
         public Task<ResponseService<bool>> IsPostliked(int PostId, User user);
         public Task<ResponseService<bool>> IsSubCommentliked(int SubCommentId, User user);
+
+        public Task<ResponseService<List<LikeOutput>>> GetCommentLiks(int CommentId);
+        public Task<ResponseService<List<LikeOutput>>> GetPostLiks(int CommentId);
+        public Task<ResponseService<List<LikeOutput>>> GetSubCommentLiks(int CommentId);
     }
 }

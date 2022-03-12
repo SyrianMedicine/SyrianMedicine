@@ -10,6 +10,7 @@ using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Models.Comment.Input;
 using Models.Comment.Output;
+using Models.Helper;
 using Services.Common;
 
 namespace Services.Services
@@ -126,10 +127,21 @@ namespace Services.Services
             result.SetStatus(StatusCodes.NotFound.ToString()).SetMessage("comment not found");
         }
 
-        public async Task<ResponseService<List<CommentOutput>>> GetUserComments(string User)
+        public async Task<PagedList<CommentOutput>> GetMyComments(Pagination input,string UserName)
         {
-            //todo: pagination not implemented yet
-            throw new NotImplementedException();
+            var Query = base.GetQuery().Include(s => s.User).Where(s => s.User.NormalizedUserName.Equals(UserName.ToUpper())).Include(s => (s as AccountComment).OnAccount).Include(s => (s as PostComment).Post).OrderByDescending(i => i.Date);
+            return _mapper.Map<PagedList<Comment>, PagedList<CommentOutput>>(await PagedList<Comment>.CreatePagedListAsync(Query, input.PageNumber, input.PageSize));
+        }
+        public async Task<PagedList<CommentOutput>> GetOnAccountComments(Pagination input,string AccountUserName)
+        {
+            var Query = base.GetQuery().Include(s => s.User).Where(s => (s as AccountComment).OnAccount.NormalizedUserName.Equals(AccountUserName.ToUpper())).Include(s => (s as AccountComment).OnAccount).OrderByDescending(i => i.Date);
+            return _mapper.Map<PagedList<Comment>, PagedList<CommentOutput>>(await PagedList<Comment>.CreatePagedListAsync(Query, input.PageNumber, input.PageSize));
+
+        }
+        public async Task<PagedList<CommentOutput>> GetOnPostComments(Pagination input,int Postid)
+        {
+            var Query = base.GetQuery().Include(s => s.User).Where(s => (s as PostComment).PostId == Postid).Include(s => (s as PostComment).Post).OrderByDescending(i => i.Date);
+            return _mapper.Map<PagedList<Comment>, PagedList<CommentOutput>>(await PagedList<Comment>.CreatePagedListAsync(Query, input.PageNumber, input.PageSize));
         }
 
     }
@@ -139,7 +151,9 @@ namespace Services.Services
         public Task<ResponseService<CommentOutput>> CreateAccountComment(AccountCommentCreateInput input, User user);
         public Task<ResponseService<CommentOutput>> GetComment(int id);
         public Task<ResponseService<CommentOutput>> Update(CommentUpdateInput Input, User user);
-        public Task<ResponseService<List<CommentOutput>>> GetUserComments(string User);
+        public Task<PagedList<CommentOutput>> GetMyComments(Pagination input,string UserName);
+        public Task<PagedList<CommentOutput>> GetOnAccountComments(Pagination input,string AccountUserName);
+        public Task<PagedList<CommentOutput>> GetOnPostComments(Pagination input,int Postid);
         public Task<ResponseService<bool>> delete(int id, User user);
     }
 }

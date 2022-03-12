@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DAL.Entities;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
+using Models.Helper;
 using Models.Post.Input;
 using Models.Post.Output;
 using Models.Tag.Output;
@@ -31,6 +32,7 @@ namespace Services.Profiles
            .ForMember(dest => dest.PostText, opt => opt.MapFrom(src => src.PostText))
            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
            .ForMember(dest => dest.IsEdited, opt => opt.MapFrom(i => true));
+           CreateMap<PagedList<Post>, PagedList<PostOutput>>(); 
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Services
         {
             var result = new ResponseService<List<TagOutput>>()
             {
-                Data = _mapper.Map<List<Tag>, List<TagOutput>>(await base.GetQuery().Where(i => i.Tagname.Contains(Query)).ToListAsync())
+                Data = _mapper.Map<List<Tag>, List<TagOutput>>(await base.GetQuery().Where(i => i.Tagname.Contains(Query)).Take(6).ToListAsync())
             };
             return result.Data.Any() ?
              result.SetMessage("Ok").SetStatus(StatusCodes.Ok.ToString())

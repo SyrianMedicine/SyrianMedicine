@@ -8,6 +8,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Models.Comment.Output;
+using Models.Helper;
 using Models.Post.Input;
 using Models.Post.Output;
 using Services;
@@ -17,12 +19,12 @@ namespace API.Controllers
 {
     public class PostController : BaseController
     {
-        private readonly IHubContext<PublicHub, IPublicHub> _hub; 
+        private readonly IHubContext<PublicHub, IPublicHub> _hub;
         private readonly IMapper _mapper;
-        public PostController(IMapper _mapper, IHubContext<PublicHub, IPublicHub> _hub, IUnitOfWork unitOfWork):base(unitOfWork)
+        public PostController(IMapper _mapper, IHubContext<PublicHub, IPublicHub> _hub, IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             this._mapper = _mapper;
-            this._hub = _hub; 
+            this._hub = _hub;
         }
 
         /// <summary>
@@ -80,7 +82,8 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<PostOutput>>> GetPost(int id) =>
              Result(await _unitOfWork.PostService.GetPost(id));
 
-
-
+        [HttpPost("{id}/Comments")]
+        public async Task<PagedList<CommentOutput>> GetComments(Pagination input, int id) =>
+             await _unitOfWork.CommentService.GetOnPostComments(input, id);
     }
 }

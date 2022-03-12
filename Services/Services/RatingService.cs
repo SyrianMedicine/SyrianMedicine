@@ -10,6 +10,7 @@ using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Models.Rating.Input;
 using Models.Rating.Output;
+using Models.UserCard;
 using Services.Common;
 
 namespace Services.Services
@@ -85,10 +86,27 @@ namespace Services.Services
             }
 
         }
+
+        public async Task<ResponseService<MyRateingforUser>> GetMyRatingForUser(string Username, User user)
+        {
+            ResponseService<MyRateingforUser> Result = new();
+            var rate = await base.GetQuery().Include(i => i.RatedUser).Where(i => i.userid.Equals(user.Id) && i.RatedUser.NormalizedUserName.Equals(Username.ToUpper())).FirstOrDefaultAsync();
+            if (rate != default)
+                Result.Data = new MyRateingforUser
+                {
+                    StarNumber = rate.RateValue,
+                    RatedUser = base._mapper.Map<User, UserCardOutput>(rate.RatedUser)
+                };
+            return rate != default ?
+            Result.SetMessage("ok").SetStatus(StatusCodes.Ok.ToString())
+            :
+            Result.SetMessage("you are not rate this user yet").SetStatus(StatusCodes.NotFound.ToString());
+        }
     }
     public interface IRatingService
     {
         public Task<ResponseService<bool>> Rate(RatingInput input, User user);
         public Task<ResponseService<RatingOutput>> GetUserRating(string Username);
+        public Task<ResponseService<MyRateingforUser>> GetMyRatingForUser(string Username, User user);
     }
 }

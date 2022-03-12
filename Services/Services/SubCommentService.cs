@@ -10,6 +10,7 @@ using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Models.Comment.Input;
 using Models.Comment.Output;
+using Models.Helper;
 using Services.Common;
 
 namespace Services.Services
@@ -28,7 +29,7 @@ namespace Services.Services
             {
                 var result = new ResponseService<SubCommentOutput>();
                 var Comment = _mapper.Map<SubCommentCreateInput, SubComment>(input);
-                var baseComment = await CommentRepository.GetQuery().Where(i=>i.Id==input.CommentId).Include(s=>s.User).FirstOrDefaultAsync();
+                var baseComment = await CommentRepository.GetQuery().Where(i => i.Id == input.CommentId).Include(s => s.User).FirstOrDefaultAsync();
                 if (baseComment == default) return result.SetMessage("Comment not Found").SetStatus(StatusCodes.NotFound.ToString());
                 // todo: this user maybe blocked by post or Comment Owner >_<
                 Comment.UserId = user.Id;
@@ -73,10 +74,9 @@ namespace Services.Services
             result.SetStatus(StatusCodes.Ok.ToString()).SetData(_mapper.Map<SubComment, SubCommentOutput>(comment)).SetMessage("Done");
         }
 
-        public async Task<ResponseService<List<SubCommentOutput>>> GetSubCommentsforComment(int Commentid)
+        public async Task<PagedList<SubCommentOutput>> GetSubCommentsforComment(Pagination input, int Commentid)
         {
-            //todo: pagination not implemented yet
-            throw new NotImplementedException();
+            return _mapper.Map<PagedList<SubComment>, PagedList<SubCommentOutput>>(await PagedList<SubComment>.CreatePagedListAsync(base.GetQuery().Where(i => i.CommentId == Commentid).OrderByDescending(i => i.Date), input.PageNumber, input.PageSize));
         }
 
         public async Task<ResponseService<SubCommentOutput>> Update(CommentUpdateInput input, User user)
@@ -106,7 +106,7 @@ namespace Services.Services
         public Task<ResponseService<SubCommentOutput>> Update(CommentUpdateInput input, User user);
         public Task<ResponseService<bool>> Delete(int SubCommentid, User user);
         public Task<ResponseService<SubCommentOutput>> GetSubComment(int id);
-        public Task<ResponseService<List<SubCommentOutput>>> GetSubCommentsforComment(int Commentid);
+        public Task<PagedList<SubCommentOutput>> GetSubCommentsforComment(Pagination input, int Commentid);
 
     }
 }

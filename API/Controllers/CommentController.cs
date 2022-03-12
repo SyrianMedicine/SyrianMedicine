@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Models.Comment.Input;
 using Models.Comment.Output;
+using Models.Helper;
 using Services;
 using Services.Common;
 
@@ -73,7 +74,7 @@ namespace API.Controllers
         /// this API get AccountComment or PostComment
         /// </summary> 
         /// <returns></returns>
-        [HttpGet("Comment/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ResponseService<CommentOutput>>> GetComment(int id) =>
          Result(await _unitOfWork.CommentService.GetComment(id));
 
@@ -83,8 +84,8 @@ namespace API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost(nameof(UpdateComment))]
-        public async Task<ActionResult<ResponseService<CommentOutput>>> UpdateComment(CommentUpdateInput input) =>
+        [HttpPost(nameof(Update))]
+        public async Task<ActionResult<ResponseService<CommentOutput>>> Update(CommentUpdateInput input) =>
             Result(await _unitOfWork.CommentService.Update(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
         /// <summary>
         /// for delete AccountComment or PostComment
@@ -92,60 +93,13 @@ namespace API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpDelete(nameof(DeleteComment))]
-        public async Task<ActionResult<ResponseService<bool>>> DeleteComment(int id) =>
+        [HttpDelete(nameof(Delete))]
+        public async Task<ActionResult<ResponseService<bool>>> Delete(int id) =>
         Result(await _unitOfWork.CommentService.delete(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
 
-        /// <summary>
-        /// GetSubComment(reply on AccountComment or PostComment)
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet("subComment/{id}")]
-        public async Task<ActionResult<ResponseService<CommentOutput>>> GetSubComment(int id) =>
-            Result(await _unitOfWork.SubCommentService.GetSubComment(id));
-
-        /// <summary>
-        /// reply on AccountComment or PostComment
-        ///  Note: this action notfy Comment Owner on NotfiyReplyOnComment function
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [Authorize]
-        [HttpPost(nameof(CreateSubComment))]
-        public async Task<ActionResult<ResponseService<SubCommentOutput>>> CreateSubComment(SubCommentCreateInput input)
-        {
-            var user = await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User);
-            var result = await _unitOfWork.SubCommentService.Create(input, user);
-            if (result.isDone())
-            {
-                try
-                {
-                    var ids = await _unitOfWork.ConnectionService.GetConnections(result.Data.OnComment.User.UserName);
-                    _hub.Clients.Clients(ids.Select(i => i.ConnectionID).Distinct().ToList()).NotfiyReplyOnComment(result.Data, user.FirstName + " " + user.LastName + " Reply On your Comment");
-                }
-                catch { }
-            }
-            return Result(result);
-        }
-        /// <summary>
-        /// Update subComment
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [Authorize]
-        [HttpPost(nameof(UpdateSubComment))]
-        public async Task<ActionResult<ResponseService<SubCommentOutput>>> UpdateSubComment(CommentUpdateInput input) =>
-        Result(await _unitOfWork.SubCommentService.Update(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
-        /// <summary>
-        ///  delete subComment
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [Authorize]
-        [HttpDelete(nameof(DeleteSubComment))]
-        public async Task<ActionResult<ResponseService<bool>>> DeleteSubComment(int id) =>
-        Result(await _unitOfWork.SubCommentService.Delete(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
+        [HttpPost("{Commentid}/SubComments")]
+        public async Task<PagedList<SubCommentOutput>> GetSubCommentsforComment(Pagination input, int Commentid) =>
+          await _unitOfWork.SubCommentService.GetSubCommentsforComment(input, Commentid);
 
 
     }

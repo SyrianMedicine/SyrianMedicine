@@ -14,6 +14,7 @@ using Models.Post.Input;
 using Models.Post.Output;
 using Services.Common;
 using Microsoft.EntityFrameworkCore;
+using Models.Helper;
 
 namespace Services.Services
 {
@@ -111,15 +112,17 @@ namespace Services.Services
             result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
         }
 
-        public Task<ResponseService<List<PostOutput>>> GetUserHomePagePosts(User user)
+        public async Task<PagedList<PostOutput>> GetTagPosts(Pagination input, int Tagid) =>
+            _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Where(i => i.Tags.Where(x => x.TagId == Tagid).Any()).OrderByDescending(i => i.Date), input.PageNumber, input.PageSize));
+
+
+        public Task<PagedList<PostOutput>> GetUserHomePagePosts(Pagination input, User user)
         {
-            //todo: pagination not implemented yet
             throw new NotImplementedException();
         }
 
-        public Task<ResponseService<List<PostOutput>>> GetUserProfilePosts(User user)
+        public Task<PagedList<PostOutput>> GetUserProfilePosts(Pagination input, User user)
         {
-            //todo: pagination not implemented yet
             throw new NotImplementedException();
         }
 
@@ -177,7 +180,8 @@ namespace Services.Services
         public Task<ResponseService<PostOutput>> Update(PostUpdateInput input, User user);
         public Task<ResponseService<bool>> Delete(int id, User user);
         public Task<ResponseService<PostOutput>> GetPost(int Id);
-        public Task<ResponseService<List<PostOutput>>> GetUserProfilePosts(User user);
-        public Task<ResponseService<List<PostOutput>>> GetUserHomePagePosts(User user);
+        public Task<PagedList<PostOutput>> GetTagPosts(Pagination input, int Tagid);
+        public Task<PagedList<PostOutput>> GetUserProfilePosts(Pagination input, User user);
+        public Task<PagedList<PostOutput>> GetUserHomePagePosts(Pagination input, User user);
     }
 }

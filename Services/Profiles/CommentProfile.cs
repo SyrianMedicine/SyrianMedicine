@@ -6,6 +6,7 @@ using AutoMapper;
 using DAL.Entities;
 using Models.Comment.Input;
 using Models.Comment.Output;
+using Models.Helper;
 
 namespace Services.Profiles
 {
@@ -53,6 +54,8 @@ namespace Services.Profiles
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.IsEdited, opt => opt.MapFrom(src => true))
                 .ForMember(dest => dest.CommentText, opt => opt.MapFrom(src => src.CommentText));
+            CreateMap<PagedList<SubComment>, PagedList<SubCommentOutput>>();
+            CreateMap<PagedList<Comment>, PagedList<CommentOutput>>();
 
         }
     }

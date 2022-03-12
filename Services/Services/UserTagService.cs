@@ -32,7 +32,7 @@ namespace Services
             return result.Data != null && result.Data.Any() ?
             result.SetMessage("ok").SetStatus(StatusCodes.Ok.ToString())
             :
-            result.SetMessage("you have no Interested Tags").SetStatus(StatusCodes.NotFound.ToString());
+            result.SetMessage("you have no  Tags in your list").SetStatus(StatusCodes.NotFound.ToString());
         }
 
         public async Task<ResponseService<bool>> AddtoTagList(int id, User user)
@@ -48,7 +48,7 @@ namespace Services
 
                 await base.InsertAsync(new UserTag { TagId = id, UserId = user.Id });
                 return await base.CompleteAsync() ?
-                    result.SetData(true).SetMessage("tag added in your intrested tag").SetStatus(StatusCodes.Created.ToString())
+                    result.SetData(true).SetMessage("tag added in your tag list").SetStatus(StatusCodes.Created.ToString())
                     :
                     result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }
@@ -68,7 +68,7 @@ namespace Services
                     return result.SetMessage("Not Found in your list").SetStatus(StatusCodes.NotFound.ToString());
                 await base.DeleteAsync(usrtag.Id);
                 return await base.CompleteAsync() ?
-                    result.SetData(true).SetMessage("tag deleted from your intrested tag").SetStatus(StatusCodes.Ok.ToString())
+                    result.SetData(true).SetMessage("tag deleted from your tag list").SetStatus(StatusCodes.Ok.ToString())
                     :
                     result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }

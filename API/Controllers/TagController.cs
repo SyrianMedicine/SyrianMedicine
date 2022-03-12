@@ -11,6 +11,8 @@ using Services.Common;
 using Models.Tag.Output;
 using Models.Tag.Input;
 using Microsoft.AspNetCore.Authorization;
+using Models.Helper;
+using Models.Post.Output;
 
 namespace API.Controllers
 {
@@ -18,9 +20,9 @@ namespace API.Controllers
     /// used as Keyword in post 
     /// </summary>
     public class TagController : BaseController
-    { 
-        public TagController(IUnitOfWork unitOfWork):base(unitOfWork)
-        { 
+    {
+        public TagController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        {
         }
 
         /// <summary>
@@ -47,7 +49,7 @@ namespace API.Controllers
         /// <returns>list of tags that Contains Query string</returns>
         [HttpGet(nameof(Search))]
         public async Task<ActionResult<ResponseService<List<TagOutput>>>> Search(string Query) =>
-           Result( await _unitOfWork.TagService.SearchTag(Query));
+           Result(await _unitOfWork.TagService.SearchTag(Query));
 
         /// <summary>
         /// Create new tag to use
@@ -60,7 +62,7 @@ namespace API.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost(nameof(Create))]
         public async Task<ActionResult<ResponseService<TagOutput>>> Create(TagCreateInput Input) =>
-            Result(await _unitOfWork.TagService.CreateTag(Input),nameof(Create));
+            Result(await _unitOfWork.TagService.CreateTag(Input), nameof(Create));
 
         /// <summary>
         /// update old Tag name
@@ -81,5 +83,9 @@ namespace API.Controllers
         [HttpDelete(nameof(Delete))]
         public async Task<ActionResult<ResponseService<bool>>> Delete(int Id) =>
             Result(await _unitOfWork.TagService.DeleteTag(Id));
+
+        [HttpPost("{id}/posts")]
+        public async Task<PagedList<PostOutput>> GetTagPosts(Pagination input, int id) =>
+           await _unitOfWork.PostService.GetTagPosts(input, id);
     }
 }
