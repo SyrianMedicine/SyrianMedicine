@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DAL.Entities;
+using Models.Helper;
 using Models.Like.Output;
 
 namespace Services.Profiles
@@ -12,6 +13,7 @@ namespace Services.Profiles
     {
         public LikeProfile()
         {
+            CreateMap<PagedList<Like>, PagedList<LikeOutput>>();
             CreateMap<Like, LikeOutput>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.LikeType, opt => opt.MapFrom(src => src.GetLikeType().ToString()))

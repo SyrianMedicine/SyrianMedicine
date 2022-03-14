@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Models.Comment.Input;
 using Models.Comment.Output;
+using Models.Helper;
 using Services;
 using Services.Common;
 
@@ -71,5 +72,15 @@ namespace API.Controllers
         [HttpDelete(nameof(Delete))]
         public async Task<ActionResult<ResponseService<bool>>> Delete(int id) =>
         Result(await _unitOfWork.SubCommentService.Delete(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
+        /// <summary>
+        /// who like this subcomment
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost("{id}/Liks")]
+        public async Task<PagedList<Models.Like.Output.LikeOutput>>  GetLiks(Pagination input,int id) =>
+            await _unitOfWork.LikeService.GetSubCommentLiks(input,id);
+
     }
 }

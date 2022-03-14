@@ -83,7 +83,12 @@ namespace API.Controllers
         [HttpDelete(nameof(Delete))]
         public async Task<ActionResult<ResponseService<bool>>> Delete(int Id) =>
             Result(await _unitOfWork.TagService.DeleteTag(Id));
-
+        /// <summary>
+        /// get posts related to this tag
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost("{id}/posts")]
         public async Task<PagedList<PostOutput>> GetTagPosts(Pagination input, int id) =>
            await _unitOfWork.PostService.GetTagPosts(input, id);

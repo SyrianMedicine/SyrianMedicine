@@ -8,6 +8,7 @@ using DAL.Entities;
 using DAL.Entities.Identity;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Models.Helper;
 using Models.Like.Output;
 using Services.Common;
 
@@ -21,20 +22,13 @@ namespace Services.Services
             this.dbContext = dbContext;
         }
 
-        public Task<ResponseService<List<LikeOutput>>> GetCommentLiks(int CommentId)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<PagedList<LikeOutput>> GetCommentLiks(Pagination input, int CommentId) =>
+            _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => (i as CommentLike).CommentID == CommentId).OrderByDescending(i => i.LikeDate), input.PageNumber, input.PageSize));
 
-        public Task<ResponseService<List<LikeOutput>>> GetPostLiks(int CommentId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ResponseService<List<LikeOutput>>> GetSubCommentLiks(int CommentId)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<PagedList<LikeOutput>> GetPostLiks(Pagination input, int PostId) =>
+            _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => (i as PostLike).PostID == PostId).OrderByDescending(i => i.LikeDate), input.PageNumber, input.PageSize));
+        public async Task<PagedList<LikeOutput>> GetSubCommentLiks(Pagination input, int SubCommentId) =>
+            _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => (i as SubCommentLike).SubCommentID == SubCommentId).OrderByDescending(i => i.LikeDate), input.PageNumber, input.PageSize));
 
         public async Task<ResponseService<bool>> IsCommentliked(int id, User user) =>
              new()
@@ -264,8 +258,8 @@ namespace Services.Services
         public Task<ResponseService<bool>> IsPostliked(int PostId, User user);
         public Task<ResponseService<bool>> IsSubCommentliked(int SubCommentId, User user);
 
-        public Task<ResponseService<List<LikeOutput>>> GetCommentLiks(int CommentId);
-        public Task<ResponseService<List<LikeOutput>>> GetPostLiks(int CommentId);
-        public Task<ResponseService<List<LikeOutput>>> GetSubCommentLiks(int CommentId);
+        public Task<PagedList<LikeOutput>> GetCommentLiks(Pagination input, int CommentId);
+        public Task<PagedList<LikeOutput>> GetPostLiks(Pagination input, int PostId);
+        public Task<PagedList<LikeOutput>> GetSubCommentLiks(Pagination input, int SubCommentID);
     }
 }

@@ -97,10 +97,24 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<bool>>> Delete(int id) =>
         Result(await _unitOfWork.CommentService.delete(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
 
+        /// <summary>
+        /// get SubComment for this comment
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="Commentid"></param>
+        /// <returns></returns>
         [HttpPost("{Commentid}/SubComments")]
         public async Task<PagedList<SubCommentOutput>> GetSubCommentsforComment(Pagination input, int Commentid) =>
           await _unitOfWork.SubCommentService.GetSubCommentsforComment(input, Commentid);
-
+        /// <summary>
+        /// who like this Comments
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost("{id}/Liks")]
+        public async Task<PagedList<Models.Like.Output.LikeOutput>> GetLiks(Pagination input, int id) =>
+            await _unitOfWork.LikeService.GetCommentLiks(input, id);
 
     }
 }

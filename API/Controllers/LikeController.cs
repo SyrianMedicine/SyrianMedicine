@@ -22,7 +22,6 @@ namespace API.Controllers
 
             Result(await _unitOfWork.LikeService.LikeComment(CommentId, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
 
-
         [Authorize]
         [HttpPost(nameof(LikePost))]
         public async Task<ActionResult<ResponseService<LikeOutput>>> LikePost(int PostId) =>
@@ -57,6 +56,12 @@ namespace API.Controllers
             Result(await _unitOfWork.LikeService.UnLikeSubComment(SubCommentId, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
 
 
+        /// <summary>
+        /// this use to delete like by like id 
+        /// you can use it for any like type
+        /// </summary>
+        /// <param name="LikIid"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost(nameof(Unlike))]
         public async Task<ActionResult<ResponseService<bool>>> Unlike(int LikIid) =>

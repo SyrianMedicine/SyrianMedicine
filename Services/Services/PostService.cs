@@ -15,6 +15,8 @@ using Models.Post.Output;
 using Services.Common;
 using Microsoft.EntityFrameworkCore;
 using Models.Helper;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Services.Services
 {
@@ -113,18 +115,18 @@ namespace Services.Services
         }
 
         public async Task<PagedList<PostOutput>> GetTagPosts(Pagination input, int Tagid) =>
-            _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Where(i => i.Tags.Where(x => x.TagId == Tagid).Any()).OrderByDescending(i => i.Date), input.PageNumber, input.PageSize));
+            _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).Where(i => i.Tags.Where(x => x.TagId == Tagid).Any()).OrderByDescending(i => i.Date), input.PageNumber, input.PageSize));
 
 
-        public Task<PagedList<PostOutput>> GetUserHomePagePosts(Pagination input, User user)
+        public async Task<PagedList<PostOutput>> GetUserHomePagePosts(Pagination input, User user)
         {
-            throw new NotImplementedException();
+            var usertagsIds = dbContext.UserTags.Where(i => i.UserId.Equals(user.Id));
+            var Post = base.GetQuery().Where(x => usertagsIds.LeftJoin(x.Tags, i => i.TagId, i => i.TagId, (i, j) => i.TagId == j.TagId).Where(i => i).Any() || x.User.Followers.Where(c=>c.UserId.Equals(user.Id)).Any() );
+           return _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(Post.Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).OrderByDescending(i => i.Date), input.PageNumber, input.PageSize));
         }
 
-        public Task<PagedList<PostOutput>> GetUserProfilePosts(Pagination input, User user)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<PagedList<PostOutput>> GetUserProfilePosts(Pagination input, string username) =>
+            _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).Where(i => i.User.NormalizedUserName.Equals(username.ToUpper())).OrderByDescending(i => i.Date), input.PageNumber, input.PageSize));
 
         public async Task<ResponseService<PostOutput>> Update(PostUpdateInput input, User user)
         {
@@ -181,7 +183,7 @@ namespace Services.Services
         public Task<ResponseService<bool>> Delete(int id, User user);
         public Task<ResponseService<PostOutput>> GetPost(int Id);
         public Task<PagedList<PostOutput>> GetTagPosts(Pagination input, int Tagid);
-        public Task<PagedList<PostOutput>> GetUserProfilePosts(Pagination input, User user);
+        public Task<PagedList<PostOutput>> GetUserProfilePosts(Pagination input, string username);
         public Task<PagedList<PostOutput>> GetUserHomePagePosts(Pagination input, User user);
     }
 }

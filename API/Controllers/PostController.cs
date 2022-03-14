@@ -81,9 +81,35 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ResponseService<PostOutput>>> GetPost(int id) =>
              Result(await _unitOfWork.PostService.GetPost(id));
+        /// <summary>
+        /// this get your following user post or post related to your tag list<br/>
+        /// Note:this is not your  post<bt/>
+        /// Note: You can get Your  Post from Account Controller
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("HomePost")]
+        public async Task<PagedList<PostOutput>> GetHomePost(Pagination input) =>
+            await _unitOfWork.PostService.GetUserHomePagePosts(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User));
 
+        /// <summary>
+        /// get comments for this post
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost("{id}/Comments")]
         public async Task<PagedList<CommentOutput>> GetComments(Pagination input, int id) =>
              await _unitOfWork.CommentService.GetOnPostComments(input, id);
+        /// <summary>
+        /// who like this post
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost("{id}/Liks")]
+        public async Task<PagedList<Models.Like.Output.LikeOutput>> GetLiks(Pagination input, int id) =>
+            await _unitOfWork.LikeService.GetPostLiks(input, id);
     }
 }

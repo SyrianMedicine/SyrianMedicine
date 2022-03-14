@@ -64,5 +64,25 @@ namespace API.Controllers
         [HttpPost(nameof(UpdateAdminProfile)), Authorize(Roles = "Admin")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateAdminProfile(UpdateAdmin input)
             => Result(await _unitOfWork.AccountService.UpdateAdminProfile(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateAdminProfile));
+      
+        /// <summary>
+        /// get comments on Doctor or Nurses  progile
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="AccountUserName"></param>
+        /// <returns></returns>
+        [HttpPost("{AccountUserName}/Comments")]
+        public async Task<Models.Helper.PagedList<Models.Comment.Output.CommentOutput>> Comments(Models.Helper.Pagination input, string AccountUserName)
+            => await _unitOfWork.CommentService.GetOnAccountComments(input, AccountUserName);
+       
+        /// <summary>
+        /// get user post you can display this in user profile  
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="AccountUserName"></param>
+        /// <returns></returns>
+        [HttpPost("{AccountUserName}/Posts")]
+        public async Task<Models.Helper.PagedList<Models.Post.Output.PostOutput>> GetPosts(Models.Helper.Pagination input, string AccountUserName)
+            => await _unitOfWork.PostService.GetUserProfilePosts(input, AccountUserName);
     }
 }

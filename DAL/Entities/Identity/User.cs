@@ -21,6 +21,8 @@ namespace DAL.Entities.Identity
         public virtual List<ReserveHospital> ReserveHospital { get; set; }
         public virtual List<UserConnection> UserConnections { get; set; }
         public virtual List<Follow> Followers { get; set; }
+
+        public virtual List<UserTag> UserTag { get; set; }
         public virtual List<Follow> Following { get; set; }
         public virtual Doctor Doctor { get; set; }
         public virtual Nurse Nurse { get; set; }
