@@ -35,7 +35,7 @@ namespace Services.Services
                 if (!IsUserRatable(rateduser))
                     return result.SetMessage("You cannot Rate this user").SetStatus(StatusCodes.Forbidden.ToString());
                 result.Data = new();
-                result.Data.RatingData = await base.GetQuery().Where(i => i.RatedUserid.Equals(rateduser.Id)).GroupBy(i => i.RateValue).Select(i => new RatingOutput.RatingOutputRaw { StarNumber = i.Key, Count = i.Count() }).ToListAsync();
+                result.Data.RatingData = await base.GetQuery().Where(i => i.RatedUserid.Equals(rateduser.Id)).GroupBy(i => i.RateValue).Select(i => new RatingOutput.RatingOutputRow { StarNumber = i.Key, Count = i.Count() }).ToListAsync();
                 return result.SetMessage("OK ").SetStatus(StatusCodes.Ok.ToString());
             }
             catch

@@ -26,7 +26,6 @@ namespace API.Controllers
             this._mapper = _mapper;
             this._hub = _hub;
         }
-
         /// <summary>
         /// Create new post <br/>
         /// Note: tags id must be related to tag within our database or you will get badRequst
@@ -49,7 +48,6 @@ namespace API.Controllers
 
             return Result(result);
         }
-
         /// <summary>
         /// Update Post <br/>
         /// it also update post tag ,so please enter post tag that you need to relate post with them
@@ -62,7 +60,6 @@ namespace API.Controllers
         [HttpPost(nameof(Update))]
         public async Task<ActionResult<ResponseService<PostOutput>>> Update(PostUpdateInput post) =>
              Result(await _unitOfWork.PostService.Update(post, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
-
         /// <summary>
         /// delete Post
         /// </summary>
@@ -111,5 +108,22 @@ namespace API.Controllers
         [HttpPost("{id}/Liks")]
         public async Task<PagedList<Models.Like.Output.LikeOutput>> GetLiks(Pagination input, int id) =>
             await _unitOfWork.LikeService.GetPostLiks(input, id);
+
+        /// <summary>
+        /// get  TopYearPosts that have the larger number of likes
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("TopYearPosts")]
+        public async Task<PagedList<PostOutput>> TopYearPosts(Pagination input) =>
+            await _unitOfWork.PostService.GetTopPostsForThisYear(input);
+        /// <summary>
+        /// get   TopMonthPosts that have the larger number of likes
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("TopMonthPosts")]
+        public async Task<PagedList<PostOutput>> TopMonthPosts(Pagination input) =>
+            await _unitOfWork.PostService.GetTopPostsForThisMounth(input);
     }
 }

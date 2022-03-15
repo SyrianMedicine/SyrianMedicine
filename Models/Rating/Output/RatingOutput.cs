@@ -8,14 +8,14 @@ namespace Models.Rating.Output
 {
     public class RatingOutput
     {
-        public class RatingOutputRaw
+        public class RatingOutputRow
         {
             public DAL.Entities.Rating.Rate StarNumber { get; set; }
             public int Count { get; set; }
         }
 
 
-        public List<RatingOutputRaw> RatingData { get; set; }
+        public List<RatingOutputRow> RatingData { get; set; }
         public double Average
         {
             get
