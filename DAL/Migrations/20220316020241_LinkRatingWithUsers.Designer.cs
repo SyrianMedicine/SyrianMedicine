@@ -3,6 +3,7 @@ using System;
 using DAL.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    partial class StoreContextModelSnapshot : ModelSnapshot
+    [Migration("20220316020241_LinkRatingWithUsers")]
+    partial class LinkRatingWithUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
@@ -1247,12 +1249,12 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Rating", b =>
                 {
-                    b.HasOne("DAL.Entities.Identity.User", "RatedUser")
-                        .WithMany("UsersRatedMe")
-                        .HasForeignKey("RatedUserid");
-
                     b.HasOne("DAL.Entities.Identity.User", "User")
                         .WithMany("UsersIRate")
+                        .HasForeignKey("RatedUserid");
+
+                    b.HasOne("DAL.Entities.Identity.User", "RatedUser")
+                        .WithMany("UsersRatedMe")
                         .HasForeignKey("userid");
 
                     b.Navigation("RatedUser");

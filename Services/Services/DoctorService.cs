@@ -9,7 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Models.Doctor.Inputs;
 using Models.Doctor.Outputs;
+using Models.Helper;
+using Models.Rating.Output;
 using Services.Common;
+using static Models.Rating.Output.RatingOutput;
 
 namespace Services
 {
@@ -18,14 +21,16 @@ namespace Services
         private readonly IIdentityRepository _identityRepository;
         private readonly IGenericRepository<DocumentsDoctor> _documentDoctor;
         private readonly IGenericRepository<ReserveDoctor> _reserveDoctor;
+        private readonly IGenericRepository<Rating> _ratingService;
         private readonly ITokenService _tokenService;
 
         public DoctorService(IIdentityRepository identityRepository, IGenericRepository<DocumentsDoctor> documentDoctor,
-         IGenericRepository<ReserveDoctor> reserveDoctor, IMapper mapper, ITokenService tokenService, StoreContext dbContext) : base(dbContext, mapper)
+         IGenericRepository<ReserveDoctor> reserveDoctor, IGenericRepository<Rating> ratingService, IMapper mapper, ITokenService tokenService, StoreContext dbContext) : base(dbContext, mapper)
         {
             _identityRepository = identityRepository;
             _documentDoctor = documentDoctor;
             _reserveDoctor = reserveDoctor;
+            _ratingService = ratingService;
             _tokenService = tokenService;
         }
 
@@ -35,6 +40,15 @@ namespace Services
         public async Task<DoctorOutput> GetDoctor(string username)
             => _mapper.Map<Doctor, DoctorOutput>(await GetQuery().Include(e => e.User).FirstOrDefaultAsync(e => e.User.NormalizedUserName == username.ToUpper()));
 
+        public async Task<PagedList<DoctorOutput>> GetPaginationDoctor(DoctorQuery input)
+            => _mapper.Map<PagedList<Doctor>, PagedList<DoctorOutput>>(await PagedList<Doctor>.CreatePagedListAsync(GetQuery().Include(e => e.User), input.PageNumber, input.PageSize));
+
+        public async Task<PagedList<MostDoctorsRated>> GetMostDoctorsRated(DoctorQuery input)
+        {
+            var query =base.GetQuery().Include(e =>e.User).ThenInclude(e =>e.UsersRatedMe).OrderByDescending(e =>e.User.UsersRatedMe.Average(e =>(int)(e.RateValue)));
+            return _mapper.Map<PagedList<Doctor>, PagedList<MostDoctorsRated>>(await PagedList<Doctor>.CreatePagedListAsync(query, input.PageNumber, input.PageSize));
+        }
+        
         public async Task<ResponseService<LoginOutput>> LoginDoctor(LoginDoctorInput input)
         {
             var response = new ResponseService<LoginOutput>();
@@ -277,15 +291,18 @@ namespace Services
                 return ResponseService<bool>.GetExeptionResponse();
             }
         }
+
     }
     public interface IDoctorService : IGenericRepository<Doctor>
     {
         public Task<IReadOnlyList<DoctorOutput>> GetAllDoctors();
         public Task<DoctorOutput> GetDoctor(string username);
+        public Task<PagedList<DoctorOutput>> GetPaginationDoctor(DoctorQuery input);
         public Task<ResponseService<LoginOutput>> LoginDoctor(LoginDoctorInput input);
         public Task<ResponseService<RegisterDoctorOutput>> RegisterDoctor(RegisterDoctor input);
         public Task<ResponseService<bool>> UpdateDoctor(UpdateDoctor input, User user);
         public Task<IReadOnlyList<ReserveDoctorOutput>> GetAllReversedForDoctor(int id);
         public Task<ResponseService<bool>> CheckReserve(CheckReserve input, User user);
+        public Task<PagedList<MostDoctorsRated>> GetMostDoctorsRated(DoctorQuery input);
     }
 }

@@ -5,6 +5,7 @@ using Models.Bed.Inputs;
 using Models.Bed.Outputs;
 using Models.Department.Inputs;
 using Models.Department.Outputs;
+using Models.Helper;
 using Models.Hospital.Inputs;
 using Models.Hospital.Outputs;
 using Services;
@@ -20,6 +21,14 @@ namespace API.Controllers
         [HttpGet(nameof(Hospitals))]
         public async Task<IReadOnlyList<HospitalOutput>> Hospitals()
             => await _unitOfWork.HospitalServices.GetAllHospitals();
+
+        [HttpPost(nameof(PaginationHospitals))]
+        public async Task<PagedList<HospitalOutput>> PaginationHospitals(HospitalQuery input)
+            => await _unitOfWork.HospitalServices.GetPaginationHospital(input);
+
+        [HttpPost(nameof(MostHospitalsRated))]
+        public async Task<PagedList<MostHospitalsRated>> MostHospitalsRated(HospitalQuery input)
+            => await _unitOfWork.HospitalServices.GetMostHospitalsRated(input);
 
         [HttpGet("{username}")]
         public async Task<HospitalOutput> Hospital(string username)

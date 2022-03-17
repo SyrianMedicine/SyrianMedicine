@@ -12,6 +12,7 @@ using Models.Bed.Outputs;
 using Models.Department.Inputs;
 using Models.Department.Outputs;
 using Models.Doctor.Outputs;
+using Models.Helper;
 using Models.Hospital;
 using Models.Hospital.Inputs;
 using Models.Hospital.Outputs;
@@ -47,6 +48,14 @@ namespace Services
         public async Task<HospitalOutput> GetHospital(string username)
             => _mapper.Map<Hospital, HospitalOutput>(await GetQuery().Include(e => e.User).FirstOrDefaultAsync(e => e.User.NormalizedUserName == username.ToUpper()));
 
+        public async Task<PagedList<HospitalOutput>> GetPaginationHospital(HospitalQuery input)
+            => _mapper.Map<PagedList<Hospital>, PagedList<HospitalOutput>>(await PagedList<Hospital>.CreatePagedListAsync(GetQuery().Include(e => e.User), input.PageNumber, input.PageSize));
+
+        public async Task<PagedList<MostHospitalsRated>> GetMostHospitalsRated(HospitalQuery input)
+        {
+            var query = base.GetQuery().Include(e => e.User).ThenInclude(e => e.UsersRatedMe).OrderByDescending(e => e.User.UsersRatedMe.Average(e => (int)(e.RateValue)));
+            return _mapper.Map<PagedList<Hospital>, PagedList<MostHospitalsRated>>(await PagedList<Hospital>.CreatePagedListAsync(query, input.PageNumber, input.PageSize));
+        }
         public async Task<ResponseService<RegisterHospitalOutput>> LoginHospital(LoginHospital input)
         {
             var response = new ResponseService<RegisterHospitalOutput>();
@@ -551,6 +560,8 @@ namespace Services
         public Task<ResponseService<RegisterHospitalOutput>> RegisterHospital(RegisterHospital input);
         public Task<ResponseService<RegisterHospitalOutput>> LoginHospital(LoginHospital input);
         public Task<IReadOnlyList<HospitalOutput>> GetAllHospitals();
+        public Task<PagedList<HospitalOutput>> GetPaginationHospital(HospitalQuery input);
+        public Task<PagedList<MostHospitalsRated>> GetMostHospitalsRated(HospitalQuery input);
         public Task<HospitalOutput> GetHospital(string username);
         public Task<ResponseService<bool>> AddDebartmentsToHospital(List<CreateDepartment> inputs, User user);
         public Task<ResponseService<bool>> UpdateDepartment(UpdateDepartment input, User user);

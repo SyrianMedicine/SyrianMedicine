@@ -4,21 +4,30 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Doctor.Inputs;
 using Models.Doctor.Outputs;
+using Models.Helper;
 using Services;
 using Services.Common;
 
 namespace API.Controllers
 {
     public class DoctorController : BaseController
-    { 
-        public DoctorController(IUnitOfWork unitOfWork):base(unitOfWork)
+    {
+        public DoctorController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            
+
         }
+
+        [HttpPost(nameof(PaginationDoctors))]
+        public async Task<PagedList<DoctorOutput>> PaginationDoctors(DoctorQuery input)
+            => await _unitOfWork.DoctorServices.GetPaginationDoctor(input);
 
         [HttpGet(nameof(Doctors))]
         public async Task<IReadOnlyList<DoctorOutput>> Doctors()
             => await _unitOfWork.DoctorServices.GetAllDoctors();
+
+        [HttpPost(nameof(MostDoctorsRated))]
+        public async Task<PagedList<MostDoctorsRated>> MostDoctorsRated(DoctorQuery input)
+            => await _unitOfWork.DoctorServices.GetMostDoctorsRated(input);
 
         [HttpGet("{username}")]
         public async Task<DoctorOutput> Doctor(string username)

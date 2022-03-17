@@ -8,6 +8,7 @@ using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Models.Doctor.Outputs;
+using Models.Helper;
 using Models.Nurse;
 using Models.Nurse.Inputs;
 using Models.Nurse.Outputs;
@@ -35,6 +36,17 @@ namespace Services
 
         public async Task<NurseOutput> GetNurse(string username)
             => _mapper.Map<Nurse, NurseOutput>(await GetQuery().Include(e => e.User).FirstOrDefaultAsync(e => e.User.NormalizedUserName == username.ToUpper()));
+
+
+        public async Task<PagedList<NurseOutput>> GetPaginationNurse(NurseQuery input)
+            => _mapper.Map<PagedList<Nurse>, PagedList<NurseOutput>>(await PagedList<Nurse>.CreatePagedListAsync(GetQuery().Include(e => e.User), input.PageNumber, input.PageSize));
+
+
+        public async Task<PagedList<MostNursesRated>> GetMostNursesRated(NurseQuery input)
+        {
+            var query = base.GetQuery().Include(e => e.User).ThenInclude(e => e.UsersRatedMe).OrderByDescending(e => e.User.UsersRatedMe.Average(e => (int)(e.RateValue)));
+            return _mapper.Map<PagedList<Nurse>, PagedList<MostNursesRated>>(await PagedList<Nurse>.CreatePagedListAsync(query, input.PageNumber, input.PageSize));
+        }
 
         public async Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input)
         {
@@ -286,6 +298,8 @@ namespace Services
     {
         public Task<IReadOnlyList<NurseOutput>> GetAllNurses();
         public Task<NurseOutput> GetNurse(string username);
+        public Task<PagedList<NurseOutput>> GetPaginationNurse(NurseQuery input);
+        public Task<PagedList<MostNursesRated>> GetMostNursesRated(NurseQuery input);
         public Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input);
         public Task<ResponseService<RegisterNurseOutput>> RegisterNurse(RegisterNurse input);
         public Task<ResponseService<bool>> UpdateNurse(UpdateNurse input, User user);

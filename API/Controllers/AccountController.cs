@@ -30,6 +30,11 @@ namespace API.Controllers
         [HttpGet(nameof(GetCities))]
         public async Task<IReadOnlyList<OptionDto>> GetCities()
             => await _unitOfWork.AccountService.GetCities();
+      
+        [HttpGet(nameof(GetPersonStates))]
+        public List<OptionDto> GetPersonStates()
+            =>  _unitOfWork.AccountService.GetPersonStates();
+
 
 
         // Example For Sarye, I will delete it afer somedays

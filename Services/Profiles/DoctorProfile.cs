@@ -3,6 +3,7 @@ using DAL.Entities;
 using DAL.Entities.Identity;
 using Models.Doctor.Inputs;
 using Models.Doctor.Outputs;
+using Models.Helper;
 
 namespace Services.Profiles
 {
@@ -22,12 +23,20 @@ namespace Services.Profiles
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
 
+            CreateMap<Doctor, MostDoctorsRated>()
+                .ForMember(dest => dest.AboutMe, opt => opt.MapFrom(src => src.AboutMe))
+                .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.User.FirstName + " " + src.User.LastName))
+                .ForMember(dest => dest.Specialization, opt => opt.MapFrom(src => src.Specialization))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
+
+            CreateMap<PagedList<Doctor>, PagedList<DoctorOutput>>();
+            CreateMap<PagedList<Doctor>, PagedList<MostDoctorsRated>>();
+
             CreateMap<RegisterDoctor, User>();
             CreateMap<RegisterDoctor, Doctor>();
             CreateMap<UpdateDoctor, User>();
             CreateMap<UpdateDoctor, Doctor>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.DoctorId));
-
 
             CreateMap<User, LoginOutput>()
                 .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.FirstName + " " + src.LastName));

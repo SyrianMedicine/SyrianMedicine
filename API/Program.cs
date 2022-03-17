@@ -3,10 +3,8 @@ using API.Extensions;
 using API.Hubs;
 using DAL.DataContext;
 using DAL.Entities.Identity;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Services.Seed;
 
 
@@ -28,6 +26,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddCors();
 builder.Services.AddSignalR();
 var app = builder.Build();
+
 // for migrate data to database
 using (var scope = app.Services.CreateScope())
 {
@@ -36,11 +35,20 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<StoreContext>();
-        var roleManager = services.GetRequiredService<RoleManager<Role>>(); await context.Database.MigrateAsync();
-        var userManager = services.GetRequiredService<UserManager<User>>(); await context.Database.MigrateAsync();
+        var roleManager = services.GetRequiredService<RoleManager<Role>>();
+        var userManager = services.GetRequiredService<UserManager<User>>();
+        await context.Database.MigrateAsync();
         await RoleSeed.SeedRoleAsync(roleManager);
-        await UserSeed.SeedUserAsync(userManager);
+        await UserSeed.SeedAdminAsync(userManager);
+        await UserSeed.SeedSickAsync(userManager);
         await CitySeed.SeedCitiesAsync(context);
+        await DoctorSeed.SeedDoctorsAsync(userManager, context);
+        await NuresSeed.SeedNursesAsync(userManager, context);
+        await HospitalSeed.SeedHospitalsAsync(userManager, context);
+        await HospitalSeed.SeedDepartmentsAsync(context);
+        await HospitalSeed.SeedBedsAsync(context);
+        await PostSeed.SeedPostsAsync(context);
+        await RatingSeed.SeedRaingAsync(context);
     }
     catch (Exception ex)
     {
@@ -58,7 +66,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseCors(x => x.WithOrigins("https://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+app.UseCors(x => x.WithOrigins().AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAuthentication();

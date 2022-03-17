@@ -5,6 +5,7 @@ using Models.Bed.Inputs;
 using Models.Bed.Outputs;
 using Models.Department.Inputs;
 using Models.Department.Outputs;
+using Models.Helper;
 using Models.Hospital;
 using Models.Hospital.Inputs;
 using Models.Hospital.Outputs;
@@ -24,6 +25,15 @@ namespace Services.Profiles
                 .ForMember(e => e.HomeNumber, opt => opt.MapFrom(src => src.User.HomeNumber))
                 .ForMember(e => e.City, opt => opt.MapFrom(src => src.User.City));
 
+            CreateMap<Hospital, MostHospitalsRated>()
+                .ForMember(e => e.AboutHospital, opt => opt.MapFrom(src => src.AboutHospital))
+                .ForMember(e => e.Location, opt => opt.MapFrom(src => src.User.Location))
+                .ForMember(e => e.City, opt => opt.MapFrom(src => src.User.City))
+                .ForMember(e => e.Name, opt => opt.MapFrom(src => src.Name));
+
+            CreateMap<PagedList<Hospital>, PagedList<HospitalOutput>>();
+            CreateMap<PagedList<Hospital>, PagedList<MostHospitalsRated>>();
+
             CreateMap<Hospital, RegisterHospitalOutput>()
                 .ForMember(e => e.UserName, opt => opt.MapFrom(src => src.User.UserName));
 
@@ -31,8 +41,6 @@ namespace Services.Profiles
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.HospitalId));
             CreateMap<UpdateHospital, User>()
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumer));
-
-
 
             CreateMap<User, RegisterHospitalOutput>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Hospital.Id));

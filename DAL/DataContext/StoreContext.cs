@@ -63,6 +63,15 @@ namespace DAL.DataContext
             builder.Entity<UserConnection>().HasIndex(i => i.ConnectionID).IsUnique();
             builder.Entity<SubCommentLike>().HasIndex(i => new { i.SubCommentID, i.UserId }).IsUnique();
             builder.Entity<Rating>().HasIndex(i => new { i.userid, i.RatedUserid }).IsUnique();
+
+            builder.Entity<Rating>()
+                .HasOne(u => u.User)
+                .WithMany(u => u.UsersIRate)
+                .HasForeignKey(fk => fk.userid);
+            builder.Entity<Rating>()
+                .HasOne(u => u.RatedUser)
+                .WithMany(u => u.UsersRatedMe)
+                .HasForeignKey(fk => fk.RatedUserid);
         }
 
     }

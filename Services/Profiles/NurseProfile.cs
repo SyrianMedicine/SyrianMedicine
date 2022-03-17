@@ -2,6 +2,7 @@ using AutoMapper;
 using DAL.Entities;
 using DAL.Entities.Identity;
 using Models.Doctor.Outputs;
+using Models.Helper;
 using Models.Nurse;
 using Models.Nurse.Inputs;
 using Models.Nurse.Outputs;
@@ -23,6 +24,16 @@ namespace Services.Profiles
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.User.Gender))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
+
+
+            CreateMap<Nurse, MostNursesRated>()
+                .ForMember(dest => dest.AboutMe, opt => opt.MapFrom(src => src.AboutMe))
+                .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.User.FirstName + " " + src.User.LastName))
+                .ForMember(dest => dest.Specialization, opt => opt.MapFrom(src => src.Specialization))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
+
+            CreateMap<PagedList<Nurse>, PagedList<NurseOutput>>();
+            CreateMap<PagedList<Nurse>, PagedList<MostNursesRated>>();
 
             CreateMap<User, LoginNurseOutput>()
                 .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.FirstName + " " + src.LastName));
