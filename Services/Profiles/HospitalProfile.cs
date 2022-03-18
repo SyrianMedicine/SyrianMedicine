@@ -27,7 +27,7 @@ namespace Services.Profiles
 
             CreateMap<Hospital, MostHospitalsRated>()
                 .ForMember(e => e.AboutHospital, opt => opt.MapFrom(src => src.AboutHospital))
-                .ForMember(e => e.Location, opt => opt.MapFrom(src => src.User.Location))
+                .ForMember(e => e.PictureUrl, opt => opt.MapFrom(src => src.User.PictureUrl))
                 .ForMember(e => e.City, opt => opt.MapFrom(src => src.User.City))
                 .ForMember(e => e.Name, opt => opt.MapFrom(src => src.Name));
 

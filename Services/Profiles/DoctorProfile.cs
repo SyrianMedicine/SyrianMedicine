@@ -27,7 +27,8 @@ namespace Services.Profiles
                 .ForMember(dest => dest.AboutMe, opt => opt.MapFrom(src => src.AboutMe))
                 .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.User.FirstName + " " + src.User.LastName))
                 .ForMember(dest => dest.Specialization, opt => opt.MapFrom(src => src.Specialization))
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
+                .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom(src => src.User.PictureUrl))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.User.City));
 
             CreateMap<PagedList<Doctor>, PagedList<DoctorOutput>>();
             CreateMap<PagedList<Doctor>, PagedList<MostDoctorsRated>>();

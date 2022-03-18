@@ -45,10 +45,10 @@ namespace Services
 
         public async Task<PagedList<MostDoctorsRated>> GetMostDoctorsRated(DoctorQuery input)
         {
-            var query =base.GetQuery().Include(e =>e.User).ThenInclude(e =>e.UsersRatedMe).OrderByDescending(e =>e.User.UsersRatedMe.Average(e =>(int)(e.RateValue)));
+            var query = base.GetQuery().Include(e => e.User).ThenInclude(e => e.UsersRatedMe).OrderByDescending(e => e.User.UsersRatedMe.Average(e => (int)(e.RateValue)));
             return _mapper.Map<PagedList<Doctor>, PagedList<MostDoctorsRated>>(await PagedList<Doctor>.CreatePagedListAsync(query, input.PageNumber, input.PageSize));
         }
-        
+
         public async Task<ResponseService<LoginOutput>> LoginDoctor(LoginDoctorInput input)
         {
             var response = new ResponseService<LoginOutput>();
