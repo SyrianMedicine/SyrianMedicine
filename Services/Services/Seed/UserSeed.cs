@@ -11,7 +11,7 @@ namespace Services.Seed
     {
         public static async Task SeedAdminAsync(UserManager<User> userManager)
         {
-            if (await userManager.Users.Where(e => e.UserType == UserType.Admin).FirstOrDefaultAsync() != null)
+            if (await userManager.Users.Where(e => e.UserType == UserType.Admin).FirstOrDefaultAsync() == null)
             {
                 var userData = await File.ReadAllTextAsync(@"../Services/Services/Seed/Data/users.json");
                 var users = JsonSerializer.Deserialize<List<User>>(userData);

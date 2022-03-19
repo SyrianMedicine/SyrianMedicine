@@ -15,16 +15,19 @@ namespace DAL.Entities
         /// <br/>
         ///Question=2 استفسار
         /// </summary>
-        public enum PostType{post=1,Question}
+        public enum PostType { post = 1, Question }
         public int Id { get; set; }
         [Required]
         public string PostText { get; set; }
-        public PostType Type{get;set;}
+        [Required]
+        public string PostTitle { get; set; }
+        public string MedialUrl { get; set; } = null;
+        public PostType Type { get; set; }
         public DateTime Date { get; set; }
         public bool IsEdited { get; set; }
         [Required]
         public string UserId { get; set; }
-        
+
         [ForeignKey(nameof(UserId))]
         public virtual User User { get; set; }
         public virtual List<PostTag> Tags { get; set; }

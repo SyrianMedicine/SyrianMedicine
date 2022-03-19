@@ -12,6 +12,8 @@ namespace Models.Post.Input
         public int Id { get; set; }
         [Required]
         public string PostText { get; set; }
+        [Required]
+        public string PostTitle { get; set; }
         public DAL.Entities.Post.PostType Type { get; set; }
         public List<int> TagsID { get; set; }
     }

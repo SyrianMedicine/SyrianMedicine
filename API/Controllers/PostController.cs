@@ -123,7 +123,7 @@ namespace API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("TopMonthPosts")]
-        public async Task<PagedList<PostOutput>> TopMonthPosts(Pagination input) =>
+        public async Task<PagedList<MostPostsRated>> TopMonthPosts(Pagination input) =>
             await _unitOfWork.PostService.GetTopPostsForThisMounth(input);
     }
 }

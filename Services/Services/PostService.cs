@@ -117,8 +117,8 @@ namespace Services.Services
         public async Task<PagedList<PostOutput>> GetTagPosts(Pagination input, int Tagid) =>
             _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).Where(i => i.Tags.Where(x => x.TagId == Tagid).Any()).OrderByDescending(i => i.Date), input.PageNumber, input.PageSize));
 
-        public async Task<PagedList<PostOutput>> GetTopPostsForThisMounth(Pagination input) =>
-        _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).Where(i =>i.Date.Year == DateTime.Now.Year && i.Date.Month == DateTime.Now.Month).OrderByDescending(i => i.LikedByList.Count()), input.PageNumber, input.PageSize));
+        public async Task<PagedList<MostPostsRated>> GetTopPostsForThisMounth(Pagination input) =>
+        _mapper.Map<PagedList<Post>, PagedList<MostPostsRated>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => i.Date.Year == DateTime.Now.Year && i.Date.Month == DateTime.Now.Month).OrderByDescending(i => i.LikedByList.Count), input.PageNumber, input.PageSize));
 
         public async Task<PagedList<PostOutput>> GetTopPostsForThisYear(Pagination input) =>
         _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).Where(i => i.Date.Year == DateTime.Now.Year).OrderByDescending(i => i.LikedByList.Count()), input.PageNumber, input.PageSize));
@@ -189,7 +189,7 @@ namespace Services.Services
         public Task<PagedList<PostOutput>> GetTagPosts(Pagination input, int Tagid);
         public Task<PagedList<PostOutput>> GetUserProfilePosts(Pagination input, string username);
         public Task<PagedList<PostOutput>> GetUserHomePagePosts(Pagination input, User user);
-        public Task<PagedList<PostOutput>> GetTopPostsForThisMounth(Pagination input);
+        public Task<PagedList<MostPostsRated>> GetTopPostsForThisMounth(Pagination input);
         public Task<PagedList<PostOutput>> GetTopPostsForThisYear(Pagination input);
 
     }

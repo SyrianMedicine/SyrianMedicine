@@ -16,6 +16,7 @@ namespace Services.Seed.GenerateData
                 {
                     Date = DateTime.Now,
                     IsEdited = cnt % 2 == 0,
+                    PostTitle = Faker.Lorem.Sentence(),
                     PostText = Faker.Lorem.Sentence() + Faker.Lorem.Sentence(),
                     UserId = doctor.UserId,
                     Type = cnt % 10 == 0 ? Post.PostType.post : Post.PostType.Question
@@ -30,6 +31,7 @@ namespace Services.Seed.GenerateData
                 {
                     Date = DateTime.Now,
                     IsEdited = cnt % 2 == 0,
+                    PostTitle = Faker.Lorem.Sentence(),
                     PostText = Faker.Lorem.Sentence() + Faker.Lorem.Sentence(),
                     UserId = nurse.UserId,
                     Type = cnt % 10 == 0 ? Post.PostType.post : Post.PostType.Question
@@ -45,6 +47,7 @@ namespace Services.Seed.GenerateData
                     Date = DateTime.Now,
                     IsEdited = cnt % 2 == 0,
                     PostText = GenreratePostText(),
+                    PostTitle = Faker.Lorem.Sentence(),
                     UserId = hospital.UserId,
                     Type = cnt % 15 == 0 ? Post.PostType.post : Post.PostType.Question
                 };
