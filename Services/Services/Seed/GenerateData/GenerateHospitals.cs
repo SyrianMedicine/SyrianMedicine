@@ -50,6 +50,7 @@ namespace Services.Seed.GenerateData
                     UserName = "Hospital" + firstName + i.ToString(),
                     HomeNumber = Faker.Phone.Number(),
                     Location = Faker.Address.StreetName(),
+                    FirstName=cities[i % cities.Count].Name + " hopital",
                     EmailConfirmed = true,
                     UserType = UserType.Hospital,
                     City = cities[i % cities.Count].Name,
@@ -68,7 +69,6 @@ namespace Services.Seed.GenerateData
             int cnt = 0;
             foreach (var user in users)
             {
-                cnt++;
                 Hospital hospital = new()
                 {
                     AboutHospital = Faker.Lorem.Sentence(),
@@ -78,6 +78,7 @@ namespace Services.Seed.GenerateData
                     UserId = user.Id,
                 };
                 hospitals.Add(hospital);
+                cnt++;
             }
 
             return (users, hospitals);

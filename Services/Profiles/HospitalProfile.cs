@@ -40,12 +40,14 @@ namespace Services.Profiles
             CreateMap<UpdateHospital, Hospital>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.HospitalId));
             CreateMap<UpdateHospital, User>()
-                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumer));
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumer))
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Name));
 
             CreateMap<User, RegisterHospitalOutput>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Hospital.Id));
 
-            CreateMap<RegisterHospital, User>();
+            CreateMap<RegisterHospital, User>()
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Name));
             CreateMap<RegisterHospital, Hospital>();
 
             CreateMap<DocumentsHospitalModel, DocumentsHospital>().ReverseMap();
