@@ -718,38 +718,6 @@ namespace DAL.Migrations
                     b.ToTable("ReserveNurses");
                 });
 
-            modelBuilder.Entity("DAL.Entities.SubComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CommentId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CommentText")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsEdited")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("SubComments");
-                });
-
             modelBuilder.Entity("DAL.Entities.Tag", b =>
                 {
                     b.Property<int>("Id")
@@ -1014,17 +982,16 @@ namespace DAL.Migrations
                     b.HasDiscriminator().HasValue("PostLike");
                 });
 
-            modelBuilder.Entity("DAL.Entities.SubCommentLike", b =>
+            modelBuilder.Entity("DAL.Entities.SubComment", b =>
                 {
-                    b.HasBaseType("DAL.Entities.Like");
+                    b.HasBaseType("DAL.Entities.Comment");
 
-                    b.Property<int>("SubCommentID")
+                    b.Property<int>("CommentId")
                         .HasColumnType("INTEGER");
 
-                    b.HasIndex("SubCommentID", "UserId")
-                        .IsUnique();
+                    b.HasIndex("CommentId");
 
-                    b.HasDiscriminator().HasValue("SubCommentLike");
+                    b.HasDiscriminator().HasValue("SubComment");
                 });
 
             modelBuilder.Entity("DAL.Entities.Bed", b =>
@@ -1318,25 +1285,6 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DAL.Entities.SubComment", b =>
-                {
-                    b.HasOne("DAL.Entities.Comment", "Comment")
-                        .WithMany("SubComments")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.Identity.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Comment");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("DAL.Entities.UserConnection", b =>
                 {
                     b.HasOne("DAL.Entities.Identity.User", "user")
@@ -1458,15 +1406,15 @@ namespace DAL.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("DAL.Entities.SubCommentLike", b =>
+            modelBuilder.Entity("DAL.Entities.SubComment", b =>
                 {
-                    b.HasOne("DAL.Entities.SubComment", "SubComment")
-                        .WithMany("LikedByList")
-                        .HasForeignKey("SubCommentID")
+                    b.HasOne("DAL.Entities.Comment", "Comment")
+                        .WithMany("SubComments")
+                        .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("SubComment");
+                    b.Navigation("Comment");
                 });
 
             modelBuilder.Entity("DAL.Entities.Bed", b =>
@@ -1547,11 +1495,6 @@ namespace DAL.Migrations
                     b.Navigation("LikedByList");
 
                     b.Navigation("Tags");
-                });
-
-            modelBuilder.Entity("DAL.Entities.SubComment", b =>
-                {
-                    b.Navigation("LikedByList");
                 });
 
             modelBuilder.Entity("DAL.Entities.Tag", b =>

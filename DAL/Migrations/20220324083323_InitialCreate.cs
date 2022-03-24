@@ -270,6 +270,8 @@ namespace DAL.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     PostText = table.Column<string>(type: "TEXT", nullable: false),
+                    PostTitle = table.Column<string>(type: "TEXT", nullable: false),
+                    MedialUrl = table.Column<string>(type: "TEXT", nullable: true),
                     Type = table.Column<int>(type: "INTEGER", nullable: false),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: false),
                     IsEdited = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -519,7 +521,8 @@ namespace DAL.Migrations
                     UserId = table.Column<string>(type: "TEXT", nullable: true),
                     Discriminator = table.Column<string>(type: "TEXT", nullable: false),
                     OnAccountId = table.Column<string>(type: "TEXT", nullable: true),
-                    PostId = table.Column<int>(type: "INTEGER", nullable: true)
+                    PostId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CommentId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -534,6 +537,12 @@ namespace DAL.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Comments_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Comments_Posts_PostId",
                         column: x => x.PostId,
@@ -693,30 +702,36 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SubComments",
+                name: "Likes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CommentText = table.Column<string>(type: "TEXT", nullable: false),
-                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    IsEdited = table.Column<bool>(type: "INTEGER", nullable: false),
+                    LikeDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    CommentId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Discriminator = table.Column<string>(type: "TEXT", nullable: false),
+                    CommentID = table.Column<int>(type: "INTEGER", nullable: true),
+                    PostID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SubComments", x => x.Id);
+                    table.PrimaryKey("PK_Likes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SubComments_AspNetUsers_UserId",
+                        name: "FK_Likes_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SubComments_Comments_CommentId",
-                        column: x => x.CommentId,
+                        name: "FK_Likes_Comments_CommentID",
+                        column: x => x.CommentID,
                         principalTable: "Comments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Likes_Posts_PostID",
+                        column: x => x.PostID,
+                        principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -778,48 +793,6 @@ namespace DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Likes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    LikeDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    Discriminator = table.Column<string>(type: "TEXT", nullable: false),
-                    CommentID = table.Column<int>(type: "INTEGER", nullable: true),
-                    PostID = table.Column<int>(type: "INTEGER", nullable: true),
-                    SubCommentID = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Likes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Likes_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Likes_Comments_CommentID",
-                        column: x => x.CommentID,
-                        principalTable: "Comments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Likes_Posts_PostID",
-                        column: x => x.PostID,
-                        principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Likes_SubComments_SubCommentID",
-                        column: x => x.SubCommentID,
-                        principalTable: "SubComments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -867,6 +840,11 @@ namespace DAL.Migrations
                 name: "IX_Beds_DepartmentId",
                 table: "Beds",
                 column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_CommentId",
+                table: "Comments",
+                column: "CommentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_OnAccountId",
@@ -961,12 +939,6 @@ namespace DAL.Migrations
                 name: "IX_Likes_PostID",
                 table: "Likes",
                 column: "PostID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Likes_SubCommentID_UserId",
-                table: "Likes",
-                columns: new[] { "SubCommentID", "UserId" },
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Likes_UserId",
@@ -1071,16 +1043,6 @@ namespace DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubComments_CommentId",
-                table: "SubComments",
-                column: "CommentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SubComments_UserId",
-                table: "SubComments",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Tags_Tagname",
                 table: "Tags",
                 column: "Tagname",
@@ -1181,7 +1143,7 @@ namespace DAL.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "SubComments");
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Beds");
@@ -1193,16 +1155,13 @@ namespace DAL.Migrations
                 name: "Tags");
 
             migrationBuilder.DropTable(
-                name: "Comments");
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "Departments");
 
             migrationBuilder.DropTable(
                 name: "Nurses");
-
-            migrationBuilder.DropTable(
-                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "Hospitals");

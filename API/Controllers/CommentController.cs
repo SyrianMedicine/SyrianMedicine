@@ -22,6 +22,29 @@ namespace API.Controllers
         {
             this._hub = _hub;
         }
+        /// <summary>
+        /// reply on AccountComment or PostComment
+        ///  Note: this action notfy Comment Owner on NotfiyReplyOnComment function
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost(nameof(CreateSubComment))]
+        public async Task<ActionResult<ResponseService<CommentOutput>>> CreateSubComment(SubCommentCreateInput input)
+        {
+            var user = await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User);
+            var result = await _unitOfWork.CommentService.CreateSubComment(input, user);
+            if (result.isDone())
+            {
+                try
+                {
+                    var ids = await _unitOfWork.ConnectionService.GetConnections(result.Data.OnComment.User.UserName);
+                    _hub.Clients.Clients(ids.Select(i => i.ConnectionID).Distinct().ToList()).NotfiyCommentCreated(result.Data, user.FirstName + " " + user.LastName + " Reply On your Comment");
+                }
+                catch { }
+            }
+            return Result(result);
+        }
 
         /// <summary>
         /// this API create Comment on post<br/>
@@ -104,8 +127,8 @@ namespace API.Controllers
         /// <param name="Commentid"></param>
         /// <returns></returns>
         [HttpPost("{Commentid}/SubComments")]
-        public async Task<PagedList<SubCommentOutput>> GetSubCommentsforComment(Pagination input, int Commentid) =>
-          await _unitOfWork.SubCommentService.GetSubCommentsforComment(input, Commentid);
+        public async Task<PagedList<CommentOutput>> GetSubCommentsforComment(Pagination input, int Commentid) =>
+          await _unitOfWork.CommentService.GetSubComments(input, Commentid);
         /// <summary>
         /// who like this Comments
         /// </summary>

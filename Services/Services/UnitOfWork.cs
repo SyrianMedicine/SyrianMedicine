@@ -7,8 +7,7 @@ namespace Services
     public class UnitOfWork : IUnitOfWork
     {
         private readonly StoreContext _dbContext;
-
-        public ISubCommentService SubCommentService { get; }
+ 
         public ICommentService CommentService { get; }
         public IPostService PostService { get; }
         public IConnectionService ConnectionService { get; }
@@ -26,12 +25,11 @@ namespace Services
         public IRatingService RatingService { get; }
         public ILikeService LikeService{get;}
 
-        public UnitOfWork(ILikeService LikeService,IRatingService RatingService, ISubCommentService SubCommentService, ICommentService CommentService, IPostService PostService, IConnectionService ConnectionService, IFollowService FollowService, IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
+        public UnitOfWork(ILikeService LikeService,IRatingService RatingService, ICommentService CommentService, IPostService PostService, IConnectionService ConnectionService, IFollowService FollowService, IUserTagService UserTagService, ITagService TagService, IDoctorService DoctorServices, INurseService NurseServices, ISickService SickServices,
             IIdentityRepository IdentityRepository, IDashboardService DashboardService, IAccountService AccountService, IHospitalService HospitalServices, StoreContext dbContext)
         {
             this.LikeService=LikeService;
-            this.RatingService = RatingService;
-            this.SubCommentService = SubCommentService;
+            this.RatingService = RatingService; 
             this.CommentService = CommentService;
             this.PostService = PostService;
             this.ConnectionService = ConnectionService;
@@ -52,8 +50,7 @@ namespace Services
     {
         public ILikeService LikeService{get;}
         public IRatingService RatingService { get; }
-        public IConnectionService ConnectionService { get; }
-        public ISubCommentService SubCommentService { get; }
+        public IConnectionService ConnectionService { get; } 
         public ICommentService CommentService { get; }
         public IPostService PostService { get; }
         public IDoctorService DoctorServices { get; }

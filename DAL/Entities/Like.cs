@@ -10,7 +10,7 @@ namespace DAL.Entities
 {
     public class Like
     {
-        public enum LikeType { BaseLike = 1, CommentLike, PostLike, SubCommentLike }
+        public enum LikeType { UnKnownType = 1, CommentLike, PostLike }
         public int Id { get; set; }
         public DateTime LikeDate { get; set; }
         [Required]
@@ -20,7 +20,7 @@ namespace DAL.Entities
 
         public virtual LikeType GetLikeType()
         {
-            return LikeType.BaseLike;
+            return LikeType.UnKnownType;
         }
         public virtual string GetObjectId()
         {

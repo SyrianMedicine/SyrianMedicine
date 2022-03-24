@@ -12,8 +12,7 @@ namespace DAL.Entities
         public int CommentID { get; set; }
         
         [ForeignKey(nameof(CommentID))]
-        public virtual Comment Comment { get; set; }
-        public override User User { get => base.User; set => base.User = value; }
+        public virtual Comment Comment { get; set; } 
         public override LikeType GetLikeType()
         {
             return LikeType.CommentLike;

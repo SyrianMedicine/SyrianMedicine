@@ -61,7 +61,7 @@ namespace Services.Services
                 {
                     Transaction.Commit();
                     post.User = user;
-                    return result.SetData(_mapper.Map<Post, PostOutput>(post)).SetStatus(StatusCodes.Ok.ToString());
+                    return result.SetMessage("Ok Added").SetData(_mapper.Map<Post, PostOutput>(post)).SetStatus(StatusCodes.Ok.ToString());
                 }
                 else
                 {

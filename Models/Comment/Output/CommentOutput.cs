@@ -13,10 +13,11 @@ namespace Models.Comment.Output
         public string Text { get; set; }
         public DateTime Datetime { get; set; }
         public bool IsEdited { get; set; }
-        public UserCardOutput User { get; set; }
         public string RelatedObjectType { get; set; }
         public string RealtedObjectId { get; set; }
+        public UserCardOutput User { get; set; }
         public PostOutput OnPost { get; set; }
-        public UserCardOutput OnAccount { get; set; } 
+        public UserCardOutput OnAccount { get; set; }  
+        public CommentOutput OnComment { get; set; }
     }
 }

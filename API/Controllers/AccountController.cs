@@ -30,10 +30,10 @@ namespace API.Controllers
         [HttpGet(nameof(GetCities))]
         public async Task<IReadOnlyList<OptionDto>> GetCities()
             => await _unitOfWork.AccountService.GetCities();
-      
+
         [HttpGet(nameof(GetPersonStates))]
         public List<OptionDto> GetPersonStates()
-            =>  _unitOfWork.AccountService.GetPersonStates();
+            => _unitOfWork.AccountService.GetPersonStates();
 
 
 
@@ -69,7 +69,7 @@ namespace API.Controllers
         [HttpPost(nameof(UpdateAdminProfile)), Authorize(Roles = "Admin")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateAdminProfile(UpdateAdmin input)
             => Result(await _unitOfWork.AccountService.UpdateAdminProfile(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateAdminProfile));
-      
+
         /// <summary>
         /// get comments on Doctor or Nurses  progile
         /// </summary>
@@ -79,7 +79,7 @@ namespace API.Controllers
         [HttpPost("{AccountUserName}/Comments")]
         public async Task<Models.Helper.PagedList<Models.Comment.Output.CommentOutput>> Comments(Models.Helper.Pagination input, string AccountUserName)
             => await _unitOfWork.CommentService.GetOnAccountComments(input, AccountUserName);
-       
+
         /// <summary>
         /// get user post you can display this in user profile  
         /// </summary>
@@ -89,5 +89,21 @@ namespace API.Controllers
         [HttpPost("{AccountUserName}/Posts")]
         public async Task<Models.Helper.PagedList<Models.Post.Output.PostOutput>> GetPosts(Models.Helper.Pagination input, string AccountUserName)
             => await _unitOfWork.PostService.GetUserProfilePosts(input, AccountUserName);
+
+        /// <summary>
+        /// get user Comment History 
+        /// </summary>
+        [Authorize]
+        [HttpPost("MyCommentsHistory")]
+        public async Task<Models.Helper.PagedList<Models.Comment.Output.CommentOutput>> Comments(Models.Helper.Pagination input)
+            => await _unitOfWork.CommentService.GetMyComments(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User));
+        /// <summary>
+        /// get user Liks History 
+        /// </summary>
+        [Authorize]
+        [HttpPost("MyLikeHistory")]
+        public async Task<Models.Helper.PagedList<Models.Like.Output.LikeOutput>> MyLikeHistory(Models.Helper.Pagination input)
+            => await _unitOfWork.LikeService.GetMyLikeHistory(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User));
+
     }
 }

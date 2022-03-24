@@ -10,7 +10,7 @@ namespace DAL.Entities
 {
     public class Comment
     {
-        public enum CommentType { baseComment = 1, PostComment, AccountComment }
+        public enum CommentType { UnKnownType = 1, PostComment, AccountComment ,SubComment}
         public int Id { get; set; }
         [Required]
         public string CommentText { get; set; }
@@ -21,10 +21,9 @@ namespace DAL.Entities
         public virtual User User { get; set; }
         public virtual List<CommentLike> LikedByList { get; set; }
         public virtual List<SubComment> SubComments { get; set; }
-
         public virtual CommentType getCommentType()
         {
-            return CommentType.baseComment;
+            return CommentType.UnKnownType;
         }
         public virtual string getRelatedObjectid()
         {

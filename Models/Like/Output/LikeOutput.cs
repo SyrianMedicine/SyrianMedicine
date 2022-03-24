@@ -12,8 +12,11 @@ namespace Models.Like.Output
     public class LikeOutput
     {
         public int Id { get; set; }
-        public UserCardOutput user{ get; set; }
         public string LikeType { get; set; }
         public string objectid { get; set; } 
+        public UserCardOutput user{ get; set; }
+        public CommentOutput OnComment{ get; set;} 
+        public PostOutput Onpost{ get; set; }
+        
     }
 }

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20220310175801_InitialCreate")]
+    [Migration("20220324083323_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -543,7 +543,14 @@ namespace DAL.Migrations
                     b.Property<bool>("IsEdited")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("MedialUrl")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("PostText")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PostTitle")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -711,38 +718,6 @@ namespace DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ReserveNurses");
-                });
-
-            modelBuilder.Entity("DAL.Entities.SubComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CommentId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CommentText")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsEdited")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("SubComments");
                 });
 
             modelBuilder.Entity("DAL.Entities.Tag", b =>
@@ -1009,17 +984,16 @@ namespace DAL.Migrations
                     b.HasDiscriminator().HasValue("PostLike");
                 });
 
-            modelBuilder.Entity("DAL.Entities.SubCommentLike", b =>
+            modelBuilder.Entity("DAL.Entities.SubComment", b =>
                 {
-                    b.HasBaseType("DAL.Entities.Like");
+                    b.HasBaseType("DAL.Entities.Comment");
 
-                    b.Property<int>("SubCommentID")
+                    b.Property<int>("CommentId")
                         .HasColumnType("INTEGER");
 
-                    b.HasIndex("SubCommentID", "UserId")
-                        .IsUnique();
+                    b.HasIndex("CommentId");
 
-                    b.HasDiscriminator().HasValue("SubCommentLike");
+                    b.HasDiscriminator().HasValue("SubComment");
                 });
 
             modelBuilder.Entity("DAL.Entities.Bed", b =>
@@ -1250,11 +1224,11 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Rating", b =>
                 {
                     b.HasOne("DAL.Entities.Identity.User", "RatedUser")
-                        .WithMany()
+                        .WithMany("UsersRatedMe")
                         .HasForeignKey("RatedUserid");
 
                     b.HasOne("DAL.Entities.Identity.User", "User")
-                        .WithMany()
+                        .WithMany("UsersIRate")
                         .HasForeignKey("userid");
 
                     b.Navigation("RatedUser");
@@ -1313,25 +1287,6 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DAL.Entities.SubComment", b =>
-                {
-                    b.HasOne("DAL.Entities.Comment", "Comment")
-                        .WithMany("SubComments")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Entities.Identity.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Comment");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("DAL.Entities.UserConnection", b =>
                 {
                     b.HasOne("DAL.Entities.Identity.User", "user")
@@ -1350,7 +1305,7 @@ namespace DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("DAL.Entities.Identity.User", "User")
-                        .WithMany()
+                        .WithMany("UserTag")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1453,15 +1408,15 @@ namespace DAL.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("DAL.Entities.SubCommentLike", b =>
+            modelBuilder.Entity("DAL.Entities.SubComment", b =>
                 {
-                    b.HasOne("DAL.Entities.SubComment", "SubComment")
-                        .WithMany("LikedByList")
-                        .HasForeignKey("SubCommentID")
+                    b.HasOne("DAL.Entities.Comment", "Comment")
+                        .WithMany("SubComments")
+                        .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("SubComment");
+                    b.Navigation("Comment");
                 });
 
             modelBuilder.Entity("DAL.Entities.Bed", b =>
@@ -1527,6 +1482,12 @@ namespace DAL.Migrations
                     b.Navigation("Secretary");
 
                     b.Navigation("UserConnections");
+
+                    b.Navigation("UserTag");
+
+                    b.Navigation("UsersIRate");
+
+                    b.Navigation("UsersRatedMe");
                 });
 
             modelBuilder.Entity("DAL.Entities.Post", b =>
@@ -1536,11 +1497,6 @@ namespace DAL.Migrations
                     b.Navigation("LikedByList");
 
                     b.Navigation("Tags");
-                });
-
-            modelBuilder.Entity("DAL.Entities.SubComment", b =>
-                {
-                    b.Navigation("LikedByList");
                 });
 
             modelBuilder.Entity("DAL.Entities.Tag", b =>
