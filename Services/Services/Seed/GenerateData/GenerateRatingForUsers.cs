@@ -7,8 +7,8 @@ namespace Services.Seed.GenerateData
     {
         public static List<Rating> AddRating(List<User> sicks, List<User> doctors, List<User> nurses, List<User> hospitals)
         {
-            List<Rating> ratings = new();
-            int cnt = 1;
+            var random=new Random();
+            List<Rating> ratings = new(); 
             foreach (var sick in sicks)
             {
                 foreach (var doctor in doctors)
@@ -17,10 +17,9 @@ namespace Services.Seed.GenerateData
                     {
                         userid = sick.Id,
                         RatedUserid = doctor.Id,
-                        RateValue = (Rating.Rate)(cnt % 5 == 0 ? 5 : cnt % 5)
+                        RateValue =((Rating.Rate) random.Next(1,5))
                     };
-                    ratings.Add(rate);
-                    cnt++;
+                    ratings.Add(rate);  
                 }
 
                 foreach (var nurse in nurses)
@@ -29,10 +28,9 @@ namespace Services.Seed.GenerateData
                     {
                         userid = sick.Id,
                         RatedUserid = nurse.Id,
-                        RateValue = (Rating.Rate)(cnt % 5 == 0 ? 5 : cnt % 5)
+                        RateValue = ((Rating.Rate) random.Next(1,5))
                     };
-                    ratings.Add(rate);
-                    cnt++;
+                    ratings.Add(rate); 
                 }
 
                 foreach (var hospital in hospitals)
@@ -41,10 +39,9 @@ namespace Services.Seed.GenerateData
                     {
                         userid = sick.Id,
                         RatedUserid = hospital.Id,
-                        RateValue = (Rating.Rate)(cnt % 5 == 0 ? 5 : cnt % 5)
+                        RateValue = ((Rating.Rate) random.Next(1,5))
                     };
-                    ratings.Add(rate);
-                    cnt++;
+                    ratings.Add(rate); 
                 }
             }
             return ratings;

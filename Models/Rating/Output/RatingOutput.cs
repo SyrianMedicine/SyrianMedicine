@@ -30,5 +30,6 @@ namespace Models.Rating.Output
                 return sum / count;
             }
         }
+        public long Total { get{return RatingData!=null?RatingData.Sum(s=>s.Count):0;} }
     }
 }
