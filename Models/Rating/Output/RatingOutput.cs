@@ -27,7 +27,8 @@ namespace Models.Rating.Output
                     count += i.Count;
                     sum += i.Count * (int)i.StarNumber;
                 });
-                return sum / count;
+                var result=sum / count;
+                return Convert.ToDouble(result.ToString("0.0#"));
             }
         }
         public long Total { get{return RatingData!=null?RatingData.Sum(s=>s.Count):0;} }
