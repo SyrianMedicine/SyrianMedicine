@@ -29,7 +29,7 @@ namespace API.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpGet("{Username}/MyRating")]
-        public async Task<ActionResult<ResponseService<RatingOutput>>> GetMyRatingForUser(string Username) =>
+        public async Task<ActionResult<ResponseService<MyRateingforUser>>> GetMyRatingForUser(string Username) =>
              Result(await _unitOfWork.RatingService.GetMyRatingForUser(Username, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
 
         /// <summary>
