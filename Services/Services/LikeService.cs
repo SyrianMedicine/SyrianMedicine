@@ -27,11 +27,11 @@ namespace Services.Services
 
         public async Task<ResponseService<long>> getCommentTotalLike(int CommentId)
         {
-            var result = await base.GetQuery().Where(s => (s as CommentLike).CommentID == CommentId).GroupBy(s => (s as CommentLike).CommentID).Select(i => new { id = i.Key, count = i.LongCount() }).FirstOrDefaultAsync();
-            return result != null ?
-            new ResponseService<long>() { Data = result.count, Message = "ok", Status = StatusCodes.Ok.ToString() }
-            :
-            new ResponseService<long>() { Message = "Post Notfound", Status = StatusCodes.NotFound.ToString() };
+            if (!await dbContext.Comments.Where(s => s.Id == CommentId).AnyAsync())
+                return new ResponseService<long>() { Message = "Comment Notfound", Status = StatusCodes.NotFound.ToString() };
+            var result = await base.GetQuery().Where(s => (s as CommentLike).CommentID == CommentId).LongCountAsync();
+            return new ResponseService<long>() { Data = result, Message = "ok", Status = StatusCodes.Ok.ToString() };
+
         }
 
         public async Task<PagedList<LikeOutput>> GetMyLikeHistory(Pagination input, User user)
@@ -45,12 +45,11 @@ namespace Services.Services
 
         public async Task<ResponseService<long>> getPostTotalLike(int PostId)
         {
-            var result = await base.GetQuery().Where(s => (s as PostLike).PostID == PostId).GroupBy(s => (s as PostLike).PostID).Select(i => new { id = i.Key, count = i.LongCount() }).FirstOrDefaultAsync();
-            return result != null ?
-            new ResponseService<long>() { Data = result.count, Message = "ok", Status = StatusCodes.Ok.ToString() }
-            :
-            new ResponseService<long>() { Message = "Post Notfound", Status = StatusCodes.NotFound.ToString() };
+            if (!await dbContext.Posts.Where(s => s.Id == PostId).AnyAsync())
+                return new ResponseService<long>() { Message = "Post Notfound", Status = StatusCodes.NotFound.ToString() };
 
+            var result = await base.GetQuery().Where(s => (s as PostLike).PostID == PostId).LongCountAsync();
+            return new ResponseService<long>() { Data = result, Message = "ok", Status = StatusCodes.Ok.ToString() };
         }
 
         public async Task<ResponseService<bool>> IsCommentliked(int id, User user) =>
