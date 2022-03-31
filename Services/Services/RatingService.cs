@@ -94,8 +94,7 @@ namespace Services.Services
             if (rate != default)
                 Result.Data = new MyRateingforUser
                 {
-                    StarNumber = rate.RateValue,
-                    RatedUser = base._mapper.Map<User, UserCardOutput>(rate.RatedUser)
+                    StarNumber = rate.RateValue
                 };
             return rate != default ?
             Result.SetMessage("ok").SetStatus(StatusCodes.Ok.ToString())
