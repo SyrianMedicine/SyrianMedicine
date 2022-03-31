@@ -25,15 +25,34 @@ namespace Services.Services
         public async Task<PagedList<LikeOutput>> GetCommentLiks(Pagination input, int CommentId) =>
             _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => (i as CommentLike).CommentID == CommentId).OrderByDescending(i => i.LikeDate), input.PageNumber, input.PageSize));
 
+        public async Task<ResponseService<long>> getCommentTotalLike(int CommentId)
+        {
+            var result = await base.GetQuery().Where(s => (s as CommentLike).CommentID == CommentId).GroupBy(s => (s as CommentLike).CommentID).Select(i => new { id = i.Key, count = i.LongCount() }).FirstOrDefaultAsync();
+            return result != null ?
+            new ResponseService<long>() { Data = result.count, Message = "ok", Status = StatusCodes.Ok.ToString() }
+            :
+            new ResponseService<long>() { Message = "Post Notfound", Status = StatusCodes.NotFound.ToString() };
+        }
+
         public async Task<PagedList<LikeOutput>> GetMyLikeHistory(Pagination input, User user)
         {
             var Query = base.GetQuery().Include(s => s.User).Where(s => s.User.NormalizedUserName.Equals(user.UserName.ToUpper())).Include(s => (s as CommentLike).Comment).Include(s => (s as PostLike).Post).OrderByDescending(i => i.LikeDate);
             return _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(Query, input.PageNumber, input.PageSize));
-            throw new NotImplementedException();
         }
 
         public async Task<PagedList<LikeOutput>> GetPostLiks(Pagination input, int PostId) =>
             _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => (i as PostLike).PostID == PostId).OrderByDescending(i => i.LikeDate), input.PageNumber, input.PageSize));
+
+        public async Task<ResponseService<long>> getPostTotalLike(int PostId)
+        {
+            var result = await base.GetQuery().Where(s => (s as PostLike).PostID == PostId).GroupBy(s => (s as PostLike).PostID).Select(i => new { id = i.Key, count = i.LongCount() }).FirstOrDefaultAsync();
+            return result != null ?
+            new ResponseService<long>() { Data = result.count, Message = "ok", Status = StatusCodes.Ok.ToString() }
+            :
+            new ResponseService<long>() { Message = "Post Notfound", Status = StatusCodes.NotFound.ToString() };
+
+        }
+
         public async Task<ResponseService<bool>> IsCommentliked(int id, User user) =>
              new()
              {
@@ -193,6 +212,8 @@ namespace Services.Services
     {
         public Task<ResponseService<LikeOutput>> LikeComment(int CommentId, User user);
         public Task<ResponseService<LikeOutput>> LikePost(int PostId, User user);
+        public Task<ResponseService<long>> getPostTotalLike(int PostId);
+        public Task<ResponseService<long>> getCommentTotalLike(int CommentId);
         public Task<ResponseService<bool>> UnLikeComment(int CommentId, User user);
         public Task<ResponseService<bool>> UnLikePost(int PostId, User user);
         public Task<ResponseService<bool>> Unlike(int LikIid, User user);

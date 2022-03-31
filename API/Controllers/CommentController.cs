@@ -138,6 +138,9 @@ namespace API.Controllers
         [HttpPost("{id}/Liks")]
         public async Task<PagedList<Models.Like.Output.LikeOutput>> GetLiks(Pagination input, int id) =>
             await _unitOfWork.LikeService.GetCommentLiks(input, id);
+        [HttpGet("{id}/NumberOfLiks")]
+        public async Task<ResponseService<long>> NumberOfLiks(int id) =>
+            await _unitOfWork.LikeService.getCommentTotalLike(id);
 
     }
 }

@@ -42,16 +42,13 @@ namespace Services.Services
             {
                 return ResponseService<RatingOutput>.GetExeptionResponse();
             }
-
         }
-
         private bool IsUserRatable(User user) => user != null &&
         (
             user.UserType == DAL.Entities.Identity.Enums.UserType.Doctor ||
             user.UserType == DAL.Entities.Identity.Enums.UserType.Nurse ||
             user.UserType == DAL.Entities.Identity.Enums.UserType.Hospital
         );
-
         public async Task<ResponseService<bool>> Rate(RatingInput input, User user)
         {
             try
@@ -90,6 +87,8 @@ namespace Services.Services
         public async Task<ResponseService<MyRateingforUser>> GetMyRatingForUser(string Username, User user)
         {
             ResponseService<MyRateingforUser> Result = new();
+            if((await _IdentityRepository.GetUserByNameAsync(Username))==null)
+            return Result.SetMessage("user Notfound").SetStatus(StatusCodes.NotFound.ToString());
             var rate = await base.GetQuery().Include(i => i.RatedUser).Where(i => i.userid.Equals(user.Id) && i.RatedUser.NormalizedUserName.Equals(Username.ToUpper())).FirstOrDefaultAsync();
             if (rate != default)
                 Result.Data = new MyRateingforUser
