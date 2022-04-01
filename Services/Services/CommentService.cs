@@ -125,7 +125,7 @@ namespace Services.Services
                 var result = new ResponseService<bool>();
                 var comment = await base.GetByIdAsync(id);
                 if (comment == default) return result.SetMessage("comment not Found").SetStatus(StatusCodes.NotFound.ToString());
-                if (comment.UserId.Equals(user.Id)) return result.SetMessage("You are not the comment Owner").SetStatus(StatusCodes.Unauthorized.ToString());
+                if (!comment.UserId.Equals(user.Id)) return result.SetMessage("You are not the comment Owner").SetStatus(StatusCodes.Unauthorized.ToString());
                 await base.DeleteAsync(comment.Id);
                 return await base.CompleteAsync() ? result.SetStatus(StatusCodes.Ok.ToString()).SetData(true).SetMessage("Done")
                 :
