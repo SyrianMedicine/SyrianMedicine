@@ -410,19 +410,36 @@ namespace Services
             var response = new ResponseService<bool>();
             try
             {
-                var dbBed = await _bed.GetByIdAsync(input.BedId);
-                if (dbBed == null)
+
+                var departmentDb = await _department.GetByIdAsync(input.DepartmentId);
+                if (departmentDb == null)
                 {
-                    return response.SetData(false).SetMessage("This bed is not exist").SetStatus(StatusCodes.NotFound.ToString());
+                    return response.SetData(false).SetMessage("This department is not exist").SetStatus(StatusCodes.NotFound.ToString());
                 }
-                var dbHospital = await _hospital.GetByIdAsync((await _department.GetByIdAsync(dbBed.Id)).HospitalId);
+
+                var dbBeds = await _bed.GetQuery().Where(e => e.DepartmentId == departmentDb.Id).ToListAsync();
+                if (dbBeds == null)
+                {
+                    return response.SetData(false).SetMessage("This department not has beds is not exist").SetStatus(StatusCodes.NotFound.ToString());
+                }
+
+                var dbHospital = await _hospital.GetByIdAsync(departmentDb.HospitalId);
                 if (dbHospital == null)
                 {
                     return response.SetData(false).SetMessage("Oooh what happen this bed is not a part of any hospital!!").SetStatus(StatusCodes.NotFound.ToString());
                 }
-                if (dbBed.IsAvailable == false)
+                Bed availableBed = null;
+                foreach (var bed in dbBeds)
                 {
-                    return response.SetData(false).SetMessage("This Bed is busy now").SetStatus(StatusCodes.BadRequest.ToString());
+                    if (bed.IsAvailable)
+                    {
+                        availableBed = bed;
+
+                    }
+                }
+                if (availableBed == null)
+                {
+                    return response.SetData(false).SetMessage("This Department is busy now").SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
                 var dbReserve = await _reserveHospital.GetQuery().Include(e => e.Bed).ThenInclude(e => e.Department).Where(e => e.UserId == user.Id && e.Bed.Department.HospitalId == dbHospital.Id).FirstOrDefaultAsync();
@@ -436,7 +453,10 @@ namespace Services
                 reserve.UserId = user.Id;
                 reserve.ReserveState = ReserveState.Pending;
                 reserve.DateTime = DateTime.UtcNow;
+                reserve.BedId = availableBed.Id;
                 await _reserveHospital.InsertAsync(reserve);
+                availableBed.IsAvailable = false;
+                _bed.Update(availableBed);
                 return await _reserveHospital.CompleteAsync() == true ?
                     response.SetData(true).SetMessage($"Your date is waiting hospital {dbHospital.Name} to approve it")
                             .SetStatus(StatusCodes.Created.ToString())

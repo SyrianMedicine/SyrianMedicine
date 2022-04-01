@@ -4,6 +4,6 @@ namespace Models.Sick.Inputs
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public int BedId { get; set; }
+        public int DepartmentId { get; set; }
     }
 }
