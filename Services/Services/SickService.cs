@@ -423,7 +423,7 @@ namespace Services
                     return response.SetData(false).SetMessage("This department is not exist").SetStatus(StatusCodes.NotFound.ToString());
                 }
 
-                var dbBeds = await _bed.GetQuery().Where(e => e.DepartmentId == departmentDb.Id).ToListAsync();
+                var dbBeds = await _bed.GetQuery().Where(e => e.DepartmentId == departmentDb.Id && e.HospitalId ==dbHospital.Id).ToListAsync();
                 if (dbBeds == null)
                 {
                     return response.SetData(false).SetMessage("This department not has beds").SetStatus(StatusCodes.NotFound.ToString());
@@ -450,8 +450,17 @@ namespace Services
                     return response.SetData(false).SetMessage("This Department is busy now").SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
-                var dbReserve = await _reserveHospital.GetQuery().Include(e => e.Bed).ThenInclude(e => e.Hospital).ThenInclude(e => e.User).Where(e => e.UserId == user.Id && e.Bed.HospitalId == dbHospital.Id).FirstOrDefaultAsync();
-                if (dbReserve != null)
+
+                var dbReserves = await _reserveHospital.GetQuery().Where(e => e.UserId == user.Id).Include(e => e.Bed).ToListAsync();
+                bool foundReserve = false;
+
+                foreach (var dbreserve in dbReserves)
+                {
+                    if (dbreserve.Bed.HospitalId == input.HospitalId)
+                        foundReserve = true;
+
+                }
+                if (foundReserve)
                 {
                     return response.SetData(false).SetMessage("You can't reserve more than one date")
                                     .SetStatus(StatusCodes.BadRequest.ToString());
