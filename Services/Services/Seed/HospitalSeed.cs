@@ -31,7 +31,8 @@ namespace Services.Seed
             {
                 var hospitals = await dbContext.Hospitals.ToListAsync();
                 var data = GenerateHospitals.AddDepartments(hospitals);
-                await dbContext.Departments.AddRangeAsync(data);
+                await dbContext.Departments.AddRangeAsync(data.Item1);
+                await dbContext.HospitalsDepartments.AddRangeAsync(data.Item2);
                 await dbContext.SaveChangesAsync();
             }
         }
@@ -40,8 +41,9 @@ namespace Services.Seed
         {
             if (!await dbContext.Beds.AnyAsync())
             {
+                var hospitals = await dbContext.Hospitals.ToListAsync();
                 var departments = await dbContext.Departments.ToListAsync();
-                var data = GenerateHospitals.AddBeds(departments);
+                var data = GenerateHospitals.AddBeds(departments, hospitals);
                 await dbContext.Beds.AddRangeAsync(data);
                 await dbContext.SaveChangesAsync();
             }

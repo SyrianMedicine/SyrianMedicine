@@ -50,7 +50,7 @@ namespace Services.Seed.GenerateData
                     UserName = "Hospital" + firstName + i.ToString(),
                     HomeNumber = Faker.Phone.Number(),
                     Location = Faker.Address.StreetName(),
-                    FirstName=cities[i % cities.Count].Name + " hopital",
+                    FirstName = cities[i % cities.Count].Name + " hopital",
                     EmailConfirmed = true,
                     UserType = UserType.Hospital,
                     City = cities[i % cities.Count].Name,
@@ -84,36 +84,46 @@ namespace Services.Seed.GenerateData
             return (users, hospitals);
         }
 
-        public static List<Department> AddDepartments(List<Hospital> hospitals)
+        public static (List<Department>, List<HospitalDepartment>) AddDepartments(List<Hospital> hospitals)
         {
             List<Department> departments = new();
-            int cnt = 0;
-            foreach (var hospital in hospitals)
+            List<HospitalDepartment> hospitalsdepartments = new();
+
+            foreach (var department in departmentsName)
             {
-                Department department = new()
+                Department dep = new()
                 {
-                    HospitalId = hospital.Id,
-                    Name = departmentsName[cnt % departmentsName.Length],
+                    Name = department,
                 };
-                departments.Add(department);
-                cnt++;
+                foreach (var hospital in hospitals)
+                {
+                    HospitalDepartment hp = new();
+                    hp.Department = dep;
+                    hp.Hospital = hospital;
+                    hospitalsdepartments.Add(hp);
+                }
+                departments.Add(dep);
             }
-            return departments;
+            return (departments, hospitalsdepartments);
         }
 
-        public static List<Bed> AddBeds(List<Department> departments)
+        public static List<Bed> AddBeds(List<Department> departments, List<Hospital> hospitals)
         {
             List<Bed> beds = new();
-            foreach (var department in departments)
+            foreach (var hospital in hospitals)
             {
-                for (int i = 0; i < 3; i++)
+                foreach (var department in departments)
                 {
-                    Bed bed = new()
+                    for (int i = 0; i < 3; i++)
                     {
-                        DepartmentId = department.Id,
-                        IsAvailable = i % 2 == 0,
-                    };
-                    beds.Add(bed);
+                        Bed bed = new()
+                        {
+                            DepartmentId = department.Id,
+                            IsAvailable = i % 2 == 0,
+                            HospitalId = hospital.Id
+                        };
+                        beds.Add(bed);
+                    }
                 }
             }
             return beds;

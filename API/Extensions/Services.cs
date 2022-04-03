@@ -29,6 +29,7 @@ namespace API.Extensions
             services.AddScoped(typeof(IGenericRepository<ReserveDoctor>), typeof(GenericRepository<ReserveDoctor>));
             services.AddScoped(typeof(IGenericRepository<ReserveNurse>), typeof(GenericRepository<ReserveNurse>));
             services.AddScoped(typeof(IGenericRepository<ReserveHospital>), typeof(GenericRepository<ReserveHospital>));
+            services.AddScoped(typeof(IGenericRepository<HospitalDepartment>), typeof(GenericRepository<HospitalDepartment>));
             services.AddScoped(typeof(IGenericRepository<Doctor>), typeof(GenericRepository<Doctor>));
             services.AddScoped(typeof(IGenericRepository<Nurse>), typeof(GenericRepository<Nurse>));
             services.AddScoped(typeof(IGenericRepository<Post>), typeof(GenericRepository<Post>));
@@ -42,14 +43,13 @@ namespace API.Extensions
             services.AddScoped(typeof(IGenericRepository<PostComment>), typeof(GenericRepository<PostComment>));
             services.AddScoped(typeof(IGenericRepository<SubComment>), typeof(GenericRepository<SubComment>));
             services.AddScoped(typeof(IGenericRepository<HospitalHistory>), typeof(GenericRepository<HospitalHistory>));
-            services.AddScoped(typeof(IGenericRepository<Like>), typeof(GenericRepository<Like>)); 
-            services.AddScoped(typeof(IGenericRepository<PostLike>), typeof(GenericRepository<PostLike>)); 
-            services.AddScoped(typeof(IGenericRepository<CommentLike>), typeof(GenericRepository<CommentLike>)); 
+            services.AddScoped(typeof(IGenericRepository<Like>), typeof(GenericRepository<Like>));
+            services.AddScoped(typeof(IGenericRepository<PostLike>), typeof(GenericRepository<PostLike>));
+            services.AddScoped(typeof(IGenericRepository<CommentLike>), typeof(GenericRepository<CommentLike>));
             services.AddScoped(typeof(IGenericRepository<Rating>), typeof(GenericRepository<Rating>));
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<INurseService, NurseService>();
-            services.AddScoped<IHospitalService, HospitalService>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<INurseService, NurseService>();
             services.AddScoped<IHospitalService, HospitalService>();
@@ -60,8 +60,8 @@ namespace API.Extensions
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IConnectionService, ConnectionService>();
-            services.AddScoped<ICommentService, CommentService>(); 
-            services.AddScoped<ILikeService, LikeService>(); 
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<ILikeService, LikeService>();
             services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddHostedService<BackgroundTask>();
@@ -78,7 +78,7 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(TagProfile));
             services.AddAutoMapper(typeof(FollowProfile));
             services.AddAutoMapper(typeof(PostProfile));
-            services.AddAutoMapper(typeof(CommentProfile)); 
+            services.AddAutoMapper(typeof(CommentProfile));
             services.AddAutoMapper(typeof(LikeProfile));
             services.AddAutoMapper(typeof(UserCardProfile));
             return services;
@@ -109,7 +109,7 @@ namespace API.Extensions
                     {securitySchema , System.Array.Empty<string>()}
                 };
                 opt.AddSecurityRequirement(securityRequirement);
-                // opt.OperationFilter<AppendAuthoriziton>();
+
             });
             return services;
         }

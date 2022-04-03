@@ -23,12 +23,13 @@ namespace Services
         private readonly IGenericRepository<Department> _department;
         private readonly IGenericRepository<Bed> _bed;
         private readonly IGenericRepository<ReserveHospital> _reserveHospital;
+        private readonly IGenericRepository<HospitalDepartment> _hospitalDepartment;
 
 
 
         public SickService(IMapper mapper, IIdentityRepository identityRepository, IGenericRepository<Nurse> nurse, IGenericRepository<ReserveNurse> reserveNurse,
          IGenericRepository<Doctor> doctor, IGenericRepository<Department> department, IGenericRepository<Bed> bed, IGenericRepository<ReserveHospital> reserveHospital,
-         IGenericRepository<Hospital> hospital, IGenericRepository<ReserveDoctor> reserveDoctor, ITokenService tokenService)
+         IGenericRepository<Hospital> hospital, IGenericRepository<ReserveDoctor> reserveDoctor, IGenericRepository<HospitalDepartment> hospitalDepartment, ITokenService tokenService)
         {
             _mapper = mapper;
             _identityRepository = identityRepository;
@@ -40,6 +41,7 @@ namespace Services
             _reserveHospital = reserveHospital;
             _reserveNurse = reserveNurse;
             _reserveDoctor = reserveDoctor;
+            _hospitalDepartment = hospitalDepartment;
             _tokenService = tokenService;
         }
 
@@ -410,7 +412,11 @@ namespace Services
             var response = new ResponseService<bool>();
             try
             {
-
+                var dbHospital = await _hospital.GetByIdAsync(input.HospitalId);
+                if (dbHospital == null)
+                {
+                    return response.SetData(false).SetMessage("This hospital is not exist").SetStatus(StatusCodes.NotFound.ToString());
+                }
                 var departmentDb = await _department.GetByIdAsync(input.DepartmentId);
                 if (departmentDb == null)
                 {
@@ -420,14 +426,16 @@ namespace Services
                 var dbBeds = await _bed.GetQuery().Where(e => e.DepartmentId == departmentDb.Id).ToListAsync();
                 if (dbBeds == null)
                 {
-                    return response.SetData(false).SetMessage("This department not has beds is not exist").SetStatus(StatusCodes.NotFound.ToString());
+                    return response.SetData(false).SetMessage("This department not has beds").SetStatus(StatusCodes.NotFound.ToString());
                 }
 
-                var dbHospital = await _hospital.GetByIdAsync(departmentDb.HospitalId);
-                if (dbHospital == null)
+
+                var hospitalDepartment = await _hospitalDepartment.GetQuery().Where(e => e.DepartmentId == departmentDb.Id && e.HospitalId == dbHospital.Id).FirstOrDefaultAsync();
+                if (hospitalDepartment == null)
                 {
-                    return response.SetData(false).SetMessage("Oooh what happen this bed is not a part of any hospital!!").SetStatus(StatusCodes.NotFound.ToString());
+                    return response.SetData(false).SetMessage("you not authorize!!").SetStatus(StatusCodes.Unauthorized.ToString());
                 }
+
                 Bed availableBed = null;
                 foreach (var bed in dbBeds)
                 {
@@ -442,7 +450,7 @@ namespace Services
                     return response.SetData(false).SetMessage("This Department is busy now").SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
-                var dbReserve = await _reserveHospital.GetQuery().Include(e => e.Bed).ThenInclude(e => e.Department).Where(e => e.UserId == user.Id && e.Bed.Department.HospitalId == dbHospital.Id).FirstOrDefaultAsync();
+                var dbReserve = await _reserveHospital.GetQuery().Include(e => e.Bed).ThenInclude(e => e.Hospital).ThenInclude(e => e.User).Where(e => e.UserId == user.Id && e.Bed.HospitalId == dbHospital.Id).FirstOrDefaultAsync();
                 if (dbReserve != null)
                 {
                     return response.SetData(false).SetMessage("You can't reserve more than one date")
@@ -470,6 +478,7 @@ namespace Services
                 return response;
             }
         }
+
         public async Task<ResponseService<bool>> UpdateReserveBedInHospital(UpdateReserveBedInHospital input, User user)
         {
             var response = new ResponseService<bool>();

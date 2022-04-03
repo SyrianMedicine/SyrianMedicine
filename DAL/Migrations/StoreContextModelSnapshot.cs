@@ -26,12 +26,17 @@ namespace DAL.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("HospitalId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("HospitalId");
 
                     b.ToTable("Beds");
                 });
@@ -88,15 +93,10 @@ namespace DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("HospitalId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("HospitalId");
 
                     b.ToTable("Departments");
                 });
@@ -216,6 +216,27 @@ namespace DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Follows");
+                });
+
+            modelBuilder.Entity("DAL.Entities.HospitalDepartment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HospitalId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("HospitalId");
+
+                    b.ToTable("HospitalsDepartments");
                 });
 
             modelBuilder.Entity("DAL.Entities.HospitalHistory", b =>
@@ -1002,7 +1023,15 @@ namespace DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DAL.Entities.Identity.Hospital", "Hospital")
+                        .WithMany("Beds")
+                        .HasForeignKey("HospitalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Department");
+
+                    b.Navigation("Hospital");
                 });
 
             modelBuilder.Entity("DAL.Entities.Comment", b =>
@@ -1012,17 +1041,6 @@ namespace DAL.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DAL.Entities.Department", b =>
-                {
-                    b.HasOne("DAL.Entities.Identity.Hospital", "Hospital")
-                        .WithMany("Departments")
-                        .HasForeignKey("HospitalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Hospital");
                 });
 
             modelBuilder.Entity("DAL.Entities.DoctorHistory", b =>
@@ -1092,6 +1110,25 @@ namespace DAL.Migrations
                     b.Navigation("FollowedUser");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DAL.Entities.HospitalDepartment", b =>
+                {
+                    b.HasOne("DAL.Entities.Department", "Department")
+                        .WithMany("HospitalsDepartments")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Entities.Identity.Hospital", "Hospital")
+                        .WithMany("HospitalsDepartments")
+                        .HasForeignKey("HospitalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Hospital");
                 });
 
             modelBuilder.Entity("DAL.Entities.HospitalHistory", b =>
@@ -1432,6 +1469,8 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Department", b =>
                 {
                     b.Navigation("Beds");
+
+                    b.Navigation("HospitalsDepartments");
                 });
 
             modelBuilder.Entity("DAL.Entities.Identity.Doctor", b =>
@@ -1445,9 +1484,11 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Identity.Hospital", b =>
                 {
-                    b.Navigation("Departments");
+                    b.Navigation("Beds");
 
                     b.Navigation("DocumentsHospital");
+
+                    b.Navigation("HospitalsDepartments");
                 });
 
             modelBuilder.Entity("DAL.Entities.Identity.Nurse", b =>

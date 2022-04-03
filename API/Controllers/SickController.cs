@@ -12,7 +12,7 @@ namespace API.Controllers
     {
         public SickController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            
+
         }
 
         [HttpGet(nameof(Sicks))]

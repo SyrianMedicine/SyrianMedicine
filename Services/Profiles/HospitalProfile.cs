@@ -54,8 +54,7 @@ namespace Services.Profiles
 
             CreateMap<UpdateDepartment, Department>();
             CreateMap<CreateDepartment, Department>().ReverseMap();
-            CreateMap<Department, DepartmentOutput>()
-                .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.Hospital.Name));
+            CreateMap<Department, DepartmentOutput>();
 
             CreateMap<CreateBed, Bed>().ReverseMap();
             CreateMap<Bed, BedOutput>()
@@ -63,7 +62,6 @@ namespace Services.Profiles
             CreateMap<UpdateBed, Bed>();
 
             CreateMap<ReserveHospital, BedsReserved>()
-                .ForMember(dest => dest.HospitalName, opt => opt.MapFrom(src => src.Bed.Department.Hospital.Name))
                 .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Bed.Department.Name));
             CreateMap<CheckReserveHospital, ReserveHospital>();
         }

@@ -29,9 +29,10 @@ namespace Services
         private readonly IGenericRepository<Bed> _bed;
         private readonly IGenericRepository<ReserveHospital> _reserveHospital;
         private readonly IGenericRepository<HospitalHistory> _historyHospital;
+        private readonly IGenericRepository<HospitalDepartment> _hospitalDepartment;
 
         public HospitalService(IIdentityRepository identityRepository, IGenericRepository<DocumentsHospital> documentsHospital,
-        IGenericRepository<Department> department, IGenericRepository<HospitalHistory> historyHospital, IGenericRepository<ReserveHospital> reserveHospital, IGenericRepository<Bed> bed, ITokenService tokenService, IMapper mapper, StoreContext dbContext) : base(dbContext, mapper)
+        IGenericRepository<Department> department, IGenericRepository<HospitalDepartment> hospitalDepartment, IGenericRepository<HospitalHistory> historyHospital, IGenericRepository<ReserveHospital> reserveHospital, IGenericRepository<Bed> bed, ITokenService tokenService, IMapper mapper, StoreContext dbContext) : base(dbContext, mapper)
         {
             _identityRepository = identityRepository;
             _tokenService = tokenService;
@@ -39,6 +40,7 @@ namespace Services
             _reserveHospital = reserveHospital;
             _department = department;
             _historyHospital = historyHospital;
+            _hospitalDepartment = hospitalDepartment;
             _bed = bed;
         }
 
@@ -209,7 +211,7 @@ namespace Services
                 foreach (var input in inputs)
                 {
                     var department = _mapper.Map<CreateDepartment, Department>(input);
-                    var hospital = await GetByIdAsync(department.HospitalId);
+                    var hospital = await base.GetQuery().Where(e => e.UserId == user.Id).FirstOrDefaultAsync();
                     if (hospital == null)
                     {
                         return response.SetData(false).SetMessage("This hospital not exist!")
@@ -220,6 +222,10 @@ namespace Services
                         return response.SetMessage("You are not authorize").SetData(false).SetStatus(StatusCodes.Unauthorized.ToString());
                     }
                     await _department.InsertAsync(department);
+                    HospitalDepartment obj = new();
+                    obj.Hospital = hospital;
+                    obj.Department = department;
+                    await _hospitalDepartment.InsertAsync(obj);
                 }
                 await transaction.CommitAsync();
                 await _department.CompleteAsync();
@@ -240,11 +246,18 @@ namespace Services
             var hospital = await GetQuery().Include(e => e.User).FirstOrDefaultAsync(e => e.User.NormalizedUserName == username.ToUpper());
             if (hospital == null)
                 return null;
-            return _mapper.Map<IReadOnlyList<Department>, IReadOnlyList<DepartmentOutput>>
-                (await _department.GetQuery().Include(e => e.Hospital).Where(e => e.HospitalId == hospital.Id).ToListAsync());
+            var hospitalsDepartments = await _hospitalDepartment.GetQuery().Where(e => e.HospitalId == hospital.Id).ToListAsync();
+            List<Department> departments = new();
+            foreach (var item in hospitalsDepartments)
+            {
+                departments.Add(await _department.GetByIdAsync(item.DepartmentId));
+            }
+
+            return _mapper.Map<IReadOnlyList<Department>, IReadOnlyList<DepartmentOutput>>(departments);
         }
         public async Task<DepartmentOutput> GetDepartment(int id)
-            => _mapper.Map<Department, DepartmentOutput>(await _department.GetQuery().Include(e => e.Hospital).FirstOrDefaultAsync(e => e.Id == id));
+            => _mapper.Map<Department, DepartmentOutput>(await _department.GetQuery().FirstOrDefaultAsync(e => e.Id == id));
+
         public async Task<ResponseService<bool>> AddBedsToDepartment(List<CreateBed> inputs, User user)
         {
             var response = new ResponseService<bool>();
@@ -253,12 +266,14 @@ namespace Services
             {
                 foreach (var input in inputs)
                 {
-                    var hospital = await GetByIdAsync((await _department.GetByIdAsync(input.DepartmentId)).HospitalId);
+                    var hospital = await base.GetQuery().Where(e => e.HospitalsDepartments.FirstOrDefault(ex => ex.DepartmentId == input.DepartmentId).DepartmentId == input.DepartmentId).FirstOrDefaultAsync();
                     if (hospital.UserId != user.Id)
                     {
                         return response.SetMessage("You are not authorize").SetData(false).SetStatus(StatusCodes.Unauthorized.ToString());
                     }
-                    await _bed.InsertAsync(_mapper.Map<CreateBed, Bed>(input));
+                    var mapper = _mapper.Map<CreateBed, Bed>(input);
+                    mapper.HospitalId = hospital.Id;
+                    await _bed.InsertAsync(mapper);
                 }
                 await transaction.CommitAsync();
                 await _department.CompleteAsync();
@@ -326,7 +341,6 @@ namespace Services
                 response.Status = StatusCodes.InternalServerError.ToString();
             }
             return response;
-
         }
 
         public async Task<ResponseService<bool>> UpdateDepartment(UpdateDepartment input, User user)
@@ -334,7 +348,7 @@ namespace Services
             var response = new ResponseService<bool>();
             try
             {
-                var dbDepartment = await _department.GetByIdAsync(input.Id);
+                var dbDepartment = await _department.GetQuery().FirstOrDefaultAsync(e => e.Id == input.Id);
                 if (dbDepartment == null)
                 {
                     return response.SetMessage("This Department is not exist !")
@@ -347,8 +361,8 @@ namespace Services
                     return response.SetMessage("You not have this Department!")
                         .SetStatus(StatusCodes.Unauthorized.ToString());
                 }
-
-                if (dbDepartment.HospitalId != dbHospital.Id)
+                var dbDepartmentHospitalId = await _hospitalDepartment.GetQuery().Where(e => e.DepartmentId == dbDepartment.Id && e.HospitalId == dbHospital.Id).FirstOrDefaultAsync();
+                if (dbDepartmentHospitalId == null)
                 {
                     return response.SetMessage(@"You can't update this department")
                         .SetStatus(StatusCodes.Unauthorized.ToString());
@@ -373,7 +387,7 @@ namespace Services
             var response = new ResponseService<bool>();
             try
             {
-                var dbDepartment = await _department.GetByIdAsync(id);
+                var dbDepartment = await _department.GetQuery().FirstOrDefaultAsync(e => e.Id == id);
                 if (dbDepartment == null)
                 {
                     return response.SetMessage("This Department is not exist !")
@@ -386,8 +400,8 @@ namespace Services
                     return response.SetMessage("You not have this Department!")
                         .SetStatus(StatusCodes.Unauthorized.ToString());
                 }
-
-                if (dbDepartment.HospitalId != dbHospital.Id)
+                var dbDepartmentHospitalId = await _hospitalDepartment.GetQuery().Where(e => e.DepartmentId == dbDepartment.Id && e.HospitalId == dbHospital.Id).FirstOrDefaultAsync();
+                if (dbDepartmentHospitalId == null)
                 {
                     return response.SetMessage(@"You can't update this department")
                         .SetStatus(StatusCodes.Unauthorized.ToString());
@@ -417,7 +431,7 @@ namespace Services
                                    .SetStatus(StatusCodes.NotFound.ToString());
                 }
 
-                var hospital = await GetByIdAsync((await _department.GetByIdAsync(input.DepartmentId)).HospitalId);
+                var hospital = await base.GetQuery().Where(e => e.HospitalsDepartments.FirstOrDefault(ex => ex.DepartmentId == input.DepartmentId).DepartmentId == input.DepartmentId).FirstOrDefaultAsync();
                 if (hospital.UserId != user.Id)
                 {
                     return response.SetMessage("You are not authorize").SetData(false)
@@ -449,7 +463,7 @@ namespace Services
                                    .SetStatus(StatusCodes.NotFound.ToString());
                 }
 
-                var hospital = await GetByIdAsync((await _department.GetByIdAsync(bed.DepartmentId)).HospitalId);
+                var hospital = await base.GetQuery().Where(e => e.HospitalsDepartments.FirstOrDefault(ex => ex.DepartmentId == bed.DepartmentId).DepartmentId == bed.DepartmentId).FirstOrDefaultAsync();
                 if (hospital.UserId != user.Id)
                 {
                     return response.SetMessage("You are not authorize").SetData(false)
@@ -469,8 +483,6 @@ namespace Services
             }
         }
 
-        public async Task<IReadOnlyList<BedsReserved>> GetAllBedReservedForHospital(int id)
-            => _mapper.Map<IReadOnlyList<ReserveHospital>, IReadOnlyList<BedsReserved>>(await _reserveHospital.GetQuery().Include(e => e.Bed).ThenInclude(e => e.Department).ThenInclude(e => e.Hospital).Where(e => e.Bed.Department.HospitalId == id).ToListAsync());
 
         public async Task<ResponseService<bool>> CheckReserve(CheckReserveHospital input, User user)
         {
@@ -480,7 +492,7 @@ namespace Services
                 var dbHospital = await base.GetQuery().Where(ex => ex.UserId == user.Id).FirstOrDefaultAsync();
                 if (dbHospital == null)
                 {
-                    return response.SetMessage("You are not hospital").SetData(false).SetStatus(StatusCodes.Unauthorized.ToString());
+                    return response.SetMessage("You are not a hospital").SetData(false).SetStatus(StatusCodes.Unauthorized.ToString());
                 }
 
                 var dbReserve = await _reserveHospital.GetByIdAsync(input.Id);
@@ -488,13 +500,17 @@ namespace Services
                 {
                     return response.SetMessage("This reserve is not exist").SetData(false).SetStatus(StatusCodes.NotFound.ToString());
                 }
-                var mapper = _mapper.Map(input, dbReserve);
-                var bed = await _bed.GetByIdAsync(dbReserve.BedId);
-                var department = await _department.GetByIdAsync(bed.DepartmentId);
-                if (department.HospitalId != dbHospital.Id)
+
+                var reserveHospital = await _reserveHospital.GetQuery().Include(e => e.Bed).ThenInclude(e => e.Hospital).Where(e => e.Bed.HospitalId == dbHospital.Id).FirstOrDefaultAsync();
+                if (reserveHospital == null)
                 {
                     return response.SetData(false).SetMessage("You are not a hospital for this reserve").SetStatus(StatusCodes.Unauthorized.ToString());
                 }
+
+
+                var mapper = _mapper.Map(input, dbReserve);
+                var bed = await _bed.GetByIdAsync(dbReserve.BedId);
+
                 if (input.ReserveState == ReserveState.Approved)
                 {
                     bed.IsAvailable = false;
@@ -554,6 +570,12 @@ namespace Services
             }
         }
 
+        public async Task<IReadOnlyList<BedOutput>> GetBedsForHospital(BedForHospitalInput input)
+        {
+            var beds = await _bed.GetQuery().Where(e => e.DepartmentId == input.DepartmentId && e.HospitalId == input.HospitalId).Include(e => e.Department).ToListAsync();
+            return _mapper.Map<IReadOnlyList<Bed>, IReadOnlyList<BedOutput>>(beds);
+        }
+
     }
     public interface IHospitalService : IGenericRepository<Hospital>
     {
@@ -574,8 +596,8 @@ namespace Services
         public Task<IReadOnlyList<BedOutput>> GetBedsForDepartment(int departmentId);
         public Task<BedOutput> GetBed(int id);
         public Task<ResponseService<bool>> UpdateHospital(UpdateHospital input, User user);
-        public Task<IReadOnlyList<BedsReserved>> GetAllBedReservedForHospital(int id);
         public Task<ResponseService<bool>> CheckReserve(CheckReserveHospital input, User user);
         public Task<ResponseService<bool>> MoveReserveToHistory(int id, User user);
+        public Task<IReadOnlyList<BedOutput>> GetBedsForHospital(BedForHospitalInput input);
     }
 }
