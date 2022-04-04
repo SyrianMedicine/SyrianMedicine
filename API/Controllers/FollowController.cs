@@ -100,6 +100,12 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<FollowOutput>>> FollowersList() =>
             Result(await _unitOfWork.FollowService.FollowersList((await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)).UserName));
 
+        [Authorize]
+        [HttpGet("{username}/" + nameof(IsFollowedByMe))]
+        public async Task<ActionResult<ResponseService<bool>>> IsFollowedByMe(string username) =>
+            Result(await _unitOfWork.FollowService.IsFollowedByMe(username, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)));
+
+
 
     }
 }

@@ -43,7 +43,7 @@ namespace Services.Services
 
 
                 return await base.CompleteAsync() ?
-                result.SetData(true).SetMessage("Done").SetStatus(StatusCodes.Ok.ToString())
+                result.SetData(true).SetMessage("you  are start Following "+ username).SetStatus(StatusCodes.Ok.ToString())
                 :
                 result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
             }
@@ -62,16 +62,16 @@ namespace Services.Services
 
                 if (user.UserName.ToUpper().Equals(username.ToUpper()))
                     return result.SetMessage("you cannot Follow yourself ^-^").SetStatus(StatusCodes.BadRequest.ToString());
-
-                var obgtodelete = await base.GetQuery().Include(i => i.FollowedUser).Where(s => s.UserId.Equals(user.Id) && s.FollowedUser.UserName.ToUpper().Equals(username.ToUpper())).FirstOrDefaultAsync();
-
+                var followeduser = await _identityRepository.GetUserByNameAsync(username);
+                if (followeduser == default)
+                    return result.SetMessage(username + " not Found").SetStatus(StatusCodes.NotFound.ToString());
+                var obgtodelete = await base.GetQuery().Include(i => i.FollowedUser).Where(s => s.UserId.Equals(user.Id) && s.FollowedUser.NormalizedUserName.Equals(followeduser.NormalizedUserName)).FirstOrDefaultAsync();
                 if (obgtodelete == default)
                     return result.SetMessage("you are not Follow " + username).SetStatus(StatusCodes.BadRequest.ToString());
 
-
                 await base.DeleteAsync(obgtodelete.Id);
                 return await base.CompleteAsync() ?
-                result.SetData(true).SetMessage("Done").SetStatus(StatusCodes.Ok.ToString())
+                result.SetData(true).SetMessage(username+" unFollowed").SetStatus(StatusCodes.Ok.ToString())
                 :
                 result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
             }
@@ -120,13 +120,35 @@ namespace Services.Services
                 return ResponseService<List<FollowOutput>>.GetExeptionResponse();
             }
         }
+        public async Task<ResponseService<bool>> IsFollowedByMe(String username, User user)
+        {
+            var result = new ResponseService<bool>() { Data = false };
+            try
+            {
 
+                if (user.UserName.ToUpper().Equals(username.ToUpper()))
+                    return result.SetMessage("you cannot Follow yourself ^-^").SetStatus(StatusCodes.BadRequest.ToString());
+                var followeduser = await _identityRepository.GetUserByNameAsync(username);
+                if (followeduser == default)
+                    return result.SetMessage(username + " not Found").SetStatus(StatusCodes.NotFound.ToString());               
+                var obgtodelete = await base.GetQuery().Include(i => i.FollowedUser).Where(s => s.UserId.Equals(user.Id) && s.FollowedUser.NormalizedUserName.Equals(followeduser.NormalizedUserName)).FirstOrDefaultAsync();           
+                return obgtodelete!= default ?
+                result.SetData(true).SetMessage("you are  Following " + username).SetStatus(StatusCodes.Ok.ToString())
+                :
+                result.SetData(false).SetMessage("you are not Following " + username).SetStatus(StatusCodes.Ok.ToString());
+            }
+            catch
+            {
+                return ResponseService<bool>.GetExeptionResponse();
+            }
+        }
 
     }
     public interface IFollowService
     {
         public Task<ResponseService<bool>> FollowUser(String username, User user);
         public Task<ResponseService<bool>> UnFollowUser(String username, User user);
+        public Task<ResponseService<bool>> IsFollowedByMe(String username, User user);
         public Task<ResponseService<List<FollowOutput>>> FollowingList(string username);
         public Task<ResponseService<List<FollowOutput>>> FollowersList(string username);
     }
