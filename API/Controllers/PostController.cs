@@ -34,7 +34,7 @@ namespace API.Controllers
         /// <returns> PostOutput</returns>
         [Authorize]
         [HttpPost(nameof(Create))]
-        public async Task<ActionResult<ResponseService<PostOutput>>> Create(PostCreateInput post)
+        public async Task<ActionResult<ResponseService<PostOutput>>> Create([FromForm] PostCreateInput post)
         {
             var user = await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User);
             var result = await _unitOfWork.PostService.Create(post, user);

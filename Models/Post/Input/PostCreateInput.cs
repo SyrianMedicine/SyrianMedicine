@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DAL.Entities;
 using FluentValidation;
-
+using  Microsoft.AspNetCore.Http;
 namespace Models.Post.Input
 {
     public class PostCreateInput
@@ -14,6 +14,7 @@ namespace Models.Post.Input
         public string PostText { get; set; }
         [Required]
         public string PostTitle { get; set; }
+        public IFormFile Media { get; set; }
         public DAL.Entities.Post.PostType Type { get; set; }
         public List<int> TagsID { get; set; }
 

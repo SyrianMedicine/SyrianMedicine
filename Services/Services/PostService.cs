@@ -17,7 +17,6 @@ using Microsoft.EntityFrameworkCore;
 using Models.Helper;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Internal;
-
 namespace Services.Services
 {
     public class PostService : GenericRepository<Post>, IPostService
@@ -57,11 +56,30 @@ namespace Services.Services
                     }
                 }
                 await base.InsertAsync(post);
+
                 if (await base.CompleteAsync())
                 {
+                    var savedfile = true;
+                    try
+                    {
+                        if (input.Media != null)
+                        {
+                            savedfile = await SaveFile(input.Media, post);
+                            if (savedfile)
+                            {
+                                base.Update(post);
+                                savedfile = await base.CompleteAsync();
+                            }
+                        }
+                    }
+                    catch { }
+
                     Transaction.Commit();
                     post.User = user;
-                    return result.SetMessage("Ok Added").SetData(_mapper.Map<Post, PostOutput>(post)).SetStatus(StatusCodes.Ok.ToString());
+                    result.SetData(_mapper.Map<Post, PostOutput>(post)).SetStatus(StatusCodes.Ok.ToString());
+                    return savedfile ? result.SetMessage("Ok Added")
+                    :
+                    result.SetMessage("Ok Added but media not saved");
                 }
                 else
                 {
@@ -74,6 +92,25 @@ namespace Services.Services
                 await Transaction.RollbackAsync();
                 return ResponseService<PostOutput>.GetExeptionResponse();
             }
+        }
+        private async Task<bool> SaveFile(Microsoft.AspNetCore.Http.IFormFile file, Post post)
+        {
+            try
+            {
+
+                var postpath = "wwwroot/postMedia/" + post.User.NormalizedUserName + "/";
+                if (!Directory.Exists(postpath))
+                {
+                    Directory.CreateDirectory(postpath);
+                }
+                var path = Path.Combine(postpath, "post" + post.Id + "_" + file.FileName);
+                var stream = new FileStream(path, FileMode.Create);
+                await file.CopyToAsync(stream);
+                await stream.DisposeAsync();
+                post.MedialUrl = path[7..];
+                return true;
+            }
+            catch { return false; }
         }
 
         public async Task<ResponseService<bool>> Delete(int id, User user)
