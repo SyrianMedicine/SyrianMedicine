@@ -38,7 +38,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("HospitalId");
 
-                    b.ToTable("Beds");
+                    b.ToTable("Beds", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.City", b =>
@@ -52,7 +52,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.Comment", b =>
@@ -82,7 +82,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Comment");
                 });
@@ -98,7 +98,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.DoctorHistory", b =>
@@ -131,7 +131,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DoctorHistories");
+                    b.ToTable("DoctorHistories", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.DocumentsDoctor", b =>
@@ -150,7 +150,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DocumentsDoctors");
+                    b.ToTable("DocumentsDoctors", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.DocumentsHospital", b =>
@@ -169,7 +169,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("HospitalId");
 
-                    b.ToTable("DocumentsHospitals");
+                    b.ToTable("DocumentsHospitals", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.DocumentsNurse", b =>
@@ -188,7 +188,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("NurseId");
 
-                    b.ToTable("DocumentsNurses");
+                    b.ToTable("DocumentsNurses", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.Follow", b =>
@@ -215,7 +215,7 @@ namespace DAL.Migrations
                     b.HasIndex("UserId", "FollowedUserId")
                         .IsUnique();
 
-                    b.ToTable("Follows");
+                    b.ToTable("Follows", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.HospitalDepartment", b =>
@@ -236,7 +236,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("HospitalId");
 
-                    b.ToTable("HospitalsDepartments");
+                    b.ToTable("HospitalsDepartments", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.HospitalHistory", b =>
@@ -266,7 +266,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("HospitalHistories");
+                    b.ToTable("HospitalHistories", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.Identity.Doctor", b =>
@@ -307,7 +307,7 @@ namespace DAL.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.Identity.Hospital", b =>
@@ -336,7 +336,7 @@ namespace DAL.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Hospitals");
+                    b.ToTable("Hospitals", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.Identity.Nurse", b =>
@@ -371,7 +371,7 @@ namespace DAL.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Nurses");
+                    b.ToTable("Nurses", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.Identity.Secretary", b =>
@@ -394,7 +394,7 @@ namespace DAL.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Secretaries");
+                    b.ToTable("Secretaries", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.Identity.User", b =>
@@ -512,7 +512,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes");
+                    b.ToTable("Likes", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Like");
                 });
@@ -547,7 +547,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NurseHistories");
+                    b.ToTable("NurseHistories", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.Post", b =>
@@ -584,7 +584,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.PostTag", b =>
@@ -606,7 +606,7 @@ namespace DAL.Migrations
                     b.HasIndex("PostId", "TagId")
                         .IsUnique();
 
-                    b.ToTable("PostTags");
+                    b.ToTable("PostTags", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.Rating", b =>
@@ -631,7 +631,7 @@ namespace DAL.Migrations
                     b.HasIndex("userid", "RatedUserid")
                         .IsUnique();
 
-                    b.ToTable("Rate");
+                    b.ToTable("Rate", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.ReserveDoctor", b =>
@@ -667,7 +667,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReserveDoctors");
+                    b.ToTable("ReserveDoctors", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.ReserveHospital", b =>
@@ -700,7 +700,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReserveHospitals");
+                    b.ToTable("ReserveHospitals", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.ReserveNurse", b =>
@@ -736,7 +736,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReserveNurses");
+                    b.ToTable("ReserveNurses", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.Tag", b =>
@@ -754,7 +754,7 @@ namespace DAL.Migrations
                     b.HasIndex("Tagname")
                         .IsUnique();
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.UserConnection", b =>
@@ -782,7 +782,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("userid");
 
-                    b.ToTable("UserConnections");
+                    b.ToTable("UserConnections", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.UserTag", b =>
@@ -805,7 +805,7 @@ namespace DAL.Migrations
                     b.HasIndex("UserId", "TagId")
                         .IsUnique();
 
-                    b.ToTable("UserTags");
+                    b.ToTable("UserTags", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

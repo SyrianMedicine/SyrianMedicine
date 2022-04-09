@@ -10,5 +10,10 @@ namespace Models.Hospital.Inputs
             set { pageSize = (value > maxPageSize) ? 10 : value; }
             get => pageSize;
         }
+
+        public string HospitalName { get; set; } = null;
+        public string City { get; set; } = null;
+        public List<string> HospitalDepartments { get; set; } = new List<string>();
+        public bool? HasAvilableBed { get; set; } = null;
     }
 }

@@ -51,7 +51,36 @@ namespace Services
             => _mapper.Map<Hospital, HospitalOutput>(await GetQuery().Include(e => e.User).FirstOrDefaultAsync(e => e.User.NormalizedUserName == username.ToUpper()));
 
         public async Task<PagedList<HospitalOutput>> GetPaginationHospital(HospitalQuery input)
-            => _mapper.Map<PagedList<Hospital>, PagedList<HospitalOutput>>(await PagedList<Hospital>.CreatePagedListAsync(GetQuery().Include(e => e.User), input.PageNumber, input.PageSize));
+        {
+            var query = GetQuery().Include(e => e.User)
+                                  .Include(e => e.HospitalsDepartments)
+                                  .ThenInclude(e => e.Department)
+
+                                  .AsQueryable();
+
+            #region  Filter
+            if (!String.IsNullOrEmpty(input.City))
+            {
+                query = query.Where(e => e.User.City.ToLower().Contains(input.City.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(input.HospitalName))
+            {
+                query = query.Where(e => e.Name.ToLower().Contains(input.HospitalName.ToLower()));
+            }
+            // if (input.HospitalDepartments.Count > 0)
+            // {
+            //     var query2 = _hospitalDepartment.GetQuery()
+            //         .Include(e => e.Hospital)
+            //         .Include(e => e.Department).AsQueryable();
+            //     var data =await query2.Where(e => input.HospitalDepartments.Any(hospitalDepartment =>e.Department.Name.ToLower().Equals(hospitalDepartment))).ToListAsync();
+            // }
+            if (input.HasAvilableBed == true)
+            {
+                query = query.Where(e => e.Beds.Any(bed => bed.IsAvailable));
+            }
+            #endregion
+            return _mapper.Map<PagedList<Hospital>, PagedList<HospitalOutput>>(await PagedList<Hospital>.CreatePagedListAsync(query, input.PageNumber, input.PageSize));
+        }
 
         public async Task<PagedList<MostHospitalsRated>> GetMostHospitalsRated(HospitalQuery input)
         {
