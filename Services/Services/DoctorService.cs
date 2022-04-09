@@ -41,12 +41,53 @@ namespace Services
             => _mapper.Map<Doctor, DoctorOutput>(await GetQuery().Include(e => e.User).FirstOrDefaultAsync(e => e.User.NormalizedUserName == username.ToUpper()));
 
         public async Task<PagedList<DoctorOutput>> GetPaginationDoctor(DoctorQuery input)
-            => _mapper.Map<PagedList<Doctor>, PagedList<DoctorOutput>>(await PagedList<Doctor>.CreatePagedListAsync(GetQuery().Include(e => e.User), input.PageNumber, input.PageSize));
+        {
+            var query = GetQuery().Include(e => e.User).AsQueryable();
+
+            #region Filter
+            if (input.WorkAtHome != null)
+            {
+                query = query.Where(e => e.WorkAtHome == input.WorkAtHome);
+            }
+            if (input.Gender != null)
+            {
+                query = query.Where(e => e.User.Gender == (Gender)input.Gender);
+            }
+            if (!String.IsNullOrEmpty(input.Location))
+            {
+                query = query.Where(e => e.User.Location.ToLower().Contains(input.Location.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(input.Name))
+            {
+                query = query.Where(e =>
+                     e.User.FirstName.ToLower().Contains(input.Name.ToLower()) ||
+                     e.User.LastName.ToLower().Contains(input.Name.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(input.Specialization))
+            {
+                query = query.Where(e => e.Specialization.ToLower().Contains(input.Specialization.ToLower()));
+            }
+            if (input.StartTimeWork != null || input.EndTimeWork != null)
+            {
+                if (input.StartTimeWork != null && input.EndTimeWork != null)
+                    query = query.Where(e => e.StartTimeWork >= input.StartTimeWork && e.EndTimeWork <= input.EndTimeWork);
+                else if (input.StartTimeWork != null && input.EndTimeWork == null)
+                    query = query.Where(e => e.StartTimeWork >= input.StartTimeWork);
+                else if (input.StartTimeWork == null && input.EndTimeWork != null)
+                    query = query.Where(e => e.EndTimeWork >= input.EndTimeWork);
+            }
+            #endregion
+
+            if (input.OrderByDesc)
+                query = query.OrderByDescending(e => e.Id);
+
+            return _mapper.Map<PagedList<Doctor>, PagedList<DoctorOutput>>(await PagedList<Doctor>.CreatePagedListAsync(query, input.OldTotal, input.PageNumber, input.PageSize));
+        }
 
         public async Task<PagedList<MostDoctorsRated>> GetMostDoctorsRated(DoctorQuery input)
         {
             var query = base.GetQuery().Include(e => e.User).ThenInclude(e => e.UsersRatedMe).OrderByDescending(e => e.User.UsersRatedMe.Average(e => (int)(e.RateValue)));
-            return _mapper.Map<PagedList<Doctor>, PagedList<MostDoctorsRated>>(await PagedList<Doctor>.CreatePagedListAsync(query, input.PageNumber, input.PageSize));
+            return _mapper.Map<PagedList<Doctor>, PagedList<MostDoctorsRated>>(await PagedList<Doctor>.CreatePagedListAsync(query, input.OldTotal, input.PageNumber, input.PageSize));
         }
 
         public async Task<ResponseService<LoginOutput>> LoginDoctor(LoginDoctorInput input)

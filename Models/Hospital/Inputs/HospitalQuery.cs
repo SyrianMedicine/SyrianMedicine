@@ -10,10 +10,11 @@ namespace Models.Hospital.Inputs
             set { pageSize = (value > maxPageSize) ? 10 : value; }
             get => pageSize;
         }
-
+        public int OldTotal { get; set; } = 0;
         public string HospitalName { get; set; } = null;
         public string City { get; set; } = null;
-        public List<string> HospitalDepartments { get; set; } = new List<string>();
+        public string DepartmentName { get; set; } = null;
         public bool? HasAvilableBed { get; set; } = null;
+        public bool OrderByDesc { get; set; } = true;
     }
 }

@@ -32,7 +32,8 @@ namespace Services
         private readonly IGenericRepository<HospitalDepartment> _hospitalDepartment;
 
         public HospitalService(IIdentityRepository identityRepository, IGenericRepository<DocumentsHospital> documentsHospital,
-        IGenericRepository<Department> department, IGenericRepository<HospitalDepartment> hospitalDepartment, IGenericRepository<HospitalHistory> historyHospital, IGenericRepository<ReserveHospital> reserveHospital, IGenericRepository<Bed> bed, ITokenService tokenService, IMapper mapper, StoreContext dbContext) : base(dbContext, mapper)
+        IGenericRepository<Department> department, IGenericRepository<HospitalDepartment> hospitalDepartment, IGenericRepository<HospitalHistory> historyHospital,
+        IGenericRepository<ReserveHospital> reserveHospital, IGenericRepository<Bed> bed, ITokenService tokenService, IMapper mapper, StoreContext dbContext) : base(dbContext, mapper)
         {
             _identityRepository = identityRepository;
             _tokenService = tokenService;
@@ -55,7 +56,6 @@ namespace Services
             var query = GetQuery().Include(e => e.User)
                                   .Include(e => e.HospitalsDepartments)
                                   .ThenInclude(e => e.Department)
-
                                   .AsQueryable();
 
             #region  Filter
@@ -67,25 +67,47 @@ namespace Services
             {
                 query = query.Where(e => e.Name.ToLower().Contains(input.HospitalName.ToLower()));
             }
-            // if (input.HospitalDepartments.Count > 0)
-            // {
-            //     var query2 = _hospitalDepartment.GetQuery()
-            //         .Include(e => e.Hospital)
-            //         .Include(e => e.Department).AsQueryable();
-            //     var data =await query2.Where(e => input.HospitalDepartments.Any(hospitalDepartment =>e.Department.Name.ToLower().Equals(hospitalDepartment))).ToListAsync();
-            // }
-            if (input.HasAvilableBed == true)
+
+            if (!String.IsNullOrEmpty(input.DepartmentName))
             {
-                query = query.Where(e => e.Beds.Any(bed => bed.IsAvailable));
+                if (input.HasAvilableBed != null)
+                {
+                    query = query.Where(e =>
+                        e.HospitalsDepartments
+                            .Any(d =>
+                                d.Department.Name.ToLower()
+                                    .Contains(input.DepartmentName.ToLower()) &&
+                                d.Department.Beds
+                                    .Any(b => b.IsAvailable == input.HasAvilableBed)))
+                    .AsQueryable();
+                }
+                else
+                {
+                    query = query.Where(e =>
+                        e.HospitalsDepartments
+                            .Any(d =>
+                                 d.Department.Name.ToLower()
+                                    .Contains(input.DepartmentName.ToLower())))
+                    .AsQueryable();
+
+                }
+            }
+            if (input.HasAvilableBed != null)
+            {
+                query = query.Where(e => e.HospitalsDepartments.Any(d => d.Department.Beds.Any(b => b.IsAvailable == input.HasAvilableBed)));
             }
             #endregion
-            return _mapper.Map<PagedList<Hospital>, PagedList<HospitalOutput>>(await PagedList<Hospital>.CreatePagedListAsync(query, input.PageNumber, input.PageSize));
+
+            if (input.OrderByDesc)
+                query = query.OrderByDescending(e => e.Id);
+
+            return _mapper.Map<PagedList<Hospital>, PagedList<HospitalOutput>>(await PagedList<Hospital>.CreatePagedListAsync(query, input.OldTotal, input.PageNumber, input.PageSize));
         }
 
         public async Task<PagedList<MostHospitalsRated>> GetMostHospitalsRated(HospitalQuery input)
         {
             var query = base.GetQuery().Include(e => e.User).ThenInclude(e => e.UsersRatedMe).OrderByDescending(e => e.User.UsersRatedMe.Average(e => (int)(e.RateValue)));
-            return _mapper.Map<PagedList<Hospital>, PagedList<MostHospitalsRated>>(await PagedList<Hospital>.CreatePagedListAsync(query, input.PageNumber, input.PageSize));
+            return _mapper.Map<PagedList<Hospital>, PagedList<MostHospitalsRated>>(await PagedList<Hospital>.CreatePagedListAsync(query, input.OldTotal, input.PageNumber, input.PageSize));
         }
         public async Task<ResponseService<RegisterHospitalOutput>> LoginHospital(LoginHospital input)
         {

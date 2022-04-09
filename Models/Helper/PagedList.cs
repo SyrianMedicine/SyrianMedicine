@@ -18,11 +18,22 @@ namespace Models.Helper
         public int TotalPages { get; set; }
         public List<T> Items { get; set; } = new List<T>();
 
+        /*
+            total 50
+            show 10
+            skip 40
+            update 55
+            diff =5
+            skip (10)+ diff
+            15
+        */
 
-        public static async Task<PagedList<T>> CreatePagedListAsync(IQueryable<T> source, int currentPage, int itemsPerPage)
+        public static async Task<PagedList<T>> CreatePagedListAsync(IQueryable<T> source, int oldTotal = 0, int currentPage = 1, int itemsPerPage = 1)
         {
             var count = await source.CountAsync();
-            var items = await source.Skip((currentPage - 1) * itemsPerPage).Take(itemsPerPage).ToListAsync();
+            int diff = count - oldTotal;
+            if (oldTotal == 0 || currentPage == 1) diff = 0;
+            var items = await source.Skip((currentPage - 1) * itemsPerPage + diff).Take(itemsPerPage).ToListAsync();
             return new PagedList<T>(items, currentPage, count, itemsPerPage);
         }
     }
