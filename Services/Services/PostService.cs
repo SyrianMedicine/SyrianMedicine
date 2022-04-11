@@ -151,23 +151,23 @@ namespace Services.Services
             result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
         }
 
-        public async Task<PagedList<PostOutput>> GetTagPosts(Pagination input, int Tagid) =>
-            _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).Where(i => i.Tags.Where(x => x.TagId == Tagid).Any()).OrderByDescending(i => i.Date), input.PageNumber, input.PageSize));
+        public async Task<PagedList<PostOutput>> GetTagPosts(DynamicPagination input, int Tagid) =>
+            _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).Where(i => i.Tags.Where(x => x.TagId == Tagid).Any()).OrderByDescending(i => i.Date), input));
 
         public async Task<PagedList<MostPostsRated>> GetTopPostsForThisMounth(Pagination input) =>
-        _mapper.Map<PagedList<Post>, PagedList<MostPostsRated>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => i.Date.Year == DateTime.Now.Year && i.Date.Month == DateTime.Now.Month).OrderByDescending(i => i.LikedByList.Count), input.PageNumber, input.PageSize));
+        _mapper.Map<PagedList<Post>, PagedList<MostPostsRated>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => i.Date.Year == DateTime.Now.Year && i.Date.Month == DateTime.Now.Month).OrderByDescending(i => i.LikedByList.Count), input));
 
         public async Task<PagedList<PostOutput>> GetTopPostsForThisYear(Pagination input) =>
-        _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).Where(i => i.Date.Year == DateTime.Now.Year).OrderByDescending(i => i.LikedByList.Count()), input.PageNumber, input.PageSize));
-        public async Task<PagedList<PostOutput>> GetUserHomePagePosts(Pagination input, User user)
+        _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).Where(i => i.Date.Year == DateTime.Now.Year).OrderByDescending(i => i.LikedByList.Count()), input));
+        public async Task<PagedList<PostOutput>> GetUserHomePagePosts(DynamicPagination input, User user)
         {
             var usertagsIds = dbContext.UserTags.Where(i => i.UserId.Equals(user.Id));
             var Post = base.GetQuery().Where(x => usertagsIds.LeftJoin(x.Tags, i => i.TagId, i => i.TagId, (i, j) => i.TagId == j.TagId).Where(i => i).Any() || x.User.Followers.Where(c => c.UserId.Equals(user.Id)).Any());
-            return _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(Post.Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).OrderByDescending(i => i.Date), input.PageNumber, input.PageSize));
+            return _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(Post.Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).OrderByDescending(i => i.Date), input));
         }
 
-        public async Task<PagedList<PostOutput>> GetUserProfilePosts(Pagination input, string username) =>
-            _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).Where(i => i.User.NormalizedUserName.Equals(username.ToUpper())).OrderByDescending(i => i.Date), input.PageNumber, input.PageSize));
+        public async Task<PagedList<PostOutput>> GetUserProfilePosts(DynamicPagination input, string username) =>
+            _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).Where(i => i.User.NormalizedUserName.Equals(username.ToUpper())).OrderByDescending(i => i.Date), input));
 
         public async Task<ResponseService<PostOutput>> Update(PostUpdateInput input, User user)
         {
@@ -223,9 +223,9 @@ namespace Services.Services
         public Task<ResponseService<PostOutput>> Update(PostUpdateInput input, User user);
         public Task<ResponseService<bool>> Delete(int id, User user);
         public Task<ResponseService<PostOutput>> GetPost(int Id);
-        public Task<PagedList<PostOutput>> GetTagPosts(Pagination input, int Tagid);
-        public Task<PagedList<PostOutput>> GetUserProfilePosts(Pagination input, string username);
-        public Task<PagedList<PostOutput>> GetUserHomePagePosts(Pagination input, User user);
+        public Task<PagedList<PostOutput>> GetTagPosts(DynamicPagination input, int Tagid);
+        public Task<PagedList<PostOutput>> GetUserProfilePosts(DynamicPagination input, string username);
+        public Task<PagedList<PostOutput>> GetUserHomePagePosts(DynamicPagination input, User user);
         public Task<PagedList<MostPostsRated>> GetTopPostsForThisMounth(Pagination input);
         public Task<PagedList<PostOutput>> GetTopPostsForThisYear(Pagination input);
 

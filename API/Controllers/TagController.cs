@@ -90,7 +90,7 @@ namespace API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost("{id}/posts")]
-        public async Task<PagedList<PostOutput>> GetTagPosts(Pagination input, int id) =>
+        public async Task<PagedList<PostOutput>> GetTagPosts(DynamicPagination input, int id) =>
            await _unitOfWork.PostService.GetTagPosts(input, id);
     }
 }

@@ -150,23 +150,23 @@ namespace Services.Services
         public async Task<PagedList<CommentOutput>> GetMyComments(Pagination input, User User)
         {
             var Query = base.GetQuery().Include(s => s.User).Where(s => s.User.NormalizedUserName.Equals(User.UserName.ToUpper())).Include(s => (s as AccountComment).OnAccount).Include(s => (s as SubComment).Comment).Include(s => (s as PostComment).Post).OrderByDescending(i => i.Date);
-            return _mapper.Map<PagedList<Comment>, PagedList<CommentOutput>>(await PagedList<Comment>.CreatePagedListAsync(Query, input.PageNumber, input.PageSize));
+            return _mapper.Map<PagedList<Comment>, PagedList<CommentOutput>>(await PagedList<Comment>.CreatePagedListAsync(Query, input));
         }
-        public async Task<PagedList<CommentOutput>> GetOnAccountComments(Pagination input, string AccountUserName)
+        public async Task<PagedList<CommentOutput>> GetOnAccountComments(DynamicPagination input, string AccountUserName)
         {
             var Query = base.GetQuery().Include(s => s.User).Where(s => (s as AccountComment).OnAccount.NormalizedUserName.Equals(AccountUserName.ToUpper())).OrderByDescending(i => i.Date);
-            return _mapper.Map<PagedList<Comment>, PagedList<CommentOutput>>(await PagedList<Comment>.CreatePagedListAsync(Query, input.PageNumber, input.PageSize));
+            return _mapper.Map<PagedList<Comment>, PagedList<CommentOutput>>(await PagedList<Comment>.CreatePagedListAsync(Query, input));
 
         }
-        public async Task<PagedList<CommentOutput>> GetOnPostComments(Pagination input, int Postid)
+        public async Task<PagedList<CommentOutput>> GetOnPostComments(DynamicPagination input, int Postid)
         {
             var Query = base.GetQuery().Include(s => s.User).Where(s => (s as PostComment).PostId == Postid).OrderByDescending(i => i.Date);
-            return _mapper.Map<PagedList<Comment>, PagedList<CommentOutput>>(await PagedList<Comment>.CreatePagedListAsync(Query, input.PageNumber, input.PageSize));
+            return _mapper.Map<PagedList<Comment>, PagedList<CommentOutput>>(await PagedList<Comment>.CreatePagedListAsync(Query, input));
         }
-        public async Task<PagedList<CommentOutput>> GetSubComments(Pagination input, int Commentid)
+        public async Task<PagedList<CommentOutput>> GetSubComments(DynamicPagination input, int Commentid)
         {
             var Query = base.GetQuery().Include(s => s.User).Where(s => (s as SubComment).CommentId == Commentid).OrderByDescending(i => i.Date);
-            return _mapper.Map<PagedList<Comment>, PagedList<CommentOutput>>(await PagedList<Comment>.CreatePagedListAsync(Query, input.PageNumber, input.PageSize));
+            return _mapper.Map<PagedList<Comment>, PagedList<CommentOutput>>(await PagedList<Comment>.CreatePagedListAsync(Query, input));
         }
 
     }
@@ -178,9 +178,9 @@ namespace Services.Services
         public Task<ResponseService<CommentOutput>> GetComment(int id);
         public Task<ResponseService<CommentOutput>> Update(CommentUpdateInput Input, User user);
         public Task<PagedList<CommentOutput>> GetMyComments(Pagination input, User User);
-        public Task<PagedList<CommentOutput>> GetOnAccountComments(Pagination input, string AccountUserName);
-        public Task<PagedList<CommentOutput>> GetOnPostComments(Pagination input, int Postid);
-        public  Task<PagedList<CommentOutput>> GetSubComments(Pagination input, int Commentid);
+        public Task<PagedList<CommentOutput>> GetOnAccountComments(DynamicPagination input, string AccountUserName);
+        public Task<PagedList<CommentOutput>> GetOnPostComments(DynamicPagination input, int Postid);
+        public  Task<PagedList<CommentOutput>> GetSubComments(DynamicPagination input, int Commentid);
         public Task<ResponseService<bool>> delete(int id, User user);
     }
 }

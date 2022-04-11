@@ -87,7 +87,7 @@ namespace API.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost("HomePost")]
-        public async Task<PagedList<PostOutput>> GetHomePost(Pagination input) =>
+        public async Task<PagedList<PostOutput>> GetHomePost(DynamicPagination input) =>
             await _unitOfWork.PostService.GetUserHomePagePosts(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User));
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost("{id}/Comments")]
-        public async Task<PagedList<CommentOutput>> GetComments(Pagination input, int id) =>
+        public async Task<PagedList<CommentOutput>> GetComments(DynamicPagination input, int id) =>
              await _unitOfWork.CommentService.GetOnPostComments(input, id);
         /// <summary>
         /// who like this post
@@ -106,7 +106,7 @@ namespace API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost("{id}/Liks")]
-        public async Task<PagedList<Models.Like.Output.LikeOutput>> GetLiks(Pagination input, int id) =>
+        public async Task<PagedList<Models.Like.Output.LikeOutput>> GetLiks(DynamicPagination input, int id) =>
             await _unitOfWork.LikeService.GetPostLiks(input, id);
 
         /// <summary>

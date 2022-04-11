@@ -77,7 +77,7 @@ namespace API.Controllers
         /// <param name="AccountUserName"></param>
         /// <returns></returns>
         [HttpPost("{AccountUserName}/Comments")]
-        public async Task<Models.Helper.PagedList<Models.Comment.Output.CommentOutput>> Comments(Models.Helper.Pagination input, string AccountUserName)
+        public async Task<Models.Helper.PagedList<Models.Comment.Output.CommentOutput>> Comments(Models.Helper.DynamicPagination input, string AccountUserName)
             => await _unitOfWork.CommentService.GetOnAccountComments(input, AccountUserName);
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace API.Controllers
         /// <param name="AccountUserName"></param>
         /// <returns></returns>
         [HttpPost("{AccountUserName}/Posts")]
-        public async Task<Models.Helper.PagedList<Models.Post.Output.PostOutput>> GetPosts(Models.Helper.Pagination input, string AccountUserName)
+        public async Task<Models.Helper.PagedList<Models.Post.Output.PostOutput>> GetPosts(Models.Helper.DynamicPagination input, string AccountUserName)
             => await _unitOfWork.PostService.GetUserProfilePosts(input, AccountUserName);
 
         /// <summary>

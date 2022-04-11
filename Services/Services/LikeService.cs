@@ -22,8 +22,8 @@ namespace Services.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<PagedList<LikeOutput>> GetCommentLiks(Pagination input, int CommentId) =>
-            _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => (i as CommentLike).CommentID == CommentId).OrderByDescending(i => i.LikeDate), input.PageNumber, input.PageSize));
+        public async Task<PagedList<LikeOutput>> GetCommentLiks(DynamicPagination input, int CommentId) =>
+            _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => (i as CommentLike).CommentID == CommentId).OrderByDescending(i => i.LikeDate), input));
 
         public async Task<ResponseService<long>> getCommentTotalLike(int CommentId)
         {
@@ -37,11 +37,11 @@ namespace Services.Services
         public async Task<PagedList<LikeOutput>> GetMyLikeHistory(Pagination input, User user)
         {
             var Query = base.GetQuery().Include(s => s.User).Where(s => s.User.NormalizedUserName.Equals(user.UserName.ToUpper())).Include(s => (s as CommentLike).Comment).Include(s => (s as PostLike).Post).OrderByDescending(i => i.LikeDate);
-            return _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(Query, input.PageNumber, input.PageSize));
+            return _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(Query,input));
         }
 
-        public async Task<PagedList<LikeOutput>> GetPostLiks(Pagination input, int PostId) =>
-            _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => (i as PostLike).PostID == PostId).OrderByDescending(i => i.LikeDate), input.PageNumber, input.PageSize));
+        public async Task<PagedList<LikeOutput>> GetPostLiks(DynamicPagination input, int PostId) =>
+            _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => (i as PostLike).PostID == PostId).OrderByDescending(i => i.LikeDate), input));
 
         public async Task<ResponseService<long>> getPostTotalLike(int PostId)
         {
@@ -218,8 +218,8 @@ namespace Services.Services
         public Task<ResponseService<bool>> Unlike(int LikIid, User user);
         public Task<ResponseService<bool>> IsCommentliked(int CommentId, User user);
         public Task<ResponseService<bool>> IsPostliked(int PostId, User user);
-        public Task<PagedList<LikeOutput>> GetCommentLiks(Pagination input, int CommentId);
+        public Task<PagedList<LikeOutput>> GetCommentLiks(DynamicPagination input, int CommentId);
         public Task<PagedList<LikeOutput>> GetMyLikeHistory(Pagination input, User user);
-        public Task<PagedList<LikeOutput>> GetPostLiks(Pagination input, int PostId);
+        public Task<PagedList<LikeOutput>> GetPostLiks(DynamicPagination input, int PostId);
     }
 }

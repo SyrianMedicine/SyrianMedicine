@@ -127,7 +127,7 @@ namespace API.Controllers
         /// <param name="Commentid"></param>
         /// <returns></returns>
         [HttpPost("{Commentid}/SubComments")]
-        public async Task<PagedList<CommentOutput>> GetSubCommentsforComment(Pagination input, int Commentid) =>
+        public async Task<PagedList<CommentOutput>> GetSubCommentsforComment(DynamicPagination input, int Commentid) =>
           await _unitOfWork.CommentService.GetSubComments(input, Commentid);
         /// <summary>
         /// who like this Comments
@@ -136,7 +136,7 @@ namespace API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost("{id}/Liks")]
-        public async Task<PagedList<Models.Like.Output.LikeOutput>> GetLiks(Pagination input, int id) =>
+        public async Task<PagedList<Models.Like.Output.LikeOutput>> GetLiks(DynamicPagination input, int id) =>
             await _unitOfWork.LikeService.GetCommentLiks(input, id);
         [HttpGet("{id}/NumberOfLiks")]
         public async Task<ResponseService<long>> NumberOfLiks(int id) =>
