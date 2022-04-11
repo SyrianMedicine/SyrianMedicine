@@ -33,7 +33,7 @@ namespace Models.Helper
             int diff = count - oldTotal;
             if (oldTotal <= 0 || currentPage == 1) diff = 0;
             var items = await source.Skip((currentPage - 1) * itemsPerPage + diff).Take(itemsPerPage).ToListAsync();
-            return new PagedList<T>(items, currentPage, count, itemsPerPage);
+            return new PagedList<T>(items, currentPage+Convert.ToInt32(diff/itemsPerPage), count, itemsPerPage);
         }
         public static async Task<PagedList<T>> CreatePagedListAsync(IQueryable<T> source, Pagination pagination)
         {
