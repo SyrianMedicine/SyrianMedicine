@@ -5,6 +5,7 @@ using DAL.DataContext;
 using DAL.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Services.Seed;
 
 
@@ -57,11 +58,14 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.UseSwagger();
-app.UseSwaggerUI(config =>
+if(app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
-    config.SwaggerEndpoint("../swagger/v1/swagger.json", "Syrian Medicine Project v1");
-});
+    app.UseSwagger();
+    app.UseSwaggerUI(config =>
+    {
+        config.SwaggerEndpoint("../swagger/v1/swagger.json", "Syrian Medicine Project v1");
+    });
+}
 
 app.UseRouting();
 app.UseCors(x => x.WithOrigins().AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
