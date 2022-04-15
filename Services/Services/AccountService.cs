@@ -175,7 +175,9 @@ namespace Services
         public async Task<bool> IsUserNameExist(string username)
             => await _identityRepository.GetUserByNameAsync(username) != null;
         public async Task<bool> IsEmailExist(string email)
-                => await _identityRepository.GetUserByEmailAsync(email) != null;
+            => await _identityRepository.GetUserByEmailAsync(email) != null;
+        public async Task<string> GetUserType(string username)
+            => (await _identityRepository.GetUserByNameAsync(username)).UserType.ToString();
 
     }
     public interface IAccountService
@@ -192,5 +194,6 @@ namespace Services
         public Task<ResponseService<bool>> UploadImage(UploadImage input, User user);
         public Task<ResponseService<LoginAdminOutput>> LoginAdmin(LoginInput input);
         public Task<ResponseService<bool>> UpdateAdminProfile(UpdateAdmin input, User user);
+        public Task<string> GetUserType(string username);
     }
 }
