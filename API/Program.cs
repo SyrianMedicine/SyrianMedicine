@@ -57,14 +57,11 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-if (app.Environment.IsDevelopment())
-{
     app.UseSwagger();
     app.UseSwaggerUI(config =>
     {
         config.SwaggerEndpoint("../swagger/v1/swagger.json", "Syrian Medicine Project v1");
     });
-}
 
 app.UseCors(x => x.WithOrigins().AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 app.UseHttpsRedirection();

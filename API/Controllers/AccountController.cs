@@ -35,13 +35,6 @@ namespace API.Controllers
         public List<OptionDto> GetPersonStates()
             => _unitOfWork.AccountService.GetPersonStates();
 
-
-
-        // Example For Sarye, I will delete it afer somedays
-        [HttpPost(nameof(GetPaginationCities))]
-        public async Task<PagedList<OptionDto>> GetPaginationCities(Pagination input)
-            => await _unitOfWork.AccountService.GetCities(input);
-
         [HttpGet(nameof(GetGenders))]
         public List<OptionDto> GetGenders()
             => _unitOfWork.AccountService.GetGenders();
@@ -50,9 +43,13 @@ namespace API.Controllers
         public List<OptionDto> GetAccountStates()
             => _unitOfWork.AccountService.GetAccountStates();
 
+        [HttpGet(nameof(GetUserType))]
+        public async Task<string> GetUserType(string userName)
+            => await _unitOfWork.AccountService.GetUserType(userName);
+
         [HttpGet(nameof(GetRoles)), Authorize(Roles = "Admin")]
         public List<OptionDto> GetRoles()
-               => _unitOfWork.AccountService.GetRoles();
+              => _unitOfWork.AccountService.GetRoles();
 
         [HttpGet(nameof(GetUserTypes))]
         public List<OptionDto> GetUserTypes()
