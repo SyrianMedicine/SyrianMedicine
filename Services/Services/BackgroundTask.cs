@@ -142,7 +142,7 @@ namespace Services
             }
         }
 
-        private TimeSpan CalculateDelayNeededToStartTask(DateTime timeNow)
+        private static TimeSpan CalculateDelayNeededToStartTask(DateTime timeNow)
         {
             int hours = (24 - timeNow.Hour + 1) % 24;
             int minutes = (60 - timeNow.Minute + 30) % 60;

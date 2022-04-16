@@ -183,7 +183,7 @@ publish/
 *.publishproj
 
 #temp database files
-*.db
+
 /API/OnlineStore.db-shm
 /API/OnlineStore.db-wal
 # Microsoft Azure Web App publish settings. Comment the next line if you want to
@@ -452,7 +452,7 @@ $RECYCLE.BIN/
 .cls
 bin
 obj
-*.db
+
 *.db-shm
 *.db-wal
 *.dll
