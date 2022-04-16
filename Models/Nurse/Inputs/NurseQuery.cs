@@ -15,8 +15,8 @@ namespace Models.Nurse.Inputs
         public string Specialization { get; set; } = null;
         public string Name { get; set; } = null;
         public string City { get; set; } = null;
-        public DateTime? StartTimeWork { get; set; } = null;
-        public DateTime? EndTimeWork { get; set; } = null;
+        public DateTime StartTimeWork { get; set; } = default;
+        public DateTime EndTimeWork { get; set; } = default;
         public string Location { get; set; } = null;
         public int? Gender { get; set; } = null;
         public bool OrderByDesc { get; set; } = true;

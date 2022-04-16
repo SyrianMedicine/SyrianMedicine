@@ -22,9 +22,9 @@ namespace Services.Profiles
             .ForMember(dest => dest.IsEdited, opt => opt.MapFrom(src => src.IsEdited))
             .ForMember(dest => dest.PostText, opt => opt.MapFrom(src => src.PostText))
             .ForMember(dest => dest.Tags, opt => opt.MapFrom(S => S.Tags != null ? S.Tags.Select(s => s.Tag).ToList() : null))
-            .ForMember(dest => dest.Type, opt => opt.MapFrom(S => S.Type)) 
-            .ForMember(dest => dest.date, opt => opt.MapFrom(S => S.Date)) 
-            .ForMember(dest => dest.MediaUrl , opt => opt.MapFrom(S => S.MedialUrl))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(S => S.Type))
+            .ForMember(dest => dest.date, opt => opt.MapFrom(S => S.Date))
+            .ForMember(dest => dest.MediaUrl, opt => opt.MapFrom(S => S.MedialUrl == null ? null : "https://syrian-medicine.herokuapp.com" + S.MedialUrl))
             .ForMember(dest => dest.user, opt => opt.MapFrom(S => S.User));
 
 

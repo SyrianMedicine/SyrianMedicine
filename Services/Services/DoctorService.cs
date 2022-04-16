@@ -67,14 +67,14 @@ namespace Services
             {
                 query = query.Where(e => e.Specialization.ToLower().Contains(input.Specialization.ToLower()));
             }
-            if (input.StartTimeWork != null || input.EndTimeWork != null)
+            if (input.StartTimeWork != default(DateTime) || input.EndTimeWork != default(DateTime))
             {
-                if (input.StartTimeWork != null && input.EndTimeWork != null)
-                    query = query.Where(e => e.StartTimeWork >= input.StartTimeWork && e.EndTimeWork <= input.EndTimeWork);
-                else if (input.StartTimeWork != null && input.EndTimeWork == null)
-                    query = query.Where(e => e.StartTimeWork >= input.StartTimeWork);
-                else if (input.StartTimeWork == null && input.EndTimeWork != null)
-                    query = query.Where(e => e.EndTimeWork >= input.EndTimeWork);
+                if (input.StartTimeWork != default(DateTime) && input.EndTimeWork != default(DateTime))
+                    query = query.Where(e => e.StartTimeWork.Hour >= input.StartTimeWork.Hour && e.EndTimeWork.Hour <= input.EndTimeWork.Hour);
+                else if (input.StartTimeWork != default(DateTime) && input.EndTimeWork == default(DateTime))
+                    query = query.Where(e => e.StartTimeWork.Hour >= input.StartTimeWork.Hour);
+                else if (input.StartTimeWork == default(DateTime) && input.EndTimeWork != default(DateTime))
+                    query = query.Where(e => e.EndTimeWork.Hour >= input.EndTimeWork.Hour);
             }
             #endregion
 
