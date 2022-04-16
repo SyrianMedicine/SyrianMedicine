@@ -16,7 +16,7 @@ namespace Services.Profiles
             CreateMap<Nurse, NurseOutput>()
                 .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.User.FirstName + " " + src.User.LastName))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
-                .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom(src => src.User.PictureUrl == null ? null : "https://syrian-medicine.herokuapp.com/" + src.User.PictureUrl))
+                .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom(src => src.User.PictureUrl == null ? null : "https://syrian-medicine.herokuapp.com" + src.User.PictureUrl))
                 .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.User.Location))
                 .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.User.State))
                 .ForMember(dest => dest.HomeNumber, opt => opt.MapFrom(src => src.User.HomeNumber))

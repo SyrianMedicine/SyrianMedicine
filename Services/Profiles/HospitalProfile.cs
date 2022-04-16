@@ -19,7 +19,7 @@ namespace Services.Profiles
             CreateMap<Hospital, HospitalOutput>()
                 .ForMember(e => e.Email, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(e => e.UserName, opt => opt.MapFrom(src => src.User.UserName))
-                .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom(src => src.User.PictureUrl == null ? null : "https://syrian-medicine.herokuapp.com/" + src.User.PictureUrl))
+                .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom(src => src.User.PictureUrl == null ? null : "https://syrian-medicine.herokuapp.com" + src.User.PictureUrl))
                 .ForMember(e => e.Location, opt => opt.MapFrom(src => src.User.Location))
                 .ForMember(e => e.PhoneNumer, opt => opt.MapFrom(src => src.User.PhoneNumber))
                 .ForMember(e => e.HomeNumber, opt => opt.MapFrom(src => src.User.HomeNumber))
