@@ -114,7 +114,7 @@ namespace Services
                 if (File.Exists("wwwroot/" + user.PictureUrl))
                     File.Delete("wwwroot/" + user.PictureUrl);
 
-                var path = Path.Combine("wwwroot/Users/Images/" + "ProfileImageFor_" + user.UserName + "_" + input.imageUrl.FileName);
+                var path = Path.Combine("wwwroot/users_images/" + "ProfileImageFor_" + user.UserName + "_" + input.imageUrl.FileName);
                 var stream = new FileStream(path, FileMode.Create);
                 await input.imageUrl.CopyToAsync(stream);
                 await stream.DisposeAsync();
