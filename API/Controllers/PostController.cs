@@ -125,6 +125,11 @@ namespace API.Controllers
         [HttpPost("TopMonthPosts")]
         public async Task<PagedList<MostPostsRated>> TopMonthPosts(Pagination input) =>
             await _unitOfWork.PostService.GetTopPostsForThisMounth(input);
+
+        [HttpPost("GetPagedPosts")]
+        public async Task<PagedList<PostOutput>> GetPagedPosts(PostQuery input) =>
+            await _unitOfWork.PostService.GetPagedPosts(input);
+
         [HttpGet("{id}/NumberOfLiks")]
         public async Task<ResponseService<long>> NumberOfLiks(int id) =>
         await _unitOfWork.LikeService.getPostTotalLike(id);

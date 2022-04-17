@@ -59,14 +59,14 @@ namespace Services
                                   .AsQueryable();
 
             #region  Filter
-            if (!String.IsNullOrEmpty(input.City))
+            if (!String.IsNullOrEmpty(input.SearchString))
             {
-                query = query.Where(e => e.User.City.ToLower().Contains(input.City.ToLower()));
+                query = query.Where(e =>
+                    e.User.City.ToLower().Contains(input.SearchString.ToLower()) ||
+                    e.Name.ToLower().Contains(input.SearchString.ToLower())
+                );
             }
-            if (!String.IsNullOrEmpty(input.HospitalName))
-            {
-                query = query.Where(e => e.Name.ToLower().Contains(input.HospitalName.ToLower()));
-            }
+
 
             if (!String.IsNullOrEmpty(input.DepartmentName))
             {

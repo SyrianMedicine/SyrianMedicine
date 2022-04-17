@@ -51,19 +51,14 @@ namespace Services
             {
                 query = query.Where(e => e.User.Gender == (Gender)input.Gender);
             }
-            if (!String.IsNullOrEmpty(input.Location))
-            {
-                query = query.Where(e => e.User.Location.ToLower().Contains(input.Location.ToLower()));
-            }
-            if (!String.IsNullOrEmpty(input.Name))
+            if (!String.IsNullOrEmpty(input.SearchString))
             {
                 query = query.Where(e =>
-                     e.User.FirstName.ToLower().Contains(input.Name.ToLower()) ||
-                     e.User.LastName.ToLower().Contains(input.Name.ToLower()));
-            }
-            if (!String.IsNullOrEmpty(input.Specialization))
-            {
-                query = query.Where(e => e.Specialization.ToLower().Contains(input.Specialization.ToLower()));
+                e.User.Location.ToLower().Contains(input.SearchString.ToLower()) ||
+                e.User.FirstName.ToLower().Contains(input.SearchString.ToLower()) ||
+                e.User.LastName.ToLower().Contains(input.SearchString.ToLower()) ||
+                e.Specialization.ToLower().Contains(input.SearchString.ToLower())
+                );
             }
             if (input.StartTimeWork != default(DateTime) || input.EndTimeWork != default(DateTime))
             {

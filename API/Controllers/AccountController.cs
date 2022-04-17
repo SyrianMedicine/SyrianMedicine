@@ -55,6 +55,10 @@ namespace API.Controllers
         public List<OptionDto> GetUserTypes()
         => _unitOfWork.AccountService.GetUserTypes();
 
+        [HttpGet(nameof(GetReserveStates))]
+        public List<OptionDto> GetReserveStates()
+        => _unitOfWork.AccountService.ReserveStates();
+
         [HttpPut(nameof(UploadImage)), Authorize]
         public async Task<ActionResult<ResponseService<bool>>> UploadImage([FromForm] UploadImage input)
             => Result(await _unitOfWork.AccountService.UploadImage(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UploadImage));

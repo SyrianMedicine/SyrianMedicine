@@ -216,6 +216,27 @@ namespace Services.Services
                 return ResponseService<PostOutput>.GetExeptionResponse();
             }
         }
+        public async Task<PagedList<PostOutput>> GetPagedPosts(PostQuery input)
+        {
+            var query = base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).OrderByDescending(e =>e.Date).AsQueryable();
+
+            if (!String.IsNullOrEmpty(input.SearchString))
+            {
+                query = query.Where(e =>
+                     e.PostText.ToLower().Contains(input.SearchString.ToLower()) ||
+                     e.PostTitle.ToLower().Contains(input.SearchString.ToLower()) ||
+                     e.Date.ToString().ToLower().Contains(input.SearchString.ToLower()) ||
+                     e.User.FirstName.ToLower().Contains(input.SearchString.ToLower()) ||
+                     e.User.LastName.ToLower().Contains(input.SearchString.ToLower()) ||
+                     e.User.UserName.ToLower().Contains(input.SearchString.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(input.TagName))
+            {
+                query = query.Where(e => e.Tags.Any(t => t.Tag.Tagname.ToLower().Equals(input.TagName.ToLower())));
+            }
+
+            return _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(query, input));
+        }
     }
     public interface IPostService
     {
@@ -228,6 +249,6 @@ namespace Services.Services
         public Task<PagedList<PostOutput>> GetUserHomePagePosts(DynamicPagination input, User user);
         public Task<PagedList<MostPostsRated>> GetTopPostsForThisMounth(Pagination input);
         public Task<PagedList<PostOutput>> GetTopPostsForThisYear(Pagination input);
-
+        public Task<PagedList<PostOutput>> GetPagedPosts(PostQuery input);
     }
 }

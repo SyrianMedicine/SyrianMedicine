@@ -42,7 +42,8 @@ namespace Services
 
         public List<OptionDto> GetRoles()
             => Enum.GetValues<Roles>().Cast<Roles>().Select(e => new OptionDto { Id = (int)e, Name = e.ToString() }).ToList();
-
+        public List<OptionDto> ReserveStates()
+            => Enum.GetValues<ReserveState>().Cast<ReserveState>().Select(e => new OptionDto { Id = (int)e, Name = e.ToString() }).ToList();
         public List<OptionDto> GetUserTypes()
             => Enum.GetValues<UserType>().Cast<UserType>().Select(e => new OptionDto { Id = (int)e, Name = e.ToString() }).ToList();
         public List<OptionDto> GetPersonStates()
@@ -190,6 +191,7 @@ namespace Services
         public List<OptionDto> GetUserTypes();
         public List<OptionDto> GetAccountStates();
         public List<OptionDto> GetRoles();
+        public List<OptionDto> ReserveStates();
         public List<OptionDto> GetPersonStates();
         public Task<ResponseService<bool>> UploadImage(UploadImage input, User user);
         public Task<ResponseService<LoginAdminOutput>> LoginAdmin(LoginInput input);
