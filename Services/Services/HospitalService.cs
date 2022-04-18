@@ -369,6 +369,8 @@ namespace Services
 
                 var userMapper = _mapper.Map(input, user);
                 var hospitalMapper = _mapper.Map(input, dbHospital);
+                userMapper.FirstName = hospitalMapper.Name;
+                userMapper.LastName = hospitalMapper.Name;
 
                 if (await _identityRepository.UpdateUserAsync(userMapper))
                 {

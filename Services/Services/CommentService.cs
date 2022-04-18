@@ -36,7 +36,7 @@ namespace Services.Services
                 Comment.UserId = user.Id;
                 Comment.Comment = baseComment;
                 await base.InsertAsync(Comment);
-                return await base.CompleteAsync() ? result.SetStatus(StatusCodes.Ok.ToString()).SetData(_mapper.Map<SubComment, CommentOutput>(Comment)).SetMessage("Done")
+                return await base.CompleteAsync() ? result.SetStatus(StatusCodes.Ok.ToString()).SetData(_mapper.Map<SubComment, CommentOutput>(Comment)).SetMessage("Comment added")
                 :
                 result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }
@@ -61,7 +61,7 @@ namespace Services.Services
                 Comment.UserId = user.Id;
                 Comment.OnAccount = Account;
                 await base.InsertAsync(Comment);
-                return await base.CompleteAsync() ? result.SetStatus(StatusCodes.Ok.ToString()).SetData(_mapper.Map<AccountComment, CommentOutput>(Comment)).SetMessage("Done")
+                return await base.CompleteAsync() ? result.SetStatus(StatusCodes.Ok.ToString()).SetData(_mapper.Map<AccountComment, CommentOutput>(Comment)).SetMessage("Comment added")
                 :
                 result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }
@@ -86,7 +86,7 @@ namespace Services.Services
 
                 Comment.UserId = user.Id;
                 await base.InsertAsync(Comment);
-                return await base.CompleteAsync() ? result.SetStatus(StatusCodes.Ok.ToString()).SetData(_mapper.Map<PostComment, CommentOutput>(Comment)).SetMessage("Done")
+                return await base.CompleteAsync() ? result.SetStatus(StatusCodes.Ok.ToString()).SetData(_mapper.Map<PostComment, CommentOutput>(Comment)).SetMessage("Comment added")
                 :
                 result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }
@@ -109,7 +109,7 @@ namespace Services.Services
                 comment.IsEdited = true;
                 comment.CommentText = Input.CommentText;
                 base.Update(comment);
-                return await base.CompleteAsync() ? result.SetStatus(StatusCodes.Ok.ToString()).SetData(_mapper.Map<Comment, CommentOutput>(comment)).SetMessage("Done")
+                return await base.CompleteAsync() ? result.SetStatus(StatusCodes.Ok.ToString()).SetData(_mapper.Map<Comment, CommentOutput>(comment)).SetMessage("Comment updated")
                 :
                 result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }
@@ -127,7 +127,7 @@ namespace Services.Services
                 if (comment == default) return result.SetMessage("comment not Found").SetStatus(StatusCodes.NotFound.ToString());
                 if (!comment.UserId.Equals(user.Id)) return result.SetMessage("You are not the comment Owner").SetStatus(StatusCodes.Unauthorized.ToString());
                 await base.DeleteAsync(comment.Id);
-                return await base.CompleteAsync() ? result.SetStatus(StatusCodes.Ok.ToString()).SetData(true).SetMessage("Done")
+                return await base.CompleteAsync() ? result.SetStatus(StatusCodes.Ok.ToString()).SetData(true).SetMessage("Comment deleted")
                 :
                 result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
 

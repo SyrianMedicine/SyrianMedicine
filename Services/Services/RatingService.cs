@@ -59,7 +59,7 @@ namespace Services.Services
                 if (rateduser == null)
                     return result.SetMessage("user Not Found").SetStatus(StatusCodes.NotFound.ToString());
                 if (!IsUserRatable(rateduser))
-                    return result.SetMessage("You cannot Rate this user").SetStatus(StatusCodes.Forbidden.ToString());
+                    return result.SetMessage("You cannot rate this user").SetStatus(StatusCodes.Forbidden.ToString());
                 DAL.Entities.Rating rate = await base.GetQuery().Where(i => i.RatedUserid.Equals(rateduser.Id) && i.userid.Equals(user.Id)).FirstOrDefaultAsync();
                 if (rate == default)
                 {
@@ -72,7 +72,7 @@ namespace Services.Services
                     base.Update(rate);
                 }
                 return await base.CompleteAsync() ?
-                result.SetData(true).SetMessage("Rated").SetStatus(StatusCodes.Ok.ToString())
+                result.SetData(true).SetMessage($"{rateduser.UserName} rated").SetStatus(StatusCodes.Ok.ToString())
                 :
 
                 result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
@@ -87,8 +87,8 @@ namespace Services.Services
         public async Task<ResponseService<MyRateingforUser>> GetMyRatingForUser(string Username, User user)
         {
             ResponseService<MyRateingforUser> Result = new();
-            if((await _IdentityRepository.GetUserByNameAsync(Username))==null)
-            return Result.SetMessage("user Notfound").SetStatus(StatusCodes.NotFound.ToString());
+            if ((await _IdentityRepository.GetUserByNameAsync(Username)) == null)
+                return Result.SetMessage("User not found").SetStatus(StatusCodes.NotFound.ToString());
             var rate = await base.GetQuery().Include(i => i.RatedUser).Where(i => i.userid.Equals(user.Id) && i.RatedUser.NormalizedUserName.Equals(Username.ToUpper())).FirstOrDefaultAsync();
             if (rate != default)
                 Result.Data = new MyRateingforUser
@@ -98,7 +98,7 @@ namespace Services.Services
             return rate != default ?
             Result.SetMessage("ok").SetStatus(StatusCodes.Ok.ToString())
             :
-            Result.SetMessage("you are not rate this user yet").SetStatus(StatusCodes.NotFound.ToString());
+            Result.SetMessage("You are not rate this user yet").SetStatus(StatusCodes.NotFound.ToString());
         }
     }
     public interface IRatingService

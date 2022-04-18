@@ -28,7 +28,7 @@ namespace Services
             };
             return result.Data != null && result.Data.Any() ?
              result.SetMessage("Ok").SetStatus(StatusCodes.Ok.ToString()) :
-             result.SetMessage("no Tag added Now").SetStatus(StatusCodes.NotFound.ToString());
+             result.SetMessage("Ooops, no yag added now").SetStatus(StatusCodes.NotFound.ToString());
         }
 
         public async Task<ResponseService<TagOutput>> GetTag(int id)
@@ -40,7 +40,7 @@ namespace Services
             return result.Data != null ?
              result.SetMessage("Ok").SetStatus(StatusCodes.Ok.ToString())
              :
-             result.SetMessage("Tag not Found").SetStatus(StatusCodes.NotFound.ToString());
+             result.SetMessage("Tag not found").SetStatus(StatusCodes.NotFound.ToString());
         }
 
         public async Task<ResponseService<List<TagOutput>>> SearchTag(string Query)
@@ -52,7 +52,7 @@ namespace Services
             return result.Data.Any() ?
              result.SetMessage("Ok").SetStatus(StatusCodes.Ok.ToString())
              :
-             result.SetMessage("No Content").SetStatus(StatusCodes.NotFound.ToString());
+             result.SetMessage("No content").SetStatus(StatusCodes.NotFound.ToString());
         }
 
         public async Task<ResponseService<TagOutput>> CreateTag(TagCreateInput Input)
@@ -67,7 +67,7 @@ namespace Services
                 }
                 await base.InsertAsync(tag);
                 return await base.CompleteAsync() ?
-                    result.SetMessage("Tag Created").SetData(_mapper.Map<Tag, TagOutput>(tag)).SetStatus(StatusCodes.Created.ToString())
+                    result.SetMessage("Tag created").SetData(_mapper.Map<Tag, TagOutput>(tag)).SetStatus(StatusCodes.Created.ToString())
                     :
                     result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }
@@ -81,13 +81,13 @@ namespace Services
             var tag = _mapper.Map<TagUpdateInput, Tag>(Input);
             var result = new ResponseService<TagOutput>();
             if (!await base.GetQuery().Where(i => i.Id == Input.Id).AnyAsync())
-                return result.SetMessage("NotFound").SetStatus(StatusCodes.NotFound.ToString());
+                return result.SetMessage("not found").SetStatus(StatusCodes.NotFound.ToString());
             try
             {
 
                 base.Update(tag);
                 return await base.CompleteAsync() ?
-                    result.SetMessage("Updated").SetData(_mapper.Map<Tag, TagOutput>(tag)).SetStatus(StatusCodes.Accepted.ToString())
+                    result.SetMessage("Tag updated").SetData(_mapper.Map<Tag, TagOutput>(tag)).SetStatus(StatusCodes.Accepted.ToString())
                     :
                     result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }

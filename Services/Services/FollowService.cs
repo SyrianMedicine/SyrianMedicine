@@ -34,16 +34,16 @@ namespace Services.Services
 
 
                 if (await base.GetQuery().Include(i => i.FollowedUser).Where(s => s.UserId.Equals(user.Id) && s.FollowedUser.UserName.ToUpper().Equals(username.ToUpper())).AnyAsync())
-                    return result.SetMessage("you are already Follow " + username).SetStatus(StatusCodes.BadRequest.ToString());
+                    return result.SetMessage($"You are already following {username}").SetStatus(StatusCodes.BadRequest.ToString());
 
                 var followedid = await _identityRepository.GetUsersQuery().Where(i => i.UserName.ToUpper().Equals(username.ToUpper())).Select(i => i.Id).FirstOrDefaultAsync();
                 if (followedid == default)
-                    return result.SetMessage("user " + username + " notFound").SetStatus(StatusCodes.NotFound.ToString());
+                    return result.SetMessage($"This User: {username} is not found").SetStatus(StatusCodes.NotFound.ToString());
                 await base.InsertAsync(new Follow() { FollowDate = DateTime.Now, FollowedUserId = followedid, UserId = user.Id });
 
 
                 return await base.CompleteAsync() ?
-                result.SetData(true).SetMessage("you  are start Following "+ username).SetStatus(StatusCodes.Ok.ToString())
+                result.SetData(true).SetMessage($"{username} followed").SetStatus(StatusCodes.Ok.ToString())
                 :
                 result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
             }
@@ -64,14 +64,14 @@ namespace Services.Services
                     return result.SetMessage("you cannot Follow yourself ^-^").SetStatus(StatusCodes.BadRequest.ToString());
                 var followeduser = await _identityRepository.GetUserByNameAsync(username);
                 if (followeduser == default)
-                    return result.SetMessage(username + " not Found").SetStatus(StatusCodes.NotFound.ToString());
+                    return result.SetMessage($"{username} is not found").SetStatus(StatusCodes.NotFound.ToString());
                 var obgtodelete = await base.GetQuery().Include(i => i.FollowedUser).Where(s => s.UserId.Equals(user.Id) && s.FollowedUser.NormalizedUserName.Equals(followeduser.NormalizedUserName)).FirstOrDefaultAsync();
                 if (obgtodelete == default)
-                    return result.SetMessage("you are not Follow " + username).SetStatus(StatusCodes.BadRequest.ToString());
+                    return result.SetMessage($"You are not Following {username}").SetStatus(StatusCodes.BadRequest.ToString());
 
                 await base.DeleteAsync(obgtodelete.Id);
                 return await base.CompleteAsync() ?
-                result.SetData(true).SetMessage(username+" unFollowed").SetStatus(StatusCodes.Ok.ToString())
+                result.SetData(true).SetMessage($"{username} unfollowed").SetStatus(StatusCodes.Ok.ToString())
                 :
                 result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
             }
@@ -93,7 +93,7 @@ namespace Services.Services
                 return result.Data != null && result.Data.Any() ?
                     result.SetMessage("Done").SetStatus(StatusCodes.Ok.ToString())
                     :
-                    result.SetMessage("you are not followed by any one >_<").SetStatus(StatusCodes.NotFound.ToString());
+                    result.SetMessage("You are not followed by any one >_<").SetStatus(StatusCodes.NotFound.ToString());
 
             }
             catch
@@ -127,15 +127,15 @@ namespace Services.Services
             {
 
                 if (user.UserName.ToUpper().Equals(username.ToUpper()))
-                    return result.SetMessage("you cannot Follow yourself ^-^").SetStatus(StatusCodes.BadRequest.ToString());
+                    return result.SetMessage("You cannot follow yourself ^-^").SetStatus(StatusCodes.BadRequest.ToString());
                 var followeduser = await _identityRepository.GetUserByNameAsync(username);
                 if (followeduser == default)
-                    return result.SetMessage(username + " not Found").SetStatus(StatusCodes.NotFound.ToString());               
-                var obgtodelete = await base.GetQuery().Include(i => i.FollowedUser).Where(s => s.UserId.Equals(user.Id) && s.FollowedUser.NormalizedUserName.Equals(followeduser.NormalizedUserName)).FirstOrDefaultAsync();           
-                return obgtodelete!= default ?
-                result.SetData(true).SetMessage("you are  Following " + username).SetStatus(StatusCodes.Ok.ToString())
+                    return result.SetMessage(username + " not Found").SetStatus(StatusCodes.NotFound.ToString());
+                var obgtodelete = await base.GetQuery().Include(i => i.FollowedUser).Where(s => s.UserId.Equals(user.Id) && s.FollowedUser.NormalizedUserName.Equals(followeduser.NormalizedUserName)).FirstOrDefaultAsync();
+                return obgtodelete != default ?
+                result.SetData(true).SetMessage("You are  following " + username).SetStatus(StatusCodes.Ok.ToString())
                 :
-                result.SetData(false).SetMessage("you are not Following " + username).SetStatus(StatusCodes.Ok.ToString());
+                result.SetData(false).SetMessage("You are not following " + username).SetStatus(StatusCodes.Ok.ToString());
             }
             catch
             {

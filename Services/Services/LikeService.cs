@@ -28,7 +28,7 @@ namespace Services.Services
         public async Task<ResponseService<long>> getCommentTotalLike(int CommentId)
         {
             if (!await dbContext.Comments.Where(s => s.Id == CommentId).AnyAsync())
-                return new ResponseService<long>() { Message = "Comment Notfound", Status = StatusCodes.NotFound.ToString() };
+                return new ResponseService<long>() { Message = "Comment not found", Status = StatusCodes.NotFound.ToString() };
             var result = await base.GetQuery().Where(s => (s as CommentLike).CommentID == CommentId).LongCountAsync();
             return new ResponseService<long>() { Data = result, Message = "ok", Status = StatusCodes.Ok.ToString() };
 
@@ -37,7 +37,7 @@ namespace Services.Services
         public async Task<PagedList<LikeOutput>> GetMyLikeHistory(Pagination input, User user)
         {
             var Query = base.GetQuery().Include(s => s.User).Where(s => s.User.NormalizedUserName.Equals(user.UserName.ToUpper())).Include(s => (s as CommentLike).Comment).Include(s => (s as PostLike).Post).OrderByDescending(i => i.LikeDate);
-            return _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(Query,input));
+            return _mapper.Map<PagedList<Like>, PagedList<LikeOutput>>(await PagedList<Like>.CreatePagedListAsync(Query, input));
         }
 
         public async Task<PagedList<LikeOutput>> GetPostLiks(DynamicPagination input, int PostId) =>
@@ -82,7 +82,7 @@ namespace Services.Services
                 }
                 if ((await IsCommentliked(id, user)).Data)
                 {
-                    return result.SetMessage("You are already like this Comment").SetStatus(StatusCodes.BadRequest.ToString());
+                    return result.SetMessage("You are already liked this Comment").SetStatus(StatusCodes.BadRequest.ToString());
                 }
                 else
                 {
@@ -91,7 +91,7 @@ namespace Services.Services
                     if (await base.CompleteAsync())
                     {
                         like.User = user;
-                        return result.SetData(_mapper.Map<Like, LikeOutput>(like)).SetMessage("Liked").SetStatus(StatusCodes.Ok.ToString());
+                        return result.SetData(_mapper.Map<Like, LikeOutput>(like)).SetMessage("Comment liked").SetStatus(StatusCodes.Ok.ToString());
                     }
                     else
                     {
@@ -126,7 +126,7 @@ namespace Services.Services
                     if (await base.CompleteAsync())
                     {
                         like.User = user;
-                        return result.SetData(_mapper.Map<Like, LikeOutput>(like)).SetMessage("Liked").SetStatus(StatusCodes.Ok.ToString());
+                        return result.SetData(_mapper.Map<Like, LikeOutput>(like)).SetMessage("Post liked").SetStatus(StatusCodes.Ok.ToString());
                     }
                     else
                     {
@@ -150,14 +150,14 @@ namespace Services.Services
             {
                 var like = await base.GetByIdAsync(LikIid);
                 if (like == null)
-                    return result.SetMessage("like Not Found").SetStatus(StatusCodes.NotFound.ToString());
+                    return result.SetMessage("Like not found").SetStatus(StatusCodes.NotFound.ToString());
 
                 if (!like.UserId.Equals(user.Id))
-                    return result.SetMessage("like not owned by you").SetStatus(StatusCodes.Forbidden.ToString());
+                    return result.SetMessage("Like not ownered by you").SetStatus(StatusCodes.Forbidden.ToString());
 
                 await base.DeleteAsync(like.Id);
                 return await base.CompleteAsync() ?
-                     result.SetData(true).SetMessage("UnLiked").SetStatus(StatusCodes.Ok.ToString())
+                     result.SetData(true).SetMessage("Unliked").SetStatus(StatusCodes.Ok.ToString())
                     :
                      result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }
@@ -174,10 +174,10 @@ namespace Services.Services
             {
                 var like = await base.GetQuery().Where(i => i.UserId.Equals(user.Id) && (i as CommentLike).CommentID == id).FirstOrDefaultAsync();
                 if (like == null)
-                    return result.SetMessage("You are  Not Liked this comment").SetStatus(StatusCodes.NotFound.ToString());
+                    return result.SetMessage("You are not liked this comment").SetStatus(StatusCodes.NotFound.ToString());
                 await base.DeleteAsync(like.Id);
                 return await base.CompleteAsync() ?
-                     result.SetData(true).SetMessage("UnLiked").SetStatus(StatusCodes.Ok.ToString())
+                     result.SetData(true).SetMessage("Comment unliked").SetStatus(StatusCodes.Ok.ToString())
                     :
                      result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }
@@ -197,7 +197,7 @@ namespace Services.Services
                     return result.SetMessage("You are  Not Liked this Post").SetStatus(StatusCodes.NotFound.ToString());
                 await base.DeleteAsync(like.Id);
                 return await base.CompleteAsync() ?
-                     result.SetData(true).SetMessage("UnLiked").SetStatus(StatusCodes.Ok.ToString())
+                     result.SetData(true).SetMessage("Post unliked").SetStatus(StatusCodes.Ok.ToString())
                     :
                      result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }

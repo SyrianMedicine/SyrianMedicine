@@ -30,9 +30,9 @@ namespace Services
                 Data = _mapper.Map<List<Tag>, List<TagOutput>>(await base.GetQuery().Where(i => i.UserId.Equals(user.Id)).Include(i => i.Tag).Select(j => j.Tag).ToListAsync())
             };
             return result.Data != null && result.Data.Any() ?
-            result.SetMessage("ok").SetStatus(StatusCodes.Ok.ToString())
+            result.SetMessage("OK").SetStatus(StatusCodes.Ok.ToString())
             :
-            result.SetMessage("you have no  Tags in your list").SetStatus(StatusCodes.NotFound.ToString());
+            result.SetMessage("You have no tags in your list").SetStatus(StatusCodes.NotFound.ToString());
         }
 
         public async Task<ResponseService<bool>> AddtoTagList(int id, User user)
@@ -41,10 +41,10 @@ namespace Services
             try
             {
                 if (!await _iGenericRepositoryTag.GetQuery().Where(i => i.Id == id).AnyAsync())
-                    return result.SetMessage("Tag Not Found").SetStatus(StatusCodes.NotFound.ToString());
+                    return result.SetMessage("Tag not found").SetStatus(StatusCodes.NotFound.ToString());
 
                 if (await base.GetQuery().Where(i => i.TagId == id && i.UserId.Equals(user.Id)).AnyAsync())
-                    return result.SetMessage("this Tag already in your list").SetStatus(StatusCodes.BadRequest.ToString());
+                    return result.SetMessage("this tag already in your list").SetStatus(StatusCodes.BadRequest.ToString());
 
                 await base.InsertAsync(new UserTag { TagId = id, UserId = user.Id });
                 return await base.CompleteAsync() ?
@@ -65,7 +65,7 @@ namespace Services
             {
                 var usrtag = await base.GetQuery().Where(i => i.TagId == id && i.UserId.Equals(user.Id)).FirstOrDefaultAsync();
                 if (usrtag == null)
-                    return result.SetMessage("Not Found in your list").SetStatus(StatusCodes.NotFound.ToString());
+                    return result.SetMessage("Not found in your list").SetStatus(StatusCodes.NotFound.ToString());
                 await base.DeleteAsync(usrtag.Id);
                 return await base.CompleteAsync() ?
                     result.SetData(true).SetMessage("tag deleted from your tag list").SetStatus(StatusCodes.Ok.ToString())

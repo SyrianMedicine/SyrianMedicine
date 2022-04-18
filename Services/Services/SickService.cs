@@ -88,7 +88,7 @@ namespace Services
                 }
                 if (await _identityRepository.LoginUser(user, input.Password))
                 {
-                    response.Message = "Done";
+                    response.Message = $"Welcome {user.FirstName} {user.LastName}";
                     response.Status = StatusCodes.Ok.ToString();
                     var mapper = _mapper.Map<User, LoginSickOutput>(user);
                     mapper.Token = await _tokenService.CreateToken(user);
@@ -126,7 +126,7 @@ namespace Services
                 if (await _identityRepository.CreateUserAsync(user, input.Password))
                 {
                     await _identityRepository.AddRoleToUserAsync(user, Roles.Sick.ToString());
-                    response.Message = "Done";
+                    response.Message = $"Welcome {user.FirstName} {user.LastName}";
                     response.Status = StatusCodes.Created.ToString();
                     var mapper = _mapper.Map<User, RegisterSickOutput>(user);
                     mapper.Token = await _tokenService.CreateToken(user);
@@ -423,7 +423,7 @@ namespace Services
                     return response.SetData(false).SetMessage("This department is not exist").SetStatus(StatusCodes.NotFound.ToString());
                 }
 
-                var dbBeds = await _bed.GetQuery().Where(e => e.DepartmentId == departmentDb.Id && e.HospitalId ==dbHospital.Id).ToListAsync();
+                var dbBeds = await _bed.GetQuery().Where(e => e.DepartmentId == departmentDb.Id && e.HospitalId == dbHospital.Id).ToListAsync();
                 if (dbBeds == null)
                 {
                     return response.SetData(false).SetMessage("This department not has beds").SetStatus(StatusCodes.NotFound.ToString());

@@ -46,7 +46,7 @@ namespace Services.Services
                     if (tagslist.Count != input.TagsID.Count)
                     {
                         Transaction.Rollback();
-                        return result.SetStatus(StatusCodes.BadRequest.ToString()).SetMessage("some tag not found");
+                        return result.SetStatus(StatusCodes.BadRequest.ToString()).SetMessage("Some tags not found");
                     }
                     else
                     {
@@ -77,9 +77,9 @@ namespace Services.Services
                     Transaction.Commit();
                     post.User = user;
                     result.SetData(_mapper.Map<Post, PostOutput>(post)).SetStatus(StatusCodes.Ok.ToString());
-                    return savedfile ? result.SetMessage("Ok Added")
+                    return savedfile ? result.SetMessage("post Added")
                     :
-                    result.SetMessage("Ok Added but media not saved");
+                    result.SetMessage("Post added but media not saved, please try adding media again");
                 }
                 else
                 {
@@ -218,7 +218,7 @@ namespace Services.Services
         }
         public async Task<PagedList<PostOutput>> GetPagedPosts(PostQuery input)
         {
-            var query = base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).OrderByDescending(e =>e.Date).AsQueryable();
+            var query = base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).OrderByDescending(e => e.Date).AsQueryable();
 
             if (!String.IsNullOrEmpty(input.SearchString))
             {
