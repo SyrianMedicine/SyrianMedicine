@@ -29,14 +29,14 @@ namespace Services.Services
                     {
                         ConnectionID = ConnectionId,
                         UserAgent = Agent,
-                        ConnecteDateTime = DateTime.Now,
+                        ConnecteDateTime = DateTime.UtcNow,
                         userid = user.Id
                     };
                     await base.InsertAsync(con);
                 }
                 else
                 {
-                    con.ConnecteDateTime = DateTime.Now;
+                    con.ConnecteDateTime = DateTime.UtcNow;
                     base.Update(con);
                 }
                 return await base.CompleteAsync();

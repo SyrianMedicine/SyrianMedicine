@@ -21,7 +21,7 @@ namespace Services
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             // this for make method run just at 01:30 AM
-            var delay = CalculateDelayNeededToStartTask(DateTime.Now);
+            var delay = CalculateDelayNeededToStartTask(DateTime.UtcNow);
             await Task.Delay(delay);
 
             // this delay for solve problem when first migration happen, maybe first delay is 0:0:0
@@ -54,7 +54,7 @@ namespace Services
                     _logger.LogInformation("Move Accepted reserves to history is starting now..");
                     var service = scope.ServiceProvider;
                     var dbContext = service.GetRequiredService<StoreContext>();
-                    DateTime dateTime = DateTime.Now;
+                    DateTime dateTime = DateTime.UtcNow;
 
                     var dbReservesDoctors = await dbContext.ReserveDoctors
                         .Where(e => e.DateTime.Day < dateTime.Day && e.ReserveState == ReserveState.Approved).ToListAsync();
@@ -104,7 +104,7 @@ namespace Services
                     _logger.LogInformation("delete UserConnectionTable is starting now..");
                     var service = scope.ServiceProvider;
                     var dbContext = service.GetRequiredService<StoreContext>();
-                    var dbData = await dbContext.UserConnections.Where(s => (DateTime.Now.DayOfYear + DateTime.Now.Year * 366) - (s.ConnecteDateTime.DayOfYear + s.ConnecteDateTime.Year * 366)>=3).ToListAsync();
+                    var dbData = await dbContext.UserConnections.Where(s => (DateTime.UtcNow.DayOfYear + DateTime.UtcNow.Year * 366) - (s.ConnecteDateTime.DayOfYear + s.ConnecteDateTime.Year * 366) >= 3).ToListAsync();
                     dbContext.RemoveRange(dbData);
                     await dbContext.SaveChangesAsync();
                 }
@@ -124,7 +124,7 @@ namespace Services
                     _logger.LogInformation("Cancel Reserves is starting now..");
                     var service = scope.ServiceProvider;
                     var dbContext = service.GetRequiredService<StoreContext>();
-                    var datetime = DateTime.Now;
+                    var datetime = DateTime.UtcNow;
                     var dbReservesDoctors = await dbContext.ReserveDoctors
                         .Where(e => e.ReserveState == ReserveState.Rejected || (e.TimeReverse.Day <= datetime.Day && e.ReserveState == ReserveState.Pending)).ToListAsync();
                     dbContext.ReserveDoctors.RemoveRange(dbReservesDoctors);

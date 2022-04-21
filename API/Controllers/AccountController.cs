@@ -71,6 +71,10 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<bool>>> UpdateAdminProfile(UpdateAdmin input)
             => Result(await _unitOfWork.AccountService.UpdateAdminProfile(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateAdminProfile));
 
+        [HttpPost(nameof(ChangePassword)), Authorize]
+        public async Task<string> ChangePassword(string oldPassword, string newPassword)
+            => await _unitOfWork.AccountService.ChangePassword(oldPassword, newPassword, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User));
+
         /// <summary>
         /// get comments on Doctor or Nurses  progile
         /// </summary>

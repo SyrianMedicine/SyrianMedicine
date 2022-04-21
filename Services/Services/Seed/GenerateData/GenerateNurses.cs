@@ -60,8 +60,11 @@ namespace Services.Seed.GenerateData
 
         public static (List<Nurse>, List<User>) AddNurses()
         {
-            var startTime = new DateTime(2021, 10, 10, 10, 30, 0);
-            var endTime = new DateTime(2021, 10, 10, 16, 30, 0);
+            // var startTime = new DateTime(2021, 10, 10, 10, 30, 0);
+            // var endTime = new DateTime(2021, 10, 10, 16, 30, 0);
+            var startTime =DateTime.UtcNow;
+            var endTime =startTime.AddHours(2);
+            
             List<Nurse> nurses = new();
             List<User> users = AddUsers();
             int cnt = 0;

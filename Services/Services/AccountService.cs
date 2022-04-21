@@ -179,7 +179,14 @@ namespace Services
             => await _identityRepository.GetUserByEmailAsync(email) != null;
         public async Task<string> GetUserType(string username)
             => (await _identityRepository.GetUserByNameAsync(username)).UserType.ToString();
-
+        public async Task<string> ChangePassword(string oldPassword  , string newPassword,User user)
+        {
+            var result = await _identityRepository.ChangePasssword(user,oldPassword,newPassword);
+            if(result)
+                return "Your password is changed";
+            else 
+                return "Error, Please try again";
+        }
     }
     public interface IAccountService
     {
@@ -197,5 +204,6 @@ namespace Services
         public Task<ResponseService<LoginAdminOutput>> LoginAdmin(LoginInput input);
         public Task<ResponseService<bool>> UpdateAdminProfile(UpdateAdmin input, User user);
         public Task<string> GetUserType(string username);
+        public Task<string> ChangePassword(string oldPassword  , string newPassword,User user);
     }
 }

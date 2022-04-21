@@ -39,7 +39,7 @@ namespace Services.Services
                 var followedid = await _identityRepository.GetUsersQuery().Where(i => i.UserName.ToUpper().Equals(username.ToUpper())).Select(i => i.Id).FirstOrDefaultAsync();
                 if (followedid == default)
                     return result.SetMessage($"This User: {username} is not found").SetStatus(StatusCodes.NotFound.ToString());
-                await base.InsertAsync(new Follow() { FollowDate = DateTime.Now, FollowedUserId = followedid, UserId = user.Id });
+                await base.InsertAsync(new Follow() { FollowDate = DateTime.UtcNow, FollowedUserId = followedid, UserId = user.Id });
 
 
                 return await base.CompleteAsync() ?

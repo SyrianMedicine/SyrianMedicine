@@ -86,7 +86,7 @@ namespace Services.Services
                 }
                 else
                 {
-                    CommentLike like = new() { CommentID = id, LikeDate = DateTime.Now, UserId = user.Id };
+                    CommentLike like = new() { CommentID = id, LikeDate = DateTime.UtcNow, UserId = user.Id };
                     await base.InsertAsync(like);
                     if (await base.CompleteAsync())
                     {
@@ -121,7 +121,7 @@ namespace Services.Services
                 }
                 else
                 {
-                    PostLike like = new() { PostID = id, LikeDate = DateTime.Now, UserId = user.Id };
+                    PostLike like = new() { PostID = id, LikeDate = DateTime.UtcNow, UserId = user.Id };
                     await base.InsertAsync(like);
                     if (await base.CompleteAsync())
                     {
