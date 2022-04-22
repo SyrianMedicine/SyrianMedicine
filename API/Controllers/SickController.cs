@@ -1,6 +1,7 @@
 using API.Controllers.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models.Common;
 using Models.Sick.Inputs;
 using Models.Sick.Outputs;
 using Services;
@@ -72,5 +73,9 @@ namespace API.Controllers
         [HttpDelete(nameof(DeleteReserveBedInHospital))]
         public async Task<ActionResult<ResponseService<bool>>> DeleteReserveBedInHospital(int id)
             => Result(await _unitOfWork.SickServices.DeleteReserveBedInHospital(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(DeleteReserveBedInHospital));
+        [HttpGet(nameof(GetReserveTypes))]
+        public List<OptionDto> GetReserveTypes()
+            => _unitOfWork.SickServices.GetReserveTypes();
+
     }
 }

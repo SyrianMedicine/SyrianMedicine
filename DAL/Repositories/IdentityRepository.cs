@@ -165,8 +165,6 @@ namespace DAL.Repositories
 
         public IQueryable<User> GetUsersQuery()
             => _userManager.Users.AsQueryable();
-
-
     }
     public interface IIdentityRepository
     {
