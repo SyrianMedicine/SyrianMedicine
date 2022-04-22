@@ -63,13 +63,13 @@ namespace Services
                 );
             }
 
-            if (input.StartTimeWork != default(DateTime) || input.EndTimeWork != default(DateTime))
+            if (input.StartTimeWork != default || input.EndTimeWork != default)
             {
-                if (input.StartTimeWork != default(DateTime) && input.EndTimeWork != default(DateTime))
+                if (input.StartTimeWork != default && input.EndTimeWork != default)
                     query = query.Where(e => e.StartTimeWork.Hour >= input.StartTimeWork.Hour && e.EndTimeWork.Hour <= input.EndTimeWork.Hour);
-                else if (input.StartTimeWork != default(DateTime) && input.EndTimeWork == default(DateTime))
+                else if (input.StartTimeWork != default && input.EndTimeWork == default)
                     query = query.Where(e => e.StartTimeWork.Hour >= input.StartTimeWork.Hour);
-                else if (input.StartTimeWork == default(DateTime) && input.EndTimeWork != default(DateTime))
+                else if (input.StartTimeWork == default && input.EndTimeWork != default)
                     query = query.Where(e => e.EndTimeWork.Hour >= input.EndTimeWork.Hour);
             }
             #endregion
@@ -328,6 +328,14 @@ namespace Services
                 return ResponseService<bool>.GetExeptionResponse();
             }
         }
+        public async Task<PagedList<ReserveDoctorData>> GetReserveDoctorData(ReserveDoctorDataInput input, User doctor)
+        {
+            var doctorDB = await base.GetQuery().FirstOrDefaultAsync(e => e.UserId == doctor.Id);
+            var query = _reserveDoctor.GetQuery()
+                .Where(e => e.DoctorId == doctorDB.Id)
+                .Include(e => e.User);
+            return _mapper.Map<PagedList<ReserveDoctor>, PagedList<ReserveDoctorData>>(await PagedList<ReserveDoctor>.CreatePagedListAsync(query, 0, input.PageNumber, input.PageSize));
+        }
 
     }
     public interface IDoctorService : IGenericRepository<Doctor>
@@ -341,5 +349,6 @@ namespace Services
         public Task<IReadOnlyList<ReserveDoctorOutput>> GetAllReversedForDoctor(int id);
         public Task<ResponseService<bool>> CheckReserve(CheckReserve input, User user);
         public Task<PagedList<MostDoctorsRated>> GetMostDoctorsRated(DoctorQuery input);
+        public Task<PagedList<ReserveDoctorData>> GetReserveDoctorData(ReserveDoctorDataInput input, User doctor);
     }
 }

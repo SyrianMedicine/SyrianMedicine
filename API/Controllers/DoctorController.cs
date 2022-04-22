@@ -53,5 +53,8 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<bool>>> CheckReserve(CheckReserve input)
             => Result(await _unitOfWork.DoctorServices.CheckReserve(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(CheckReserve));
 
+        [HttpPost(nameof(GetReserveDoctorData))]
+        public async Task<PagedList<ReserveDoctorData>> GetReserveDoctorData(ReserveDoctorDataInput input)
+            => await _unitOfWork.DoctorServices.GetReserveDoctorData(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User));
     }
 }

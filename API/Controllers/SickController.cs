@@ -76,6 +76,5 @@ namespace API.Controllers
         [HttpGet(nameof(GetReserveTypes))]
         public List<OptionDto> GetReserveTypes()
             => _unitOfWork.SickServices.GetReserveTypes();
-
     }
 }
