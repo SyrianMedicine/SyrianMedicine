@@ -18,11 +18,17 @@ namespace Services
         private readonly IGenericRepository<City> _cityRepository;
         private readonly IMapper _mapper;
         private readonly IIdentityRepository _identityRepository;
+        private readonly IDoctorService _doctorService;
+        private readonly INurseService _nurseService;
+        private readonly IHospitalService _hospitalService;
         private readonly ITokenService _tokenService;
-        public AccountService(IGenericRepository<City> cityRepository, ITokenService tokenService, IIdentityRepository identityRepository, IMapper mapper)
+        public AccountService(IGenericRepository<City> cityRepository, IDoctorService doctorService, INurseService nurseService, IHospitalService hospitalService, ITokenService tokenService, IIdentityRepository identityRepository, IMapper mapper)
         {
             _cityRepository = cityRepository;
             _identityRepository = identityRepository;
+            _doctorService = doctorService;
+            _nurseService = nurseService;
+            _hospitalService = hospitalService;
             _tokenService = tokenService;
             _mapper = mapper;
         }
@@ -179,13 +185,28 @@ namespace Services
             => await _identityRepository.GetUserByEmailAsync(email) != null;
         public async Task<string> GetUserType(string username)
             => (await _identityRepository.GetUserByNameAsync(username)).UserType.ToString();
-        public async Task<string> ChangePassword(string oldPassword  , string newPassword,User user)
+        public async Task<string> ChangePassword(string oldPassword, string newPassword, User user)
         {
-            var result = await _identityRepository.ChangePasssword(user,oldPassword,newPassword);
-            if(result)
+            var result = await _identityRepository.ChangePasssword(user, oldPassword, newPassword);
+            if (result)
                 return "Your password is changed";
-            else 
+            else
                 return "Error, Please try again";
+        }
+        public async Task<PagedList<ValidateAccountOutput>> ValidateDoctorsAccount(Pagination input)
+        {
+            var query = _doctorService.GetQuery().Include(e => e.User).Include(e => e.DocumentsDoctor).Where(e => e.AccountState == AccountState.Pending).AsQueryable();
+            return _mapper.Map<PagedList<Doctor>, PagedList<ValidateAccountOutput>>(await PagedList<Doctor>.CreatePagedListAsync(query, 0, input.PageNumber, input.PageSize));
+        }
+        public async Task<PagedList<ValidateAccountOutput>> ValidateNursesAccount(Pagination input)
+        {
+            var query = _nurseService.GetQuery().Include(e => e.User).Include(e => e.DocumentsNurse).Where(e => e.AccountState == AccountState.Pending).AsQueryable();
+            return _mapper.Map<PagedList<Nurse>, PagedList<ValidateAccountOutput>>(await PagedList<Nurse>.CreatePagedListAsync(query, 0, input.PageNumber, input.PageSize));
+        }
+        public async Task<PagedList<ValidateAccountOutput>> ValidateHospitalsAccount(Pagination input)
+        {
+            var query = _hospitalService.GetQuery().Include(e => e.User).Include(e => e.DocumentsHospital).Where(e => e.AccountState == AccountState.Pending).AsQueryable();
+            return _mapper.Map<PagedList<Hospital>, PagedList<ValidateAccountOutput>>(await PagedList<Hospital>.CreatePagedListAsync(query, 0, input.PageNumber, input.PageSize));
         }
     }
     public interface IAccountService
@@ -204,6 +225,9 @@ namespace Services
         public Task<ResponseService<LoginAdminOutput>> LoginAdmin(LoginInput input);
         public Task<ResponseService<bool>> UpdateAdminProfile(UpdateAdmin input, User user);
         public Task<string> GetUserType(string username);
-        public Task<string> ChangePassword(string oldPassword  , string newPassword,User user);
+        public Task<string> ChangePassword(string oldPassword, string newPassword, User user);
+        public Task<PagedList<ValidateAccountOutput>> ValidateDoctorsAccount(Pagination input);
+        public Task<PagedList<ValidateAccountOutput>> ValidateNursesAccount(Pagination input);
+        public Task<PagedList<ValidateAccountOutput>> ValidateHospitalsAccount(Pagination input);
     }
 }

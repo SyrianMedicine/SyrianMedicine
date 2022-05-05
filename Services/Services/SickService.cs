@@ -125,6 +125,7 @@ namespace Services
 
                 var user = _mapper.Map<RegisterSick, User>(input);
                 user.UserType = UserType.Sick;
+                user.Date = DateTime.UtcNow;
                 if (await _identityRepository.CreateUserAsync(user, input.Password))
                 {
                     await _identityRepository.AddRoleToUserAsync(user, Roles.Sick.ToString());

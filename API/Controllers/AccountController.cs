@@ -110,5 +110,14 @@ namespace API.Controllers
         public async Task<Models.Helper.PagedList<Models.Like.Output.LikeOutput>> MyLikeHistory(Models.Helper.Pagination input)
             => await _unitOfWork.LikeService.GetMyLikeHistory(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User));
 
+        [HttpPost(nameof(GetValidateDoctorsAccount)), Authorize(Roles = "Admin")]
+        public async Task<PagedList<ValidateAccountOutput>> GetValidateDoctorsAccount(Pagination input)
+            => await _unitOfWork.AccountService.ValidateDoctorsAccount(input);
+        [HttpPost(nameof(GetValidateHospitalsAccount)), Authorize(Roles = "Admin")]
+        public async Task<PagedList<ValidateAccountOutput>> GetValidateHospitalsAccount(Pagination input)
+            => await _unitOfWork.AccountService.ValidateHospitalsAccount(input);
+        [HttpPost(nameof(GetValidateNursesAccount)), Authorize(Roles = "Admin")]
+        public async Task<PagedList<ValidateAccountOutput>> GetValidateNursesAccount(Pagination input)
+            => await _unitOfWork.AccountService.ValidateNursesAccount(input);
     }
 }

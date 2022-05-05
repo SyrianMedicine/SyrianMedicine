@@ -181,6 +181,7 @@ namespace Services
 
                 var user = _mapper.Map<User>(input);
                 user.UserType = UserType.Doctor;
+                user.Date = DateTime.UtcNow;
                 var doctor = _mapper.Map<Doctor>(input);
                 doctor.UserId = user.Id;
                 doctor.AccountState = AccountState.Pending;

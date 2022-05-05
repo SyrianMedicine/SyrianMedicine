@@ -178,6 +178,7 @@ namespace Services
 
                 var userMapper = _mapper.Map<User>(input);
                 userMapper.UserType = UserType.Nurse;
+                userMapper.Date = DateTime.UtcNow;
                 var nurseMapper = _mapper.Map<Nurse>(input);
                 nurseMapper.UserId = userMapper.Id;
                 nurseMapper.AccountState = AccountState.Pending;
@@ -328,6 +329,15 @@ namespace Services
             }
         }
 
+        public async Task<PagedList<ReserveNurseData>> GetReserveNurseData(ReserveNurseDataInput input, User nurse)
+        {
+            var nurseDB = await base.GetQuery().FirstOrDefaultAsync(e => e.UserId == nurse.Id);
+            var query = _reserveNurse.GetQuery()
+                .Where(e => e.NurseId == nurseDB.Id)
+                .Include(e => e.User);
+            return _mapper.Map<PagedList<ReserveNurse>, PagedList<ReserveNurseData>>(await PagedList<ReserveNurse>.CreatePagedListAsync(query, 0, input.PageNumber, input.PageSize));
+        }
+
     }
     public interface INurseService : IGenericRepository<Nurse>
     {
@@ -340,5 +350,6 @@ namespace Services
         public Task<ResponseService<bool>> UpdateNurse(UpdateNurse input, User user);
         public Task<IReadOnlyList<ReserveNurseOutput>> GetAllReversedForNurse(int id);
         public Task<ResponseService<bool>> CheckReserve(CheckReserve input, User user);
+        public  Task<PagedList<ReserveNurseData>> GetReserveNurseData(ReserveNurseDataInput input, User nurse);
     }
 }

@@ -47,6 +47,7 @@ namespace Services.Seed.GenerateData
                     PhoneNumber = Faker.Phone.Number(),
                     Location = Faker.Address.StreetName(),
                     EmailConfirmed = true,
+                    Date =DateTime.UtcNow,
                     UserType = UserType.Doctor,
                     Gender = (Gender)(counter % 2 == 0 ? 2 : counter % 2),
                     State = counter % 2 == 0 ? PersonState.Married : PersonState.Single,

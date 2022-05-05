@@ -28,6 +28,7 @@ namespace Services.Seed.GenerateData
                     Location = Faker.Address.StreetName(),
                     EmailConfirmed = true,
                     UserType = UserType.Sick,
+                    Date =DateTime.UtcNow,
                     Gender = (Gender)(counter % 2 == 0 ? 2 : counter % 2),
                     State = counter % 2 == 0 ? PersonState.Married : PersonState.Single,
                     City = cities[counter % cities.Count].Name,

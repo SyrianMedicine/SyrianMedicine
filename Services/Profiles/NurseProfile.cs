@@ -63,6 +63,17 @@ namespace Services.Profiles
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Nurse.User.PhoneNumber))
                 .ForMember(dest => dest.HomeNumber, opt => opt.MapFrom(src => src.Nurse.User.HomeNumber));
             CreateMap<CheckReserve, ReserveNurse>();
+
+            CreateMap<ReserveNurse, ReserveNurseData>()
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.DateTime))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.User.PhoneNumber))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.User.State))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.User.FirstName + " " + src.User.LastName))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
+            CreateMap<PagedList<ReserveNurse>, PagedList<ReserveNurseData>>();
         }
     }
 }
