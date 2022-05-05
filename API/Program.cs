@@ -68,7 +68,7 @@ if(app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 app.UseRouting();
-app.UseCors(x => x.WithOrigins().AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+app.UseCors(x => x.SetIsOriginAllowed(_=>true).AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAuthentication();
