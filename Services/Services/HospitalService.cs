@@ -194,6 +194,7 @@ namespace Services
 
                 var user = _mapper.Map<User>(input);
                 user.UserType = UserType.Hospital;
+                user.Date = DateTime.UtcNow;
                 var hospital = _mapper.Map<Hospital>(input);
                 hospital.AccountState = AccountState.Pending;
                 hospital.UserId = user.Id;

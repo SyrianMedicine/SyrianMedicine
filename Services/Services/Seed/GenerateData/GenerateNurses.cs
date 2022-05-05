@@ -47,6 +47,7 @@ namespace Services.Seed.GenerateData
                     PhoneNumber = Faker.Phone.Number(),
                     Location = Faker.Address.StreetName(),
                     EmailConfirmed = true,
+                    Date =DateTime.UtcNow,
                     UserType = UserType.Nurse,
                     Gender = (Gender)(counter % 2 == 0 ? 2 : counter % 2),
                     State = counter % 2 == 0 ? PersonState.Married : PersonState.Single,
@@ -60,8 +61,11 @@ namespace Services.Seed.GenerateData
 
         public static (List<Nurse>, List<User>) AddNurses()
         {
-            var startTime = new DateTime(2021, 10, 10, 10, 30, 0);
-            var endTime = new DateTime(2021, 10, 10, 16, 30, 0);
+            // var startTime = new DateTime(2021, 10, 10, 10, 30, 0);
+            // var endTime = new DateTime(2021, 10, 10, 16, 30, 0);
+            var startTime =DateTime.UtcNow;
+            var endTime =startTime.AddHours(2);
+            
             List<Nurse> nurses = new();
             List<User> users = AddUsers();
             int cnt = 0;

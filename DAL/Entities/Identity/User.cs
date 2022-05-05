@@ -15,6 +15,7 @@ namespace DAL.Entities.Identity
         public string HomeNumber { get; set; }
         public Gender Gender { get; set; }
         public string City { get; set; }
+        public DateTime Date { get; set; }
         public UserType UserType { get; set; } = UserType.Sick;
         public virtual List<ReserveDoctor> ReserveWithDoctor { get; set; }
         public virtual List<ReserveNurse> ReserveWithNurse { get; set; }

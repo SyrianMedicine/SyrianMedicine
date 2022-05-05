@@ -1,9 +1,11 @@
 using AutoMapper;
 using DAL.Entities;
+using DAL.Entities.Enums;
 using DAL.Entities.Identity;
 using DAL.Entities.Identity.Enums;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Models.Common;
 using Models.Sick.Inputs;
 using Models.Sick.Outputs;
 using Services.Common;
@@ -123,6 +125,7 @@ namespace Services
 
                 var user = _mapper.Map<RegisterSick, User>(input);
                 user.UserType = UserType.Sick;
+                user.Date = DateTime.UtcNow;
                 if (await _identityRepository.CreateUserAsync(user, input.Password))
                 {
                     await _identityRepository.AddRoleToUserAsync(user, Roles.Sick.ToString());
@@ -478,7 +481,7 @@ namespace Services
                     response.SetData(true).SetMessage($"Your date is waiting hospital {dbHospital.Name} to approve it")
                             .SetStatus(StatusCodes.Created.ToString())
                     : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown))
-                              .SetStatus(StatusCodes.InternalServerError.ToString());
+                            .SetStatus(StatusCodes.InternalServerError.ToString());
             }
             catch
             {
@@ -544,6 +547,10 @@ namespace Services
                 return response;
             }
         }
+        public List<OptionDto> GetReserveTypes()
+            => Enum.GetValues<ReserveTypes>().Cast<ReserveTypes>().Select(e => new OptionDto { Id = (int)e, Name = e.ToString() }).ToList();
+
+
 
     }
     public interface ISickService
@@ -562,5 +569,6 @@ namespace Services
         public Task<ResponseService<bool>> ReserveBedInHospital(ReserveBedInHospital input, User user);
         public Task<ResponseService<bool>> UpdateReserveBedInHospital(UpdateReserveBedInHospital input, User user);
         public Task<ResponseService<bool>> DeleteReserveBedInHospital(int id, User user);
+        public List<OptionDto> GetReserveTypes();
     }
 }

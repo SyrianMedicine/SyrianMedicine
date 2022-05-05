@@ -27,6 +27,7 @@ namespace Services.Seed
                         HomeNumber = user.HomeNumber,
                         UserType = user.UserType,
                         UserName = user.UserName,
+                        Date = DateTime.UtcNow,
                         PhoneNumber = user.PhoneNumber,
                         State = user.State,
                         Location = user.Location,

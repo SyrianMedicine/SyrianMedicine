@@ -50,6 +50,7 @@ namespace Services.Seed.GenerateData
                     UserName = "Hospital" + firstName + i.ToString(),
                     HomeNumber = Faker.Phone.Number(),
                     Location = Faker.Address.StreetName(),
+                    Date =DateTime.UtcNow,
                     FirstName = cities[i % cities.Count].Name + " hopital",
                     EmailConfirmed = true,
                     UserType = UserType.Hospital,
@@ -73,6 +74,7 @@ namespace Services.Seed.GenerateData
                 {
                     AboutHospital = Faker.Lorem.Sentence(),
                     AccountState = AccountState.Approved,
+
                     Name = cities[cnt % cities.Count].Name + " hopital",
                     WebSite = "www." + cities[cnt % cities.Count].Name.Trim() + "hopital" + ".com",
                     UserId = user.Id,

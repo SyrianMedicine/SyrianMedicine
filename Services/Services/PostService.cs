@@ -155,10 +155,10 @@ namespace Services.Services
             _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).Where(i => i.Tags.Where(x => x.TagId == Tagid).Any()).OrderByDescending(i => i.Date), input));
 
         public async Task<PagedList<MostPostsRated>> GetTopPostsForThisMounth(Pagination input) =>
-        _mapper.Map<PagedList<Post>, PagedList<MostPostsRated>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => i.Date.Year == DateTime.Now.Year && i.Date.Month == DateTime.Now.Month).OrderByDescending(i => i.LikedByList.Count), input));
+        _mapper.Map<PagedList<Post>, PagedList<MostPostsRated>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Where(i => i.Date.Year == DateTime.UtcNow.Year && i.Date.Month == DateTime.UtcNow.Month).OrderByDescending(i => i.LikedByList.Count), input));
 
         public async Task<PagedList<PostOutput>> GetTopPostsForThisYear(Pagination input) =>
-        _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).Where(i => i.Date.Year == DateTime.Now.Year).OrderByDescending(i => i.LikedByList.Count()), input));
+        _mapper.Map<PagedList<Post>, PagedList<PostOutput>>(await PagedList<Post>.CreatePagedListAsync(base.GetQuery().Include(i => i.User).Include(i => i.Tags).ThenInclude(s => s.Tag).Where(i => i.Date.Year == DateTime.UtcNow.Year).OrderByDescending(i => i.LikedByList.Count()), input));
         public async Task<PagedList<PostOutput>> GetUserHomePagePosts(DynamicPagination input, User user)
         {
             var usertagsIds = dbContext.UserTags.Where(i => i.UserId.Equals(user.Id));

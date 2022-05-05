@@ -14,7 +14,7 @@ namespace Services.Seed.GenerateData
             {
                 Post post = new()
                 {
-                    Date = DateTime.Now,
+                    Date = DateTime.UtcNow,
                     IsEdited = cnt % 2 == 0,
                     PostTitle = Faker.Lorem.Sentence(),
                     PostText = Faker.Lorem.Sentence() + Faker.Lorem.Sentence(),
@@ -29,7 +29,7 @@ namespace Services.Seed.GenerateData
             {
                 Post post = new()
                 {
-                    Date = DateTime.Now,
+                    Date = DateTime.UtcNow,
                     IsEdited = cnt % 2 == 0,
                     PostTitle = Faker.Lorem.Sentence(),
                     PostText = Faker.Lorem.Sentence() + Faker.Lorem.Sentence(),
@@ -44,7 +44,7 @@ namespace Services.Seed.GenerateData
             {
                 Post post = new()
                 {
-                    Date = DateTime.Now,
+                    Date = DateTime.UtcNow,
                     IsEdited = cnt % 2 == 0,
                     PostText = GenreratePostText(),
                     PostTitle = Faker.Lorem.Sentence(),

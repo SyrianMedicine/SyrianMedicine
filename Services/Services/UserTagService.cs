@@ -44,11 +44,11 @@ namespace Services
                     return result.SetMessage("Tag not found").SetStatus(StatusCodes.NotFound.ToString());
 
                 if (await base.GetQuery().Where(i => i.TagId == id && i.UserId.Equals(user.Id)).AnyAsync())
-                    return result.SetMessage("this tag already in your list").SetStatus(StatusCodes.BadRequest.ToString());
+                    return result.SetMessage("This tag already in your list").SetStatus(StatusCodes.BadRequest.ToString());
 
                 await base.InsertAsync(new UserTag { TagId = id, UserId = user.Id });
                 return await base.CompleteAsync() ?
-                    result.SetData(true).SetMessage("tag added in your tag list").SetStatus(StatusCodes.Created.ToString())
+                    result.SetData(true).SetMessage("Tag added in your tag list").SetStatus(StatusCodes.Created.ToString())
                     :
                     result.SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.BadRequest.ToString());
             }
@@ -83,6 +83,5 @@ namespace Services
         public Task<ResponseService<bool>> AddtoTagList(int id, User user);
         public Task<ResponseService<bool>> RemovefromTagList(int id, User user);
         public Task<ResponseService<List<TagOutput>>> GetMylist(User user);
-
     }
 }

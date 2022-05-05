@@ -148,8 +148,8 @@ namespace DAL.Repositories
         }
         public async Task<bool> ChangePasssword(User user, string currentPassword, string newPassword)
         {
-            await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
-            return true;
+            var res =await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            return res.Succeeded;
         }
         public async Task<bool> CheckPassword(User user, string Password) =>
             await _userManager.CheckPasswordAsync(user, Password);
@@ -165,8 +165,6 @@ namespace DAL.Repositories
 
         public IQueryable<User> GetUsersQuery()
             => _userManager.Users.AsQueryable();
-
-
     }
     public interface IIdentityRepository
     {
