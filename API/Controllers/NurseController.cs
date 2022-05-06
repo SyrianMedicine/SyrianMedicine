@@ -38,9 +38,9 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<RegisterNurseOutput>>> RegisterNurse([FromForm] RegisterNurse input)
             => Result(await _unitOfWork.NurseServices.RegisterNurse(input), nameof(RegisterNurse));
 
-        [HttpPost(nameof(LoginNurse))]
-        public async Task<ActionResult<ResponseService<LoginOutput>>> LoginNurse(LoginNurseInput input)
-            => Result(await _unitOfWork.NurseServices.LoginNurse(input), nameof(LoginNurse));
+        // [HttpPost(nameof(LoginNurse))]
+        // public async Task<ActionResult<ResponseService<LoginOutput>>> LoginNurse(LoginNurseInput input)
+        //     => Result(await _unitOfWork.NurseServices.LoginNurse(input), nameof(LoginNurse));
 
         [HttpPost(nameof(UpdateNurse)), Authorize(Roles = "Nurse , Sick")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateNurse(UpdateNurse input)

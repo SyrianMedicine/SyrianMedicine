@@ -29,10 +29,10 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<RegisterSickOutput>>> RegisterSick(RegisterSick input)
             => Result(await _unitOfWork.SickServices.RegisterSick(input), nameof(RegisterSick));
 
-        [AllowAnonymous]
-        [HttpPost(nameof(LoginSick))]
-        public async Task<ActionResult<ResponseService<LoginSickOutput>>> LoginSick(LoginSick input)
-            => Result(await _unitOfWork.SickServices.LoginSick(input), nameof(LoginSick));
+        // [AllowAnonymous]
+        // [HttpPost(nameof(LoginSick))]
+        // public async Task<ActionResult<ResponseService<LoginSickOutput>>> LoginSick(LoginSick input)
+        //     => Result(await _unitOfWork.SickServices.LoginSick(input), nameof(LoginSick));
 
         [HttpPost(nameof(UpdateSick)), Authorize(Roles = "Sick")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateSick(UpdateSick input)

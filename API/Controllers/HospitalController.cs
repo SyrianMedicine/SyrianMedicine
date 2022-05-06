@@ -43,10 +43,10 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<bool>>> UpdateHospital(UpdateHospital input)
             => Result(await _unitOfWork.HospitalServices.UpdateHospital(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateHospital));
 
-        [AllowAnonymous]
-        [HttpPost(nameof(LoginHospital))]
-        public async Task<ActionResult<ResponseService<RegisterHospitalOutput>>> LoginHospital(LoginHospital input)
-            => Result(await _unitOfWork.HospitalServices.LoginHospital(input), nameof(LoginHospital));
+        // [AllowAnonymous]
+        // [HttpPost(nameof(LoginHospital))]
+        // public async Task<ActionResult<ResponseService<RegisterHospitalOutput>>> LoginHospital(LoginHospital input)
+        //     => Result(await _unitOfWork.HospitalServices.LoginHospital(input), nameof(LoginHospital));
 
         [HttpPost(nameof(AddDebartmentsToHospital)), Authorize(Roles = "Hospital")]
         public async Task<ActionResult<ResponseService<bool>>> AddDebartmentsToHospital(List<CreateDepartment> inputs)

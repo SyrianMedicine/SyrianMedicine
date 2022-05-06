@@ -53,63 +53,63 @@ namespace Services
         public async Task<SickOutput> GetSick(string username)
             => _mapper.Map<User, SickOutput>(await _identityRepository.GetUserByNameAsync(username));
 
-        public async Task<ResponseService<LoginSickOutput>> LoginSick(LoginSick input)
-        {
-            var response = new ResponseService<LoginSickOutput>();
-            try
-            {
-                var user = await _identityRepository.GetUserByNameAsync(input.Username);
-                if (user == null)
-                {
-                    user = await _identityRepository.GetUserByEmailAsync(input.Email);
-                    if (user == null)
-                    {
-                        response.Message = "UserName or Email not exist!";
-                        response.Status = StatusCodes.NotFound.ToString();
-                        return response;
-                    }
-                }
-                var roles = await _identityRepository.GetRolesByUserIdAsync(user.Id);
-                bool found = false;
-                foreach (var role in roles)
-                {
-                    if (role == Roles.Sick.ToString())
-                        found = true;
-                }
-                if (!found)
-                {
-                    response.Message = "Oooops you are not sick";
-                    response.Status = StatusCodes.BadRequest.ToString();
-                    return response;
-                }
-                if (!await _identityRepository.CheckPassword(user, input.Password))
-                {
-                    response.Message = "Password not correct!";
-                    response.Status = StatusCodes.BadRequest.ToString();
-                    return response;
-                }
-                if (await _identityRepository.LoginUser(user, input.Password))
-                {
-                    response.Message = $"Welcome {user.FirstName} {user.LastName}";
-                    response.Status = StatusCodes.Ok.ToString();
-                    var mapper = _mapper.Map<User, LoginSickOutput>(user);
-                    mapper.Token = await _tokenService.CreateToken(user);
-                    response.Data = mapper;
-                }
-                else
-                {
-                    response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
-                    response.Status = StatusCodes.InternalServerError.ToString();
-                    return response;
-                }
-            }
-            catch
-            {
-                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
-                response.Status = StatusCodes.InternalServerError.ToString();
-            }
-            return response;
-        }
+        // public async Task<ResponseService<LoginSickOutput>> LoginSick(LoginSick input)
+        // {
+        //     var response = new ResponseService<LoginSickOutput>();
+        //     try
+        //     {
+        //         var user = await _identityRepository.GetUserByNameAsync(input.Username);
+        //         if (user == null)
+        //         {
+        //             user = await _identityRepository.GetUserByEmailAsync(input.Email);
+        //             if (user == null)
+        //             {
+        //                 response.Message = "UserName or Email not exist!";
+        //                 response.Status = StatusCodes.NotFound.ToString();
+        //                 return response;
+        //             }
+        //         }
+        //         var roles = await _identityRepository.GetRolesByUserIdAsync(user.Id);
+        //         bool found = false;
+        //         foreach (var role in roles)
+        //         {
+        //             if (role == Roles.Sick.ToString())
+        //                 found = true;
+        //         }
+        //         if (!found)
+        //         {
+        //             response.Message = "Oooops you are not sick";
+        //             response.Status = StatusCodes.BadRequest.ToString();
+        //             return response;
+        //         }
+        //         if (!await _identityRepository.CheckPassword(user, input.Password))
+        //         {
+        //             response.Message = "Password not correct!";
+        //             response.Status = StatusCodes.BadRequest.ToString();
+        //             return response;
+        //         }
+        //         if (await _identityRepository.LoginUser(user, input.Password))
+        //         {
+        //             response.Message = $"Welcome {user.FirstName} {user.LastName}";
+        //             response.Status = StatusCodes.Ok.ToString();
+        //             var mapper = _mapper.Map<User, LoginSickOutput>(user);
+        //             mapper.Token = await _tokenService.CreateToken(user);
+        //             response.Data = mapper;
+        //         }
+        //         else
+        //         {
+        //             response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
+        //             response.Status = StatusCodes.InternalServerError.ToString();
+        //             return response;
+        //         }
+        //     }
+        //     catch
+        //     {
+        //         response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+        //         response.Status = StatusCodes.InternalServerError.ToString();
+        //     }
+        //     return response;
+        // }
 
         public async Task<ResponseService<RegisterSickOutput>> RegisterSick(RegisterSick input)
         {
@@ -203,10 +203,15 @@ namespace Services
                                    .SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
-                var dbReserve = await _reserveDoctor.GetQuery().Where(e => e.UserId == user.Id && e.DoctorId == input.DoctorId).FirstOrDefaultAsync();
+                var dbReserve = await _reserveDoctor.GetQuery().Include(e => e.Doctor).Where(e => e.UserId == user.Id && e.DoctorId == input.DoctorId).FirstOrDefaultAsync();
                 if (dbReserve != null)
                 {
                     return response.SetData(false).SetMessage("You can't reserve more than one date")
+                                    .SetStatus(StatusCodes.BadRequest.ToString());
+                }
+                if (dbDoctor.AccountState == AccountState.Pending)
+                {
+                    return response.SetData(false).SetMessage("This Doctor is not approved yet")
                                     .SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
@@ -319,10 +324,16 @@ namespace Services
                                    .SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
-                var dbReserve = await _reserveNurse.GetQuery().Where(e => e.UserId == user.Id && e.NurseId == input.NurseId).FirstOrDefaultAsync();
+                var dbReserve = await _reserveNurse.GetQuery().Include(e => e.Nurse).Where(e => e.UserId == user.Id && e.NurseId == input.NurseId).FirstOrDefaultAsync();
                 if (dbReserve != null)
                 {
                     return response.SetData(false).SetMessage("You can't reserve more than one date")
+                                    .SetStatus(StatusCodes.BadRequest.ToString());
+                }
+
+                if (dbNurse.AccountState == AccountState.Pending)
+                {
+                    return response.SetData(false).SetMessage("This Nurse is not approved yet")
                                     .SetStatus(StatusCodes.BadRequest.ToString());
                 }
 
@@ -420,6 +431,11 @@ namespace Services
                 {
                     return response.SetData(false).SetMessage("This hospital is not exist").SetStatus(StatusCodes.NotFound.ToString());
                 }
+                if (dbHospital.AccountState == AccountState.Pending)
+                {
+                    return response.SetData(false).SetMessage("This Hospital is not approved yet")
+                                    .SetStatus(StatusCodes.BadRequest.ToString());
+                }
                 var departmentDb = await _department.GetByIdAsync(input.DepartmentId);
                 if (departmentDb == null)
                 {
@@ -436,7 +452,7 @@ namespace Services
                 var hospitalDepartment = await _hospitalDepartment.GetQuery().Where(e => e.DepartmentId == departmentDb.Id && e.HospitalId == dbHospital.Id).FirstOrDefaultAsync();
                 if (hospitalDepartment == null)
                 {
-                    return response.SetData(false).SetMessage("you not authorize!!").SetStatus(StatusCodes.Unauthorized.ToString());
+                    return response.SetData(false).SetMessage("you are not authorize!!").SetStatus(StatusCodes.Unauthorized.ToString());
                 }
 
                 Bed availableBed = null;
@@ -557,7 +573,7 @@ namespace Services
     {
         public Task<IReadOnlyList<SickOutput>> GetAllSicks();
         public Task<SickOutput> GetSick(string username);
-        public Task<ResponseService<LoginSickOutput>> LoginSick(LoginSick input);
+        // public Task<ResponseService<LoginSickOutput>> LoginSick(LoginSick input);
         public Task<ResponseService<RegisterSickOutput>> RegisterSick(RegisterSick input);
         public Task<ResponseService<bool>> UpdateSick(UpdateSick input, User user);
         public Task<ResponseService<bool>> ReserveDateWithDoctor(ReserveDateWithDoctor input, User user);

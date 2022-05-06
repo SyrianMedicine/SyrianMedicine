@@ -83,66 +83,66 @@ namespace Services
             return _mapper.Map<PagedList<Nurse>, PagedList<MostNursesRated>>(await PagedList<Nurse>.CreatePagedListAsync(query, input.OldTotal, input.PageNumber, input.PageSize));
         }
 
-        public async Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input)
-        {
-            var response = new ResponseService<LoginNurseOutput>();
-            try
-            {
-                var user = await _identityRepository.GetUserByEmailAsync(input.Email);
-                if (user == null)
-                {
-                    user = await _identityRepository.GetUserByNameAsync(input.UserName);
-                    if (user == null)
-                    {
-                        response.Message = "UserName or Email not exist!";
-                        response.Status = StatusCodes.NotFound.ToString();
-                        return response;
-                    }
-                }
+        // public async Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input)
+        // {
+        //     var response = new ResponseService<LoginNurseOutput>();
+        //     try
+        //     {
+        //         var user = await _identityRepository.GetUserByEmailAsync(input.Email);
+        //         if (user == null)
+        //         {
+        //             user = await _identityRepository.GetUserByNameAsync(input.UserName);
+        //             if (user == null)
+        //             {
+        //                 response.Message = "UserName or Email not exist!";
+        //                 response.Status = StatusCodes.NotFound.ToString();
+        //                 return response;
+        //             }
+        //         }
 
-                var dbNurse = await GetQuery().FirstOrDefaultAsync(ex => ex.UserId == user.Id);
-                var roles = await _identityRepository.GetRolesByUserIdAsync(user.Id);
-                bool found = false;
-                foreach (var role in roles)
-                {
-                    if (role == Roles.Nurse.ToString() || (dbNurse.AccountState == AccountState.Pending && role == Roles.Sick.ToString()))
-                        found = true;
-                }
-                if (!found)
-                {
-                    response.Message = "Oooops you are not nurse";
-                    response.Status = StatusCodes.BadRequest.ToString();
-                    return response;
-                }
+        //         var dbNurse = await GetQuery().FirstOrDefaultAsync(ex => ex.UserId == user.Id);
+        //         var roles = await _identityRepository.GetRolesByUserIdAsync(user.Id);
+        //         bool found = false;
+        //         foreach (var role in roles)
+        //         {
+        //             if (role == Roles.Nurse.ToString() || (dbNurse.AccountState == AccountState.Pending && role == Roles.Sick.ToString()))
+        //                 found = true;
+        //         }
+        //         if (!found)
+        //         {
+        //             response.Message = "Oooops you are not nurse";
+        //             response.Status = StatusCodes.BadRequest.ToString();
+        //             return response;
+        //         }
 
-                if (!await _identityRepository.CheckPassword(user, input.Password))
-                {
-                    response.Message = "Password not correct!";
-                    response.Status = StatusCodes.BadRequest.ToString();
-                    return response;
-                }
-                if (await _identityRepository.LoginUser(user, input.Password))
-                {
-                    response.Message = $"Welcome {user.FirstName + " " + user.LastName}";
-                    response.Status = StatusCodes.Ok.ToString();
-                    var mapper = _mapper.Map<LoginNurseOutput>(user);
-                    mapper.Token = await _tokenService.CreateToken(user);
-                    response.Data = mapper;
-                }
-                else
-                {
-                    response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
-                    response.Status = StatusCodes.InternalServerError.ToString();
-                    return response;
-                }
-            }
-            catch
-            {
-                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
-                response.Status = StatusCodes.InternalServerError.ToString();
-            }
-            return response;
-        }
+        //         if (!await _identityRepository.CheckPassword(user, input.Password))
+        //         {
+        //             response.Message = "Password not correct!";
+        //             response.Status = StatusCodes.BadRequest.ToString();
+        //             return response;
+        //         }
+        //         if (await _identityRepository.LoginUser(user, input.Password))
+        //         {
+        //             response.Message = $"Welcome {user.FirstName + " " + user.LastName}";
+        //             response.Status = StatusCodes.Ok.ToString();
+        //             var mapper = _mapper.Map<LoginNurseOutput>(user);
+        //             mapper.Token = await _tokenService.CreateToken(user);
+        //             response.Data = mapper;
+        //         }
+        //         else
+        //         {
+        //             response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
+        //             response.Status = StatusCodes.InternalServerError.ToString();
+        //             return response;
+        //         }
+        //     }
+        //     catch
+        //     {
+        //         response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+        //         response.Status = StatusCodes.InternalServerError.ToString();
+        //     }
+        //     return response;
+        // }
 
         public async Task<ResponseService<RegisterNurseOutput>> RegisterNurse(RegisterNurse input)
         {
@@ -306,18 +306,24 @@ namespace Services
                 {
                     return response.SetData(false).SetMessage("You are not a Nurse").SetStatus(StatusCodes.Unauthorized.ToString());
                 }
-                var dbReserve = await _reserveNurse.GetByIdAsync(input.Id);
+                var sick = await _identityRepository.GetUsersQuery().Where(e => e.NormalizedUserName.Equals(input.UserName.ToUpper())).FirstOrDefaultAsync();
+                if (sick == null)
+                {
+                    return response.SetData(false).SetMessage("This Sick is not exist").SetStatus(StatusCodes.NotFound.ToString());
+                }
+
+                var dbReserve = await _reserveNurse.GetQuery()
+                    .Include(e => e.Nurse).ThenInclude(e => e.User).Where(e => e.Nurse.UserId == user.Id && e.UserId == sick.Id && e.ReserveState == ReserveState.Pending).FirstOrDefaultAsync();
                 if (dbReserve == null)
                 {
                     return response.SetData(false).SetMessage("This reserve is not exist").SetStatus(StatusCodes.NotFound.ToString());
                 }
-                if (dbReserve.NurseId != dbNurse.Id)
-                {
-                    return response.SetData(false).SetMessage("You are not a nurse for this reserve").SetStatus(StatusCodes.Unauthorized.ToString());
-                }
 
-                var mapper = _mapper.Map(input, dbReserve);
-                _reserveNurse.Update(mapper);
+                // var mapper = _mapper.Map(input, dbReserve);
+                dbReserve.TimeReverse = input.TimeReverse;
+                dbReserve.ReserveState = input.ReserveState;
+                dbReserve.UserId = sick.Id;
+                _reserveNurse.Update(dbReserve);
 
                 return await _reserveNurse.CompleteAsync() == true ?
                 response.SetData(true).SetMessage("Done").SetStatus(StatusCodes.Ok.ToString())
@@ -345,11 +351,11 @@ namespace Services
         public Task<NurseOutput> GetNurse(string username);
         public Task<PagedList<NurseOutput>> GetPaginationNurse(NurseQuery input);
         public Task<PagedList<MostNursesRated>> GetMostNursesRated(NurseQuery input);
-        public Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input);
+        // public Task<ResponseService<LoginNurseOutput>> LoginNurse(LoginNurseInput input);
         public Task<ResponseService<RegisterNurseOutput>> RegisterNurse(RegisterNurse input);
         public Task<ResponseService<bool>> UpdateNurse(UpdateNurse input, User user);
         public Task<IReadOnlyList<ReserveNurseOutput>> GetAllReversedForNurse(int id);
         public Task<ResponseService<bool>> CheckReserve(CheckReserve input, User user);
-        public  Task<PagedList<ReserveNurseData>> GetReserveNurseData(ReserveNurseDataInput input, User nurse);
+        public Task<PagedList<ReserveNurseData>> GetReserveNurseData(ReserveNurseDataInput input, User nurse);
     }
 }

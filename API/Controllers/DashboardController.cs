@@ -8,10 +8,10 @@ namespace API.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class DashboardController : BaseController
-    { 
-        public DashboardController(IUnitOfWork unitOfWork):base(unitOfWork)
+    {
+        public DashboardController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-           
+
         }
 
         [HttpPut(nameof(ValidateDoctor) + "/{id}")]
@@ -26,5 +26,17 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<bool>>> ValidateNurse(int id)
             => Result(await _unitOfWork.DashboardService.ValidateNurse(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(ValidateNurse));
 
+
+
+        [HttpPost(nameof(RejectDoctor) + "/{id}")]
+        public async Task<ActionResult<ResponseService<bool>>> RejectDoctor(int id)
+            => Result(await _unitOfWork.DashboardService.RejectDoctor(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(RejectDoctor));
+        [HttpPost(nameof(RejectNurse) + "/{id}")]
+        public async Task<ActionResult<ResponseService<bool>>> RejectNurse(int id)
+            => Result(await _unitOfWork.DashboardService.RejectNurse(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(RejectNurse));
+
+        [HttpPost(nameof(RejectHospital) + "/{id}")]
+        public async Task<ActionResult<ResponseService<bool>>> RejectHospital(int id)
+            => Result(await _unitOfWork.DashboardService.RejectHospital(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(RejectHospital));
     }
 }

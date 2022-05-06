@@ -2,6 +2,7 @@ using API.Controllers.Common;
 using DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models.Account.Outputs;
 using Models.Admin.Inputs;
 using Models.Admin.Outputs;
 using Models.Common;
@@ -63,9 +64,9 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<bool>>> UploadImage([FromForm] UploadImage input)
             => Result(await _unitOfWork.AccountService.UploadImage(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UploadImage));
 
-        [HttpPost(nameof(LoginAdmin))]
-        public async Task<ActionResult<ResponseService<LoginAdminOutput>>> LoginAdmin(LoginInput input)
-            => Result(await _unitOfWork.AccountService.LoginAdmin(input), nameof(LoginAdmin));
+        [HttpPost(nameof(Login))]
+        public async Task<ActionResult<ResponseService<LoginOutput>>> Login(LoginInput input)
+            => Result(await _unitOfWork.AccountService.Login(input), nameof(Login));
 
         [HttpPost(nameof(UpdateAdminProfile)), Authorize(Roles = "Admin")]
         public async Task<ActionResult<ResponseService<bool>>> UpdateAdminProfile(UpdateAdmin input)

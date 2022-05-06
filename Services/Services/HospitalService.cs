@@ -109,67 +109,68 @@ namespace Services
             var query = base.GetQuery().Include(e => e.User).ThenInclude(e => e.UsersRatedMe).OrderByDescending(e => e.User.UsersRatedMe.Average(e => (int)(e.RateValue)));
             return _mapper.Map<PagedList<Hospital>, PagedList<MostHospitalsRated>>(await PagedList<Hospital>.CreatePagedListAsync(query, input.OldTotal, input.PageNumber, input.PageSize));
         }
-        public async Task<ResponseService<RegisterHospitalOutput>> LoginHospital(LoginHospital input)
-        {
-            var response = new ResponseService<RegisterHospitalOutput>();
-            try
-            {
-                var user = await _identityRepository.GetUserByEmailAsync(input.Email);
-                if (user == null)
-                {
-                    user = await _identityRepository.GetUserByNameAsync(input.UserName);
-                    if (user == null)
-                    {
-                        response.Message = "UserName or Email not exist!";
-                        response.Status = StatusCodes.NotFound.ToString();
-                        return response;
-                    }
-                }
+        
+        // public async Task<ResponseService<RegisterHospitalOutput>> LoginHospital(LoginHospital input)
+        // {
+        //     var response = new ResponseService<RegisterHospitalOutput>();
+        //     try
+        //     {
+        //         var user = await _identityRepository.GetUserByEmailAsync(input.Email);
+        //         if (user == null)
+        //         {
+        //             user = await _identityRepository.GetUserByNameAsync(input.UserName);
+        //             if (user == null)
+        //             {
+        //                 response.Message = "UserName or Email not exist!";
+        //                 response.Status = StatusCodes.NotFound.ToString();
+        //                 return response;
+        //             }
+        //         }
 
-                if (!await _identityRepository.CheckPassword(user, input.Password))
-                {
-                    response.Message = "Password not correct!";
-                    response.Status = StatusCodes.BadRequest.ToString();
-                    return response;
-                }
-                var hospital = await GetQuery().FirstOrDefaultAsync(ex => ex.UserId == user.Id);
+        //         if (!await _identityRepository.CheckPassword(user, input.Password))
+        //         {
+        //             response.Message = "Password not correct!";
+        //             response.Status = StatusCodes.BadRequest.ToString();
+        //             return response;
+        //         }
+        //         var hospital = await GetQuery().FirstOrDefaultAsync(ex => ex.UserId == user.Id);
 
-                var roles = await _identityRepository.GetRolesByUserIdAsync(user.Id);
-                bool found = false;
-                foreach (var role in roles)
-                {
-                    if (role == Roles.Hospital.ToString() || (hospital.AccountState == AccountState.Pending && role == Roles.Sick.ToString()))
-                        found = true;
-                }
-                if (!found)
-                {
-                    response.Message = "Oooops you are not hospital";
-                    response.Status = StatusCodes.BadRequest.ToString();
-                    return response;
-                }
+        //         var roles = await _identityRepository.GetRolesByUserIdAsync(user.Id);
+        //         bool found = false;
+        //         foreach (var role in roles)
+        //         {
+        //             if (role == Roles.Hospital.ToString() || (hospital.AccountState == AccountState.Pending && role == Roles.Sick.ToString()))
+        //                 found = true;
+        //         }
+        //         if (!found)
+        //         {
+        //             response.Message = "Oooops you are not hospital";
+        //             response.Status = StatusCodes.BadRequest.ToString();
+        //             return response;
+        //         }
 
-                if (await _identityRepository.LoginUser(user, input.Password))
-                {
-                    response.Message = $"Welcome {hospital.Name}";
-                    response.Status = StatusCodes.Ok.ToString();
-                    var mapper = _mapper.Map<RegisterHospitalOutput>(user);
-                    mapper.Token = await _tokenService.CreateToken(user);
-                    response.Data = mapper;
-                }
-                else
-                {
-                    response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
-                    response.Status = StatusCodes.InternalServerError.ToString();
-                    return response;
-                }
-            }
-            catch
-            {
-                response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
-                response.Status = StatusCodes.InternalServerError.ToString();
-            }
-            return response;
-        }
+        //         if (await _identityRepository.LoginUser(user, input.Password))
+        //         {
+        //             response.Message = $"Welcome {hospital.Name}";
+        //             response.Status = StatusCodes.Ok.ToString();
+        //             var mapper = _mapper.Map<RegisterHospitalOutput>(user);
+        //             mapper.Token = await _tokenService.CreateToken(user);
+        //             response.Data = mapper;
+        //         }
+        //         else
+        //         {
+        //             response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
+        //             response.Status = StatusCodes.InternalServerError.ToString();
+        //             return response;
+        //         }
+        //     }
+        //     catch
+        //     {
+        //         response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+        //         response.Status = StatusCodes.InternalServerError.ToString();
+        //     }
+        //     return response;
+        // }
 
         public async Task<ResponseService<RegisterHospitalOutput>> RegisterHospital(RegisterHospital input)
         {
@@ -634,7 +635,7 @@ namespace Services
     public interface IHospitalService : IGenericRepository<Hospital>
     {
         public Task<ResponseService<RegisterHospitalOutput>> RegisterHospital(RegisterHospital input);
-        public Task<ResponseService<RegisterHospitalOutput>> LoginHospital(LoginHospital input);
+        // public Task<ResponseService<RegisterHospitalOutput>> LoginHospital(LoginHospital input);
         public Task<IReadOnlyList<HospitalOutput>> GetAllHospitals();
         public Task<PagedList<HospitalOutput>> GetPaginationHospital(HospitalQuery input);
         public Task<PagedList<MostHospitalsRated>> GetMostHospitalsRated(HospitalQuery input);

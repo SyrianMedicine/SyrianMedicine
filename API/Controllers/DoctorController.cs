@@ -41,9 +41,9 @@ namespace API.Controllers
         public async Task<ActionResult<ResponseService<bool>>> UpdateDoctor(UpdateDoctor input)
             => Result(await _unitOfWork.DoctorServices.UpdateDoctor(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(UpdateDoctor));
 
-        [HttpPost(nameof(LoginDoctor))]
-        public async Task<ActionResult<ResponseService<LoginOutput>>> LoginDoctor(LoginDoctorInput input)
-            => Result(await _unitOfWork.DoctorServices.LoginDoctor(input), nameof(LoginDoctor));
+        // [HttpPost(nameof(LoginDoctor))]
+        // public async Task<ActionResult<ResponseService<LoginOutput>>> LoginDoctor(LoginDoctorInput input)
+        //     => Result(await _unitOfWork.DoctorServices.LoginDoctor(input), nameof(LoginDoctor));
 
         // [HttpGet(nameof(GetAllReversedForDoctor) + "/{id}"), Authorize(Roles = "Doctor")]
         // public async Task<IReadOnlyList<ReserveDoctorOutput>> GetAllReversedForDoctor(int id)

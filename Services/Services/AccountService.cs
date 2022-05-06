@@ -4,6 +4,7 @@ using DAL.Entities.Identity;
 using DAL.Entities.Identity.Enums;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Models.Account.Outputs;
 using Models.Admin.Inputs;
 using Models.Admin.Outputs;
 using Models.Common;
@@ -55,15 +56,74 @@ namespace Services
         public List<OptionDto> GetPersonStates()
             => Enum.GetValues<PersonState>().Cast<PersonState>().Select(e => new OptionDto { Id = (int)e, Name = e.ToString() }).ToList();
 
-        public async Task<ResponseService<LoginAdminOutput>> LoginAdmin(LoginInput input)
+        // public async Task<ResponseService<LoginAdminOutput>> LoginAdmin(LoginInput input)
+        // {
+        //     var response = new ResponseService<LoginAdminOutput>();
+        //     try
+        //     {
+        //         var user = await _identityRepository.GetUserByEmailAsync(input.Email);
+        //         if (user == null)
+        //         {
+        //             user = await _identityRepository.GetUserByNameAsync(input.UserName);
+        //             if (user == null)
+        //             {
+        //                 response.Message = "UserName or Email not exist!";
+        //                 response.Status = StatusCodes.NotFound.ToString();
+        //                 return response;
+        //             }
+        //         }
+        //         var roles = await _identityRepository.GetRolesByUserIdAsync(user.Id);
+        //         bool found = false;
+        //         foreach (var role in roles)
+        //         {
+        //             if (role == Roles.Admin.ToString())
+        //                 found = true;
+        //         }
+        //         if (!found)
+        //         {
+        //             response.Message = "Oooops you are not admin";
+        //             response.Status = StatusCodes.BadRequest.ToString();
+        //             return response;
+        //         }
+        //         if (!await _identityRepository.CheckPassword(user, input.Password))
+        //         {
+        //             response.Message = "Password not correct!";
+        //             response.Status = StatusCodes.BadRequest.ToString();
+        //             return response;
+        //         }
+        //         if (await _identityRepository.LoginUser(user, input.Password))
+        //         {
+        //             response.Message = $"Welcome {user.FirstName + " " + user.LastName}";
+        //             response.Status = StatusCodes.Ok.ToString();
+        //             var mapper = _mapper.Map<LoginAdminOutput>(user);
+        //             mapper.Token = await _tokenService.CreateToken(user);
+        //             response.Data = mapper;
+        //         }
+        //         else
+        //         {
+        //             response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown);
+        //             response.Status = StatusCodes.InternalServerError.ToString();
+        //             return response;
+        //         }
+        //     }
+        //     catch
+        //     {
+        //         response.Message = ErrorMessageService.GetErrorMessage(ErrorMessage.InternalServerError);
+        //         response.Status = StatusCodes.InternalServerError.ToString();
+        //     }
+        //     return response;
+        // }
+
+
+        public async Task<ResponseService<LoginOutput>> Login(LoginInput input)
         {
-            var response = new ResponseService<LoginAdminOutput>();
+            var response = new ResponseService<LoginOutput>();
             try
             {
-                var user = await _identityRepository.GetUserByEmailAsync(input.Email);
+                var user = await _identityRepository.GetUserByEmailAsync(input.UserNameOrEmail);
                 if (user == null)
                 {
-                    user = await _identityRepository.GetUserByNameAsync(input.UserName);
+                    user = await _identityRepository.GetUserByNameAsync(input.UserNameOrEmail);
                     if (user == null)
                     {
                         response.Message = "UserName or Email not exist!";
@@ -71,19 +131,7 @@ namespace Services
                         return response;
                     }
                 }
-                var roles = await _identityRepository.GetRolesByUserIdAsync(user.Id);
-                bool found = false;
-                foreach (var role in roles)
-                {
-                    if (role == Roles.Admin.ToString())
-                        found = true;
-                }
-                if (!found)
-                {
-                    response.Message = "Oooops you are not admin";
-                    response.Status = StatusCodes.BadRequest.ToString();
-                    return response;
-                }
+                
                 if (!await _identityRepository.CheckPassword(user, input.Password))
                 {
                     response.Message = "Password not correct!";
@@ -94,7 +142,7 @@ namespace Services
                 {
                     response.Message = $"Welcome {user.FirstName + " " + user.LastName}";
                     response.Status = StatusCodes.Ok.ToString();
-                    var mapper = _mapper.Map<LoginAdminOutput>(user);
+                    var mapper = _mapper.Map<LoginOutput>(user);
                     mapper.Token = await _tokenService.CreateToken(user);
                     response.Data = mapper;
                 }
@@ -112,6 +160,8 @@ namespace Services
             }
             return response;
         }
+
+
 
         public async Task<ResponseService<bool>> UploadImage(UploadImage input, User user)
         {
@@ -222,7 +272,8 @@ namespace Services
         public List<OptionDto> ReserveStates();
         public List<OptionDto> GetPersonStates();
         public Task<ResponseService<bool>> UploadImage(UploadImage input, User user);
-        public Task<ResponseService<LoginAdminOutput>> LoginAdmin(LoginInput input);
+        // public Task<ResponseService<LoginAdminOutput>> LoginAdmin(LoginInput input);
+        public Task<ResponseService<LoginOutput>> Login(LoginInput input);
         public Task<ResponseService<bool>> UpdateAdminProfile(UpdateAdmin input, User user);
         public Task<string> GetUserType(string username);
         public Task<string> ChangePassword(string oldPassword, string newPassword, User user);

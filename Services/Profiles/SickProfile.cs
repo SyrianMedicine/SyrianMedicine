@@ -23,14 +23,14 @@ namespace Services.Profiles
             CreateMap<UpdateSick, User>();
 
             CreateMap<ReserveDateWithDoctor, ReserveDoctor>()
-                .ForMember(dest => dest.ReserveType, opt => opt.MapFrom(src => src.ReserveState));
+                .ForMember(dest => dest.ReserveType, opt => opt.MapFrom(src => src.ReserveType));
             CreateMap<UpdateReserveDateWithDoctor, ReserveDoctor>()
-                .ForMember(dest => dest.ReserveType, opt => opt.MapFrom(src => src.ReserveState));
+                .ForMember(dest => dest.ReserveType, opt => opt.MapFrom(src => src.ReserveType));
 
             CreateMap<ReserveDateWithNurse, ReserveNurse>()
-                .ForMember(dest => dest.ReserveType, opt => opt.MapFrom(src => src.ReserveState));
+                .ForMember(dest => dest.ReserveType, opt => opt.MapFrom(src => src.ReserveType));
             CreateMap<UpdateReserveDateWithNurse, ReserveNurse>()
-                .ForMember(dest => dest.ReserveType, opt => opt.MapFrom(src => src.ReserveState));
+                .ForMember(dest => dest.ReserveType, opt => opt.MapFrom(src => src.ReserveType));
 
             CreateMap<ReserveBedInHospital, ReserveHospital>();
             CreateMap<UpdateReserveBedInHospital, ReserveHospital>();
