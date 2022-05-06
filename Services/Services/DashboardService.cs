@@ -131,7 +131,7 @@ namespace Services
                 await _identityRepository.AddRoleToUserAsync(dbUser, Roles.Sick.ToString());
                 return result == true ?
                                 response.SetData(true).SetMessage("This Nurse is Rejected").SetStatus(StatusCodes.Ok.ToString())
-                                : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
+                               : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
             }
             catch (Exception ex)
             {
@@ -157,7 +157,7 @@ namespace Services
                 await _identityRepository.DeleteRoleInUser(dbUser, Roles.Doctor.ToString());
                 await _identityRepository.AddRoleToUserAsync(dbUser, Roles.Sick.ToString());
                 return result == true ?
-                                response.SetData(true).SetMessage("This Dpctor is Rejected").SetStatus(StatusCodes.Ok.ToString())
+                                response.SetData(true).SetMessage("This Doctor is Rejected").SetStatus(StatusCodes.Ok.ToString())
                                 : response.SetData(false).SetMessage(ErrorMessageService.GetErrorMessage(ErrorMessage.UnKnown)).SetStatus(StatusCodes.InternalServerError.ToString());
             }
             catch (Exception ex)

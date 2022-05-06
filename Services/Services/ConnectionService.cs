@@ -58,7 +58,7 @@ namespace Services.Services
         }
         public async Task<List<UserConnection>> GetUserFollowersConnection(string userid)
         {
-            var usersids = await dbContext.Follows.Where(i => i.FollowedUserId.Equals(userid)).Select(i => i.FollowedUser.UserConnections).ToListAsync();
+            var usersids = await dbContext.Follows.Where(i => i.FollowedUserId.Equals(userid)).Select(i => i.User.UserConnections).ToListAsync();
             var Connections = new List<UserConnection>();
             usersids.ForEach(s => Connections.AddRange(s));
             return Connections;
