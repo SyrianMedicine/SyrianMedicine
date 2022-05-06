@@ -11,3 +11,6 @@ obj
 *.db-shm
 *.db-wal
 *.dll
+API/SyrianMedicineDB.db
+API/SyrianMedicineDB.db-shm
+API/SyrianMedicineDB.db-wal
