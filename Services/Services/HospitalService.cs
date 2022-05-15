@@ -631,6 +631,15 @@ namespace Services
             return _mapper.Map<IReadOnlyList<Bed>, IReadOnlyList<BedOutput>>(beds);
         }
 
+        public async Task<PagedList<ReserveHospitalData>> GetReserveHospitalData(Pagination input, User hospital)
+        {
+            var hospitalDB = await base.GetQuery().FirstOrDefaultAsync(e => e.UserId == hospital.Id);
+            var query = _reserveHospital.GetQuery().Include(e =>e.Bed).ThenInclude(e =>e.Department)
+            .Where(e =>e.Bed.HospitalId ==hospitalDB.Id)
+                .Include(e => e.User);
+            return _mapper.Map<PagedList<ReserveHospital>, PagedList<ReserveHospitalData>>(await PagedList<ReserveHospital>.CreatePagedListAsync(query, 0, input.PageNumber, input.PageSize));
+        }
+
     }
     public interface IHospitalService : IGenericRepository<Hospital>
     {
@@ -654,5 +663,6 @@ namespace Services
         public Task<ResponseService<bool>> CheckReserve(CheckReserveHospital input, User user);
         public Task<ResponseService<bool>> MoveReserveToHistory(int id, User user);
         public Task<IReadOnlyList<BedOutput>> GetBedsForHospital(BedForHospitalInput input);
+        public Task<PagedList<ReserveHospitalData>> GetReserveHospitalData(Pagination input, User hospital);
     }
 }

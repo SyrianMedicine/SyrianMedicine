@@ -172,7 +172,6 @@ namespace Services
         public Task<ResponseService<bool>> ValidateHospital(int id, User user);
         public Task<ResponseService<bool>> ValidateNurse(int id, User user);
         public Task<ResponseService<bool>> ValidateDoctor(int id, User user);
-
         public Task<ResponseService<bool>> RejectHospital(int id, User user);
         public Task<ResponseService<bool>> RejectNurse(int id, User user);
         public Task<ResponseService<bool>> RejectDoctor(int id, User user);

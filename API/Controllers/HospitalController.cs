@@ -99,6 +99,9 @@ namespace API.Controllers
         [HttpPost(nameof(MoveReserveToHistory) + "/{id}"), Authorize(Roles = "Hospital")]
         public async Task<ActionResult<ResponseService<bool>>> MoveReserveToHistory(int id)
             => Result(await _unitOfWork.HospitalServices.MoveReserveToHistory(id, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User)), nameof(MoveReserveToHistory));
-
+        
+        [HttpPost(nameof(GetReserveHospitalData)), Authorize(Roles = "Hospital")]
+        public async Task<PagedList<ReserveHospitalData>> GetReserveHospitalData(Pagination input)
+            => await _unitOfWork.HospitalServices.GetReserveHospitalData(input, await _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User));
     }
 }

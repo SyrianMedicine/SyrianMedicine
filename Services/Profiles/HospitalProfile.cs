@@ -64,6 +64,20 @@ namespace Services.Profiles
             CreateMap<ReserveHospital, BedsReserved>()
                 .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Bed.Department.Name));
             CreateMap<CheckReserveHospital, ReserveHospital>();
+
+
+            CreateMap<ReserveHospital, ReserveHospitalData>()
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.DateTime))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.User.PhoneNumber))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.User.State))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.User.FirstName + " " + src.User.LastName))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Bed.Department.Name))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
+            CreateMap<PagedList<ReserveHospital>, PagedList<ReserveHospitalData>>();
         }
     }
 }
