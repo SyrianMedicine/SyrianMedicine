@@ -80,7 +80,7 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(PostProfile));
             services.AddAutoMapper(typeof(CommentProfile));
             services.AddAutoMapper(typeof(LikeProfile));
-            services.AddAutoMapper(typeof(UserCardProfile));
+            services.AddAutoMapper(typeof(UserCardProfile)); 
             return services;
         }
         public static IServiceCollection AddSwaggerServices(this IServiceCollection services)

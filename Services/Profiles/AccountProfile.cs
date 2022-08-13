@@ -19,6 +19,8 @@ namespace Services.Profiles
                 
             CreateMap<UpdateAdmin, User>();
 
+
+
             CreateMap<PagedList<City>, PagedList<OptionDto>>();
 
             CreateMap<Doctor, ValidateAccountOutput>()

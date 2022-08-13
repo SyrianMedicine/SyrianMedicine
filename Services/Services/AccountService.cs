@@ -23,8 +23,14 @@ namespace Services
         private readonly INurseService _nurseService;
         private readonly IHospitalService _hospitalService;
         private readonly ITokenService _tokenService;
-        public AccountService(IGenericRepository<City> cityRepository, IDoctorService doctorService, INurseService nurseService, IHospitalService hospitalService, ITokenService tokenService, IIdentityRepository identityRepository, IMapper mapper)
+        IGenericRepository<ReserveNurse> _reserveNurseRepo;
+        IGenericRepository<ReserveHospital> _reserveHospitalRepo;
+        IGenericRepository<ReserveDoctor> _reserveDoctorRepo;
+        public AccountService(IGenericRepository<City> cityRepository,IGenericRepository<ReserveNurse> ReserveNurseRepo,IGenericRepository<ReserveHospital> ReserveHospitalRepo,IGenericRepository<ReserveDoctor> ReserveDoctorRepo, IDoctorService doctorService, INurseService nurseService, IHospitalService hospitalService, ITokenService tokenService, IIdentityRepository identityRepository, IMapper mapper)
         {
+            _reserveDoctorRepo=ReserveDoctorRepo;
+            _reserveHospitalRepo=ReserveHospitalRepo;
+            _reserveNurseRepo=ReserveNurseRepo;
             _cityRepository = cityRepository;
             _identityRepository = identityRepository;
             _doctorService = doctorService;
@@ -258,9 +264,30 @@ namespace Services
             var query = _hospitalService.GetQuery().Include(e => e.User).Include(e => e.DocumentsHospital).Where(e => e.AccountState == AccountState.Pending).AsQueryable();
             return _mapper.Map<PagedList<Hospital>, PagedList<ValidateAccountOutput>>(await PagedList<Hospital>.CreatePagedListAsync(query, 0, input.PageNumber, input.PageSize));
         }
+        public async Task<PagedList<SickReserveOutput>> getMyReverseInDoctor(Pagination input,User user)
+        {
+            var query = _reserveDoctorRepo.GetQuery().Include(e => e.Doctor).Include(e=>e.Doctor.User).Where(i=>i.UserId.Equals(user.Id)).OrderByDescending(s=>s.DateTime).AsQueryable();
+        var temp=query.ToList();
+            return _mapper.Map<PagedList<ReserveDoctor>, PagedList<SickReserveOutput>>(await PagedList<ReserveDoctor>.CreatePagedListAsync(query, input)); 
+        }
+        public async Task<PagedList<SickReserveOutput>> getMyReverseInHospital(Pagination input,User user)
+        {
+            var query = _reserveHospitalRepo.GetQuery().Include(e => e.Bed).ThenInclude(i=>i.Hospital).ThenInclude(i=>i.User).Where(i=>i.UserId.Equals(user.Id)).OrderByDescending(s=>s.DateTime).AsQueryable();
+           var temp=query.ToList();
+            return _mapper.Map<PagedList<ReserveHospital>, PagedList<SickReserveOutput>>(await PagedList<ReserveHospital>.CreatePagedListAsync(query, input)); 
+        }
+        public async Task<PagedList<SickReserveOutput>> getMyReverseInNurese(Pagination input,User user)
+        {
+            var query = _reserveNurseRepo.GetQuery().Include(e => e.Nurse).Include(e=>e.Nurse.User).Where(i=>i.UserId.Equals(user.Id)).OrderByDescending(s=>s.DateTime).AsQueryable();
+            var temp=query.ToList();
+            return _mapper.Map<PagedList<ReserveNurse>, PagedList<SickReserveOutput>>(await PagedList<ReserveNurse>.CreatePagedListAsync(query, input)); 
+        }
     }
     public interface IAccountService
     {
+        public Task<PagedList<SickReserveOutput>> getMyReverseInDoctor(Pagination input,User user);
+        public Task<PagedList<SickReserveOutput>> getMyReverseInHospital(Pagination input,User user);
+        public Task<PagedList<SickReserveOutput>> getMyReverseInNurese(Pagination input,User user);
         public Task<bool> IsUserNameExist(string username);
         public Task<bool> IsEmailExist(string email);
         public Task<PagedList<OptionDto>> GetCities(Pagination input);

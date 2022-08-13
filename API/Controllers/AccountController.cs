@@ -120,5 +120,19 @@ namespace API.Controllers
         [HttpPost(nameof(GetValidateNursesAccount)), Authorize(Roles = "Admin")]
         public async Task<PagedList<ValidateAccountOutput>> GetValidateNursesAccount(Pagination input)
             => await _unitOfWork.AccountService.ValidateNursesAccount(input);
+
+
+        [HttpPost(nameof(getMyReverseInDoctor)), Authorize]
+        public async Task<PagedList<SickReserveOutput>> getMyReverseInDoctor(Pagination input)
+            => await _unitOfWork.AccountService.getMyReverseInDoctor(input,await  _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User));
+        
+        [HttpPost(nameof(getMyReverseInHospital)), Authorize]
+        public async Task<PagedList<SickReserveOutput>> getMyReverseInHospital(Pagination input)
+            => await _unitOfWork.AccountService.getMyReverseInHospital(input,await  _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User));
+        [HttpPost(nameof(getMyReverseInNurese)), Authorize]
+        public async Task<PagedList<SickReserveOutput>> getMyReverseInNurese(Pagination input)
+            => await _unitOfWork.AccountService.getMyReverseInNurese(input,await  _unitOfWork.IdentityRepository.GetUserByUserClaim(HttpContext.User));
+   
+    
     }
 }
